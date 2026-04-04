@@ -1,0 +1,887 @@
+Tsai et al. International Journal of Educational Technology in Higher Education
+(2020) 17:12
+https://doi.org/10.1186/s41239-020-00186-2
+
+RESEARCH ARTICLE
+
+Open Access
+
+Precision education with statistical learning
+and deep learning: a case study in Taiwan
+Shuo-Chang Tsai1, Cheng-Huan Chen2 , Yi-Tzone Shiao3, Jin-Shuei Ciou3 and Trong-Neng Wu4*
+* Correspondence:tnwu@asia.edu.tw
+4
+Department of Healthcare
+Administration, Asia University, 500,
+Lioufeng Rd., Wufeng, Taichung
+41354, Taiwan (ROC)
+Full list of author information is
+available at the end of the article
+
+Abstract
+The low birth rate in Taiwan has led to a severe challenge for many universities to
+enroll a sufficient number of students. Consequently, a large number of students
+have been admitted to universities regardless of whether they have an aptitude for
+academic studies. Early diagnosis of students with a high dropout risk enables
+interventions to be provided early on, which can help these students to complete
+their studies, graduate, and enhance their future competitiveness in the workplace.
+Effective prelearning interventions are necessary, therefore students’ learning
+backgrounds should be thoroughly examined. This study investigated how big data
+and artificial intelligence can be used to help universities to more precisely
+understand student backgrounds, according to which corresponding interventions
+can be provided. For this study, 3552 students from a university in Taiwan were
+sampled. A statistical learning method and a machine learning method based on
+deep neural networks were used to predict their probability of dropping out. The
+results revealed that student academic performance (regarding the dynamics of class
+ranking percentage), student loan applications, the number of absences from school,
+and the number of alerted subjects successfully predicted whether or not students
+would drop out of university with an accuracy rate of 68% when the statistical
+learning method was employed, and 77% for the deep learning method, in the case
+of giving first priority to the high sensitivity in predicting dropouts. However, when
+the specificity metric was preferred, then the two approaches both reached more
+than 80% accuracy rates. These results may enable the university to provide
+interventions to students for assisting course selection and enhancing their
+competencies based on their aptitudes, potentially reducing the dropout rate and
+facilitating adaptive learning, thereby achieving a win-win situation for both the
+university and the students. This research offers a feasible direction for using artificial
+intelligence applications on the basis of a university’s institutional research database.
+Keywords: Statistical learning, Machine learning, Deep learning, Dropout, Student
+background characteristics, Academic performance, Precision education
+
+Introduction
+As higher education has become increasingly accessible, the fostering of talent has
+diversified. This satisfies social and industrial demands within the workforce and is
+conducive to socio-economic development. However, the excessive accessibility of
+higher education in Taiwan has been observed to cause numerous adverse effects. For
+© The Author(s). 2020 Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which
+permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the
+original author(s) and the source, provide a link to the Creative Commons licence, and indicate if changes were made. The images or
+other third party material in this article are included in the article's Creative Commons licence, unless indicated otherwise in a credit
+line to the material. If material is not included in the article's Creative Commons licence and your intended use is not permitted by
+statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the copyright holder. To view a
+copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+example, universities have struggled to achieve sufficiently high enrollment. To avoid
+the enrollment quota being reduced by the Ministry of Education (Taiwan) as a result
+of an overly low student enrollment rate (calculated by dividing the number of students
+enrolled by a university’s designated enrollment quota), which can undermine a university’s operations, universities in Taiwan have developed various strategies. For example,
+a few private universities set their tuition at the same level as those of national universities; some medical universities waive tuition and fees for students with academic
+excellence in some departments; and some universities offer scholarships to elite students. Moreover, few universities refine their teaching strategies to enhance students’
+future development potential, such as the NTU System, which established a crossuniversity course and minor selection system,1 and the China Asia Associated University, a university system of China Medical University and Asia University which established a cross-university minor and double major selection system.2 Universities have
+all been working toward increasing their enrollment rate, and the following types of
+universities outperform others, with an enrollment rate exceeding 90%: national universities, which have access to larger national resources and low tuition fees; medical universities, which have specialized expertise and high employment rates; and private
+universities whose reputation has risen and performance has been acknowledged
+through their participation in the Ministry of Education’s Higher Education Sprout Project (previously known as the Teaching Excellence Project).
+However, students meet two immediate challenges after enrollment: whether they
+can adapt to university life and whether their department caters to their interest. Before
+the Ministry of Education’s Teaching Excellence Project began, students were fully responsible for their learning performance. Since the project’s inception in 2004, the academic performance alert system has been uniformly adopted by universities. Although
+universities employed different approaches to system implementation and designed dissimilar contents, universities and teachers are common in that they have taken responsibility for students’ learning performance. After the Teaching Excellence Project began
+(see Fig. 1, which will also be described later), an early alert system, which is used to
+identify students with unfavorable academic performance, has been adopted by most
+higher education institutions. However, not every university achieved expected outcomes. A comprehensive alert system can help educators and relevant personnel to
+identify students with a high risk of low academic performance and thereby implement
+appropriate measures to avoid these students experiencing involuntary suspension of
+their studies and dropping out altogether. Specifically, this system should enable educators to provide remedial teaching resources and interventions to such students to help
+them keep up with other students and graduate punctually, a solution which can improve social mobility (McKenzie, 2018).
+Although the alert system has achieved certain success in universities, various factors
+have resulted in growing numbers of students facing suspension or dropping out; these
+students fail to complete their studies and choose to suspend their studies or to drop
+out for financial/personal reasons or academic performance. The suspension and dropout rate increased from 4% in 1998 to 15% in 2017 school year (viz., academic year,
+1
+2
+
+See http://triangle.ntu.edu.tw for more information.
+See http://ac.asia.edu.tw/files/15-1032-50458,c2271-1.php?Lang = zh-tw for more information.
+
+Page 2 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+Fig. 1 Student academic performance alert system before and after the implementation of the Teaching
+Excellence Project
+
+which in Taiwan refers to a one-year period from August 1 of that year to July 31 of
+the next year). Experts have indicated that, in addition to the aforementioned factors,
+this rising rate might have been partially caused by the universalization of higher education and admission via the Star Plan (in which students graduating from high schools
+on the plan list may apply) enacted from the 2009 school year; students may be unsure
+about which major to choose, and consequently, a proportion of students find out that
+the department they have chosen does not accommodate their interest only after they
+embark upon their studies. Decisions regarding student admission into universities
+through the Star Plan tend to favor college choice, but not major selection; in addition,
+their test performance on the college entrance exam receives significantly less consideration. It can be seen from the university database of the Ministry of Education (via
+https://udb.moe.edu.tw) that, the total number of students dropping out increased from
+84,719 in the 2012 school year to 91,556 in the 2017 school year.
+The ease with which students may transfer between universities and the uniformity
+of tuition and fees across universities in Taiwan have resulted in universities’ focus on
+enrollment rate and negligence of student retention and graduation rates. Although incoming transfer students can compensate for the quota left by out-going ones, transfer
+students’ quality may be lower than that of non-transfer students. Our university has
+adhered to the teaching philosophy of “Give up on no one.” Particularly in the face of
+increasingly disparate learning performance among students, this university has formulated policies for early diagnosis and prognosis of its students’ learning performance
+and has established differentiated learning paths and instructional intervention measures that foster student competitiveness in the workplace. Adaptive teaching is no longer merely an abstract ideal for our university; it has been enacted as a school policy in
+the university (Wu & Tsai, 2019). To achieve the goals stipulated in the 2018 Higher
+Education Sprout Project, our university has been working on implementing the first
+phase of “precision education” (as shown in Fig. 1), which involves predicting the probability of new students failing throughout their learning in this university, and implementing instructional interventions and stratified education according to the prediction
+results. This may reduce the probability of new students suspending their studies or
+
+Page 3 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+dropping out. To realize such innovative thoughts and methods, a theoretical foundation should be established for further relevant discussion and investigation in the academic community.
+The precision education initiative (Hart, 2016) is inspired by precision medicine, as
+proposed by former US president Barack Obama in 2015 (Collins & Varmus, 2015; The
+White House, 2015) and has flourished in the medical system as of late despite its relatively recent emergence. For instance, Google employed the lung cancer scan results
+produced by the National Cancer Institute and Northwestern University to train a
+neural network for malignant tumor prediction. The network’s prediction capacity is
+comparable to or even higher than the diagnostic capacity of a trained radiologist; an
+early diagnosis can increase patient survival rate by 40% (Ardila et al., 2019). Teams
+from the Computer Science and Artificial Intelligence Laboratory of the Massachusetts
+Institute of Technology (MIT CSAIL) and the Massachusetts General Hospital established a deep learning model that could predict a patient’s probability of developing
+breast cancer in 5 yrs on the basis of their breast X-ray images (Yala, Lehman, Schuster,
+Portnoi, & Barzila, 2019). More recently, National Yang-Ming University, National
+Chiao Tung University, and the Academia Sinica of Taiwan have established the Digital
+Medicine Alliance,3 which focuses on the applications of the internet of things and big
+data in medicine. Currently, their research addresses the fourth most common cause of
+death in Taiwan, stroke, with the aim of providing precision prevention and treatments;
+the researchers employed AI to quickly distinguish between, for example, potential
+hemorrhagic stroke or ischemic stroke, and thus facilitate the provisions of treatment
+within the golden hour.
+AI applications have been increasingly prevalent in various domains and applications.
+For example, IBM has developed a system that can predict the time when an employee
+intends to resign on the Watson supercomputer, which achieved 95% accuracy. This
+system saved IBM $300 million on employee retention each year (Rosenbaum, 2019);
+incorporating data from various sources, IBM identified potential employees who might
+resign in the near future, enabling the company to negotiate with the employees regarding pay raises, compensation for education expenses, and financial compensation.
+Additionally, since 2019, Amazon has started using AI to determine the time off task of
+warehouse workers and to automatically pick people to fire when necessary (Bort,
+2019). With a different goal but a similar approach, this study was not concerned with
+the discharging of students but with discovering and solving their problems at an early
+stage (see, for example, Lu et al., 2018, in a blended course). To estimate the probability
+of new university students failing throughout their learning process, AI applications
+can be employed as such (Wu, Chen, & Tsai, 2018). There have been several attempts
+(e.g., Abu Zohair, 2019; Hew, Hu, Qiao, & Tang, 2020; Pérez, Castellanos, & Correal,
+2018) to predict student performance or dropout using algorithms in higher education
+research in order to help at-risk students by assuring their retention. For instance, to
+predict students’ performance in a university course, Abu Zohair (2019) used clustering
+algorithms and a small dataset for training and model construction, establishing a reliable and accurate prediction model with a prediction accuracy of approximately 70%.
+Hew et al. (2020) adopted the supervised machine learning algorithm and hierarchical
+3
+
+See https://nymu-e.ym.edu.tw/files/14-1134-40613,r7-1.php for more information.
+
+Page 4 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+linear modelling to analyze the features of massive open online courses (MOOCs) and
+students’ perceptions of MOOCs; they found that several course features such as instructor, content, assessment, and schedule significantly predict student satisfaction. In
+a recent systematic review (Zawacki-Richter, Marín, Bond, & Gouverneur, 2019) of research on AI applications in higher education, the paper found that studies pertaining
+to dropout and retention intended to develop early warning systems to detect at-risk
+students in their first year. This aim is also a focus of our study, as attrition is more
+likely to happen within the first year. Although Kintu, Zhu, and Kagambe’s (2017) study
+did not use AI algorithms, they investigated the effectiveness of a blended learning environment supported by a learning management system, Moodle, through exploring
+the relationships among student characteristics/backgrounds and academic performance. The present study also incorporates student backgrounds and learning data to
+predict the possibility of new university students dropping out in subsequent years of
+their university studies; that is, this research attempted to employ these data to identify
+students who may drop out as a result of learning underperformance, thereby facilitating the implementation of measures involving remedial teaching or learning assistance.
+The next topic to be considered was whether to adopt machine learning or statistical
+learning in concern for suspension and dropping out of school in higher education.
+The two methods exhibit various similarities; for example, both make predictions based
+on models established using extensive data analysis. Therefore, many people cannot
+distinguish between them and consider machine learning to be enhanced statistical
+learning. Recently Stewart (2019) clarified the differences between the two in nature by
+discussing the difference between statistics and machine learning. The greatest distinction between statistical and machine learning lies in their purposes. A statistical learning model is designed to infer the relationships between variables, whereas a machine
+learning model aims to maximize the accuracy of prediction. That is, machine learning
+focuses on prediction results, and statistical learning centers on causal inferences.
+Statistical neural networks have grown considerably in terms of high complexity
+problems and algorithmic efficiency in the recent decade; deep learning provides
+the most advanced and accurate performance in some challenging real-world machine learning tasks (Fiser, Berkes, Orbán, & Lengyel, 2010; Hinton, 2007). Hinton,
+Osindero, and Teh (2006) proposed deep belief nets, an unsupervised, greedy layerby-layer pretraining scheme that targeted the vanishing gradient effect so as to
+make machine learning more accurate and outstanding. A machine learning
+method based on deep neural networks was thus employed along with statistical
+learning to make predictions on the basis of one single institutional database, with
+an aim of achieving feasible and interpretable prediction results, thereby improving
+student learning.
+
+Purpose
+In view of the above background, this study aimed to:
+1. Explore the feasibility of using a statistical learning method and a deep learning
+method to predict the probability of university students experiencing a learning
+failure from the second to fourth year of university based on their learning
+backgrounds during the first year; and
+
+Page 5 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+2. Determine the significant variables that can affect student learning performance
+and use them as a basis for providing remedial interventions.
+
+Method
+Subjects
+
+A total of 4748 full-time students were admitted to this university’s undergraduate programs through application and school recommendation in the 2012–2013 school years.
+Excluding transfer students, students from China, international students, students
+whose academic performance was in the top 5% or the bottom 5% (e.g., those who had
+received project mentoring) of all accepted students, and students who had dropped
+out in their first year, this study collected the data of 3552 students, with 2093 female
+students (58.92%) and 1459 male students (41.08%). Of all participants, 827 (23.28%)
+were disadvantaged students, namely students from low-income households, students
+with disabilities, or students receiving financial support (excluding those whose parents
+were government officials); 412 (11.6%) dropped out in the second to fourth year (that
+is, 3140 [88.4%] students in the collected sample remained enrolled until the fourth
+year). According to the research objectives, this study employed students who dropped
+out in their second to fourth year as the case group (412 students) and those who were
+retained to the fourth year as the control group (3140 students) to discuss the probability of students experiencing failure in learning and the affecting factors.
+Dataset
+
+This study analyzed student behavior data for the 2012–2013 school years (i.e., from
+August 2012 to July 2014) extracted from the university’s institutional research database; these data included student background information (e.g., gender and disadvantaged status), student performance at school in the first year (e.g., class ranking
+percentage, absence records, number of alerted subjects, student loan application, and
+participation in participation in class cadres), and study status (e.g., whether a student
+has dropped out or not).
+Data analysis
+
+This study first presented the personal backgrounds of current students and students
+who had dropped out using frequency and percentage, and compared the two groups
+of students using a chi-square test. Background variables exhibiting statistically significant differences between the two groups were subsequently calculated using statistical
+learning and deep learning methods.
+1. Statistical learning: A logistic regression analysis was conducted using dropout
+status as a binary categorical variable and assuming a linear relationship between
+the logarithm of dropout event odds and potential risk variable.
+2. Deep learning: Using deep neural networks, a multilayer perceptron algorithm
+(Gardner & Dorling, 1998) was employed to establish an efficient and convenient
+prediction model. The model’s accuracy increased as the quantity of data, the
+number of training cycles, and the complexity of the model increased. The deep
+learning framework used was the TensorFlow, open-source software developed by
+
+Page 6 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+Google (Abadi et al., 2016) and Keras, a high-level deep learning library that is
+based on Python under the license of the Massachusetts Institute of Technology.
+The strengths and weaknesses of each prediction model in this study must be considered before adopting them for application. In the present study, a logistic regression
+model and a multilayer perceptron model were used. The logistic regression model can
+identify factors that exert significant influence on learning failures, which can then
+serve as a reference for future provision of support and instructional interventions. The
+deep learning model is capable of performing fast logical operation and learning an algorithm without depending on structured data; that is, it can always produce a prediction after training. After various experiments, this study developed a recommended
+prediction strategy as follows. A logistic regression analysis is first used to identify the
+influencing factors of learning failures; subsequently, deep learning is employed to conduct effective computation, identify patterns in data, and make predictions accordingly.
+
+Results
+Statistical learning prediction model
+
+Table 1 presents a comparison between the background data of current students and
+those of students who had dropped out; only significant variables from the table will be
+discussed as follows. In terms of male-to-female student ratio, that of dropout students
+was significantly higher than that of current students. For academic performance in the
+first year, all students were first divided into two groups by their dynamics of academic
+performance (class ranking percentage): (1) the group in which the students outperformed themselves or maintained their academic performance in the second semester
+when compared to their class ranking percentage from the first semester; and (2) the
+group in which the students performed less satisfactorily in the second semester when
+compared to their class ranking percentage from the first semester. The proportion of
+students whose final grades were lower in the second semester than in the first semester was significantly higher among dropout students than among current students. Regarding the status of student loan application, the proportion of students who had
+applied for student loan was significantly higher among dropout students than among
+current students. Concerning attendance, the proportion of dropout students who had
+been absent for more than 40 class sessions without asking for a leave in the first year
+was significantly higher than that of current students. In terms of the number of subjects for which an alert has been issued, the proportion of dropout students who had
+received alerts for more than two subjects in either semester was significantly higher
+than that of current students.
+Several single variables (gender, class ranking percentage, student loan application,
+number of absences from school, and number of alerted subjects) from Table 1 exhibiting a statistically significant difference were substituted into the logistic regression
+model and were filtered in the analysis process to achieve the best possible regression
+model. According to the analysis results (as shown in Table 2)—excluding the nonsignificant variable gender—four variables significantly correlated with student dropout
+rates: academic performance (i.e., class ranking percentage), student loan application,
+number of absences from school, and number of alerted subjects.
+
+Page 7 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+Page 8 of 13
+
+Table 1 Background information of students
+Total
+
+Current students
+
+Variable
+
+Frequency (%)
+
+Frequency (%)
+
+Dropout students
+Frequency (%)
+
+No. of students
+
+3552 (100)
+
+3140 (88.40)
+
+412 (11.60)
+
+Female
+
+2093 (58.92)
+
+1896 (60.38)
+
+197 (47.82)
+
+Male
+
+1459 (41.08)
+
+1244 (39.62)
+
+215 (52.18)
+
+p value
+
+Gender
+< .001
+
+Disadvantaged status
+No
+
+2725 (76.72)
+
+2409 (76.72)
+
+316 (76.7)
+
+Yes
+
+827 (23.28)
+
+731 (23.28)
+
+96 (23.30)
+
+Public
+
+1964 (55.29)
+
+1738 (55.35)
+
+226 (54.85)
+
+Private
+
+1588 (44.71)
+
+1402 (44.65)
+
+186 (45.15)
+
+.993
+
+High school
+.849
+
+Dynamic of class ranking percentage (Academic performance)
+Maintained/Improved
+
+2048 (57.66)
+
+1847 (58.82)
+
+201 (48.79)
+
+Deteriorated
+
+1504 (42.34)
+
+1293 (41.18)
+
+211 (51.21)
+
+No
+
+2457 (69.17)
+
+2203 (70.16)
+
+254 (61.65)
+
+Yes
+
+1095 (30.83)
+
+937 (29.84)
+
+158 (38.35)
+
+.001
+
+Student loan application
+< .001
+
+No. of absences from school
+< 40
+
+2817 (79.31)
+
+2605 (82.96)
+
+212 (51.46)
+
+≥ 40
+
+735 (20.69)
+
+535 (17.04)
+
+200 (48.54)
+
+<2
+
+2997 (84.38)
+
+2753 (87.68)
+
+244 (59.22)
+
+≥2
+
+555 (15.63)
+
+387 (12.32)
+
+168 (40.78)
+
+< .001
+
+No. of alerted subjects
+< .001
+
+Served as a class cadre
+No
+
+2645 (74.47)
+
+2337 (74.43)
+
+308 (74.76)
+
+Yes
+
+907 (25.53)
+
+803 (25.57)
+
+104 (25.24)
+
+No
+
+3513 (98.9)
+
+3104 (98.85)
+
+409 (99.27)
+
+Yes
+
+39 (1.10)
+
+36 (1.15)
+
+3 (0.73)
+
+.885
+
+Part-time job experience
+.444
+
+Note. The p value indicates the comparison between the background variable of the current and dropout students; a
+significant difference existed with p being less than .05
+
+Table 2 Logistic regression analysis summary
+Variable
+
+Estimate
+
+SE
+
+p
+
+Intercept
+
+−2.88
+
+0.12
+
+< .001
+
+0.30
+
+0.13
+
+Student loan applications
+
+0.39
+
+Number of absences from schoolc
+
+0.94
+1.03
+
+Academic performancea
+b
+
+d
+
+Number of alerted subjects
+a
+
+Odds ratio
+
+95% CI
+
+.025
+
+1.34
+
+1.04–1.74
+
+0.14
+
+.004
+
+1.47
+
+1.13–1.92
+
+0.16
+
+< .001
+
+2.55
+
+1.86–3.51
+
+0.17
+
+< .001
+
+2.81
+
+2.01–3.91
+
+Students whose class ranking percentage for their total score declined from the first to the second semester of the first
+school year
+b
+Students who applied for student loans in both semesters of the first school year
+c
+Students who were absent for more than 40 class sessions in the first school year
+d
+Students who received alerts for more than two subjects in either semester of the first school year
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+Deep learning prediction model
+
+The significant variables obtained through statistical learning were input into the deep
+learning algorithm to improve the efficiency of model training. A total of eight features
+(four significant variables in the two semesters), namely academic performance, student
+loan application, number of absences from school, and number of alerted subjects in
+the first and second semesters, were input into the algorithm.
+A multilayer perceptron algorithm was employed for model training first. The input
+layer comprised neurons of the eight features, and the output layer produced results
+with one label (dropped out = 1; stayed enrolled = 0). The proportions of validation and
+training data were set at 5% and 95%, respectively. Each training epoch contained 71
+samples, with 50 epochs used. Every training session was recorded to derive variations
+in accuracy and loss (see Fig. 2). In deep learning, loss is the value that a neural network tries to minimize. According to the result, the accuracy (upper diagram) of the
+validation data increased gradually with the number of training sessions being performed, reaching 0.905 in the 28th epoch; the loss (lower diagram) decreased gradually
+and reached 0.290 in the 50th epoch (despite the difference after around the 30th
+epoch being minimal), whereupon the optimal model was established. Kindly note that
+in the training shown in Fig. 2, although the best value of accuracy appeared in the
+middle of the process of the model, it may not be for the lowest value of loss until finishing the model training. Test data were then substituted into the multilayer perceptron model to obtain the predicted probability of dropout.
+
+Fig. 2 Training process of the multilayer perceptron model (for accuracy and loss)
+
+Page 9 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+Page 10 of 13
+
+The accuracy (for total students), sensitivity (for dropout students), and specificity (for
+current students) of the dropout prediction model were affected by the dropout probability defined. Specifically, this study conducted prediction using the logistic regression
+model and the deep learning model with the same significant variables, and achieved optimal model sensitivity and specificity at a defined dropout prediction probability of 10% or
+higher. At this time, the logistic regression model had an accuracy of 68% in predicting
+which students would drop out and which would not, and 61% sensitivity for predicting
+dropout students. Under the same probability setting, the multilayer perceptron model
+achieved an accuracy of 77% in predicting which students would drop out and a sensitivity
+of 53% for predicting dropout students (as shown in Table 3).
+
+Discussion and conclusion
+By using significant variables identified through the logistic regression analysis as input
+for machine learning and then deep learning, this study determined the critical factors
+(namely, student academic performance—the dynamics of class ranking percentage,
+student loan application, number of absences from school, and number of alerted subjects) fed to the deep neural network (i.e., not black-box) to predict learning failure;
+moreover, prediction performance could be increased. As a branch of data science, machine learning can realize automation and AI. By contrast, statistics is a branch of
+mathematics that facilitates the use of these solutions in establishing prediction models.
+Through combination of statistical analysis and machine learning, data science can be
+applied in data problems or used to extract insights from data to exert greater influence
+(EduCBA, 2019).
+When predicting the probability of either dropping out or not dropping out, the deep
+learning achieved an accuracy of 90%, and the logistic regression also yielded an accuracy of 88%. However, because a high sensitivity was expected in dropout predictions,
+false positives (i.e., current students predicted to become dropout students) could be
+temporarily disregarded if the cost of instructional interventions was not high. Lowcost interventions might persuade relevant agencies to adopt this prediction model with
+a sensitivity level of 61%. Specifically, this model, with an accuracy of 68% and sensitivity level of 61%, may be able to use to predict the learning fate of students admitted to
+the university in 2018 in their subsequent college years (i.e., 2019–2022) on the basis of
+
+Table 3 Accuracy, sensitivity, and specificity of the two models with different thresholds
+Accuracya
+
+Sensitivityb
+
+Specificityc
+
+Threshold
+
+Prediction model
+
+10%
+
+Multilayer perceptron
+
+77%
+
+53%
+
+80%
+
+Logistic regression
+
+68%
+
+61%
+
+69%
+
+15%
+
+20%
+
+50%
+
+Multilayer perceptron
+
+83%
+
+42%
+
+88%
+
+Logistic regression
+
+80%
+
+50%
+
+84%
+
+Multilayer perceptron
+
+87%
+
+42%
+
+93%
+
+Logistic regression
+
+84%
+
+38%
+
+90%
+
+Multilayer perceptron
+
+90%
+
+16%
+
+99%
+
+Logistic regression
+
+88%
+
+0%
+
+100%
+
+a
+Accuracy = predicted number (dropout students + current students) / actual number (dropout students +
+current students)
+b
+Sensitivity = predicted number of dropout students / actual number of dropout students
+c
+Specificity = predicted number of current students / actual number of current students
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+their backgrounds and learning performance during the first year. The analysis results
+will enable the university to provide instructional or course interventions to target students and improve their learning, thus achieving precision education.
+By establishing the dropout prediction model for precision education, this study
+hopes to provide early warnings of substandard academic performance to students who
+have been predicted probable to drop out later in university. With this prediction, a
+communication platform can be established to help students with substandard academic performance (i.e., those with high dropout risk); relevant parties, including students’ mentor, department chair, and the university’s Office of Student Affairs, should
+be notified of the students for whom this applies without attaching labels to them and
+provide appropriate assistance in their learning process. If necessary, course interventions in conjunction with precision learning systems, such as BookRoll (an e-book system developed by Kyoto University), may be used to understand and explore students’
+learning processes/behaviors and enhance their learning outcomes (Chen & Su, 2020;
+Ogata et al., 2015; Ogata et al., 2017). Providing interventions to students with relatively
+unfavorable academic performance may assist in their completion of studies, creating a
+virtuous cycle. As seen in Fig. 3, with the prediction model, our university has produced
+a list of students at high risk of dropout for each school or department. Subsequently,
+an information platform on the school’s tutoring system has been established involving
+these students’ teachers (i.e., homeroom/form teacher, mentor, and career guidance
+teacher), their department chair, and the school dean. The platform enables those professionals to more easily monitor the students’ learning conditions, patiently listen to
+their students and understand their problems, and thus resolve learning obstacles in a
+timely manner. Finally, a university should provide instructional or course interventions
+(such as those stated above) which are expected to mitigate substandard academic performance among students.
+In conclusion, this study provides a feasible direction for future AI applications in
+higher education research. Despite the establishment of a fairly comprehensive institutional research database for this university, only fewer than 10 variables were used as
+
+Fig. 3 Administrative measures taken to reduce the number of students at high risk of dropping out
+
+Page 11 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+input for model training due to our limited experience. Nevertheless, the prediction
+results of this study achieved acceptable accuracy, sensitivity, and specificity in statistical and deep learning models. Further work is suggested to incorporate more variables
+related to students’ engagement, family, and learning behavior aspects as variables to
+simultaneously increase the accuracy and sensitivity of prediction models to 80% or
+higher, which is also a goal of our future work.
+Acknowledgements
+Special thanks to Prof. Kuang-Fu Cheng for providing statistical guidance and support for this research. The authors
+also thank the support of Asia University’s Higher Education Sprout Project sponsored by the Ministry of Education, Republic of China (Taiwan). Our gratitude also goes to the staff of the Center of Institutional Research and Development
+of Asia University for their support and assistance with data sorting and analysis.
+Authors’ contributions
+The first and second authors contributed equally to this article. SCT is carrying out Asia University’s Higher Education
+Sprout Project, which implements “precision education” at the university; CHC organized and revised the manuscript,
+as well as made corrections; YTS conducted the statistical analyses and wrote the manuscript; JSC dealt with the deep
+learning parts and provided technical support; and TNW, who leads the university’s Sprout Project, initialized this study
+and wrote the manuscript draft. All authors read and approved the final manuscript.
+Funding
+This research was not funded by a specific grant.
+Availability of data and materials
+The datasets generated and/or analyzed during the current study are available only from the corresponding author
+upon reasonable request.
+Competing interests
+The authors declare that they have no competing interests.
+Author details
+1
+Department of Business Administration, Asia University, Taichung, Taiwan (ROC). 2Department of M-Commerce and
+Multimedia Applications, Asia University, Taichung, Taiwan (ROC). 3Center of Institutional Research and Development,
+Asia University, Taichung, Taiwan (ROC). 4Department of Healthcare Administration, Asia University, 500, Lioufeng Rd.,
+Wufeng, Taichung 41354, Taiwan (ROC).
+Received: 16 October 2019 Accepted: 25 February 2020
+
+References
+Abadi, M., Agarwal, A., Barham, P., Brevdo, E., Chen, Z., Citro, C., Zheng, X. (2016). Tensorflow: Large-scale machine learning on
+heterogeneous distributed systems. arXiv:1603.04467v2 [cs. DC]
+Abu Zohair, L. M. (2019). Prediction of student’s performance by modelling small dataset size. International Journal of
+Educational Technology in Higher Education, 16, article 27. doi: https://doi.org/10.1186/s41239-019-0160-3
+Ardila, D., Kiraly, A. P., Bharadwaj, S., Choi, B., Reicher, J. J., Peng, L., … Shetty, S. (2019). End-to-end lung cancer screening with
+three-dimensional deep learning on low-dose chest computed tomography. Nature Medicine, 25(6), 954–961. https://doi.
+org/10.1038/s41591-019-0447-x.
+Bort, J. (2019, April 26). Amazon’s warehouse-worker tracking system can automatically pick people to fire without a human
+supervisor’s involvement. Business Insider. Retrieved from https://www.businessinsider.com/amazon-systemautomatically-fires-warehouse-workers-time-off-task-2019-4.
+Chen, C.-H., & Su, C.-Y. (2020). Using the BookRoll e-book system to promote self-regulated learning, self-efficacy and
+academic achievement for university students. Educational Technology & Society. Forthcoming article.
+Collins, F. S., & Varmus, H. (2015). A new initiative on precision medicine. New England Journal of Medicine, 372(9), 793–795.
+https://doi.org/10.1056/NEJMp1500523.
+EduCBA. (2019). Machine learning vs statistics. Retrieved September 22, 2019, from https://www.educba.com/machinelearning-vs-statistics/
+Fiser, J., Berkes, P., Orbán, G., & Lengyel, M. (2010). Statistically optimal perception and learning: From behavior to neural
+representations. Trends in Cognitive Sciences, 14(3), 119–130. https://doi.org/10.1016/j.tics.2010.01.003.
+Gardner, M. W., & Dorling, S. R. (1998). Artificial neural networks (the multilayer perceptron)—A review of applications in the
+atmospheric sciences. Atmospheric Environment, 32(14–15), 2627–2636. https://doi.org/10.1016/S1352-2310(97)00447-0.
+Hart, S. A. (2016). Precision education initiative: Moving toward personalized education. Mind, Brain, and Education, 10(4),
+209–211. https://doi.org/10.1111/mbe.12109.
+Hew, K. F., Hu, X., Qiao, C., & Tang, Y. (2020). What predicts student satisfaction with MOOCs: A gradient boosting trees
+supervised machine learning and sentiment analysis approach. Computers & Education, 145, article 103724. doi:https://doi.
+org/10.1016/j.compedu.2019.103724
+Hinton, G. E. (2007). Learning multiple layers of representation. Trends in Cognitive Sciences, 11(10), 428–434. https://doi.org/10.
+1016/j.tics.2007.09.004.
+
+Page 12 of 13
+
+Tsai et al. International Journal of Educational Technology in Higher Education
+
+(2020) 17:12
+
+Hinton, G. E., Osindero, S., & Teh, Y. W. (2006). A fast learning algorithm for deep belief nets. Neural Computation, 18(7), 1527–
+1554. https://doi.org/10.1162/neco.2006.18.7.1527.
+Kintu, M. J., Zhu, C., & Kagambe, E. (2017). Blended learning effectiveness: The relationship between student characteristics,
+design features and outcomes. International Journal of Educational Technology in Higher Education, 14, article 7. doi:
+https://doi.org/10.1186/s41239-017-0043-4
+Lu, O. H. T., Huang, A. Y. Q., Huang, J. C. H., Lin, A. J. Q., Ogata, H., & Yang, S. J. H. (2018). Applying learning analytics for the
+early prediction of students’ academic performance in blended learning. Educational Technology & Society, 21(2), 220–232.
+McKenzie, L. (2018, September 11). Early-alert systems seen as mixed bag. Inside Higher Ed. Retrieved from https://www.
+insidehighered.com/news/2018/09/11/academics-question-system-measuring-academic-performance-flagging-potential-problems
+Ogata, H., Oi, M., Mohri, K., Okubo, F., Shimada, A., Yamada, M., … Hirokawa, S. (2017). Learning analytics for e-book-based
+educational big data in higher education. In H. Yasuura, C.-M. Kyung, Y. Liu, & Y.-L. Lin (Eds.), Smart sensors at the IoT frontier,
+(pp. 327–350). Cham, Switzerland: Springer International Publishing. https://doi.org/10.1007/978-3-319-55345-0_13.
+Ogata, H., Yin, C., Oi, M., Okubo, F., Shimada, A., Kojima, K., & Yamada, M. (2015). E-book-based learning analytics in university
+education. In H. Ogata, W. Chen, S. C. Kong, & F. Qiu (Eds.), Proceedings of the 23rd international conference on computers
+in education, (pp. 401–406). Hangzhou, China: Asia-Pacific Society for Computers in Education.
+Pérez, B., Castellanos, C., & Correal, D. (2018). Predicting student drop-out rates using data mining techniques: A case study. In
+A. D. Orjuela-Cañón, J. C. Figueroa-García, & J. D. Arias-Londoño (Eds.), Procedings of the 1st IEEE Colombian conference on
+applications in computational intelligence, (pp. 111–125). Cham, Switzerland: Springer International Publishing. https://doi.
+org/10.1007/978-3-030-03023-0_10.
+Rosenbaum, E. (2019, April 3). IBM artificial intelligence can predict with 95% accuracy which workers are about to quit their
+jobs. CNBC. Retrieved from https://www.cnbc.com/2019/04/03/ibm-ai-can-predict-with-95-percent-accuracy-whichemployees-will-quit.html
+Stewart, M. (2019 March 25). The actual difference between statistics and machine learning. Towards Data Science. Retrieved
+from https://towardsdatascience.com/the-actual-difference-between-statistics-and-machine-learning-64b49f07ea3.
+The White House (2015). Fact sheet: President Obama’s precision medicine initiative. Washington, DC: Author Retrieved from
+http://www.whitehouse.gov/the-press-office/2015/01/30/fact-sheet-president-obama-s-precision-medicine-initiative.
+Wu, T.-N., Chen, C.-H., & Tsai, S.-C. (2018, November). Study on intelligent prognosis system for learning [智慧型學習預後系統
+之研究]. Paper presented at the Conference on Institutional Research and Teaching Practice 2018, Taichung, Taiwan.
+Wu, T.-N., & Tsai, S.-C. (2019). The concept of precision education in Taiwan—Predicting the learning performace of college
+freshmen with high school learning protfolio [臺灣精準教育之芻議──從高中端學習歷程預後大學新生學習績效].
+Evaluation Bimonthly, 77, 29–32. https://doi.org/10.6445/EB.
+Yala, A., Lehman, C., Schuster, T., Portnoi, T., & Barzilay, R. (2019). A deep learning mammography-based model for improved
+breast cancer risk prediction. Radiology, 292(1), 60–66. https://doi.org/10.1148/radiol.2019182716.
+Zawacki-Richter, O., Marín, V. I., Bond, M., & Gouverneur, F. (2019). Systematic review of research on artificial intelligence
+applications in higher education–where are the educators? International Journal of Educational Technology in Higher
+Education, 16(1), article 39. doi:https://doi.org/10.1186/s41239-019-0171-0
+
+Publisher’s Note
+Springer Nature remains neutral with regard to jurisdictional claims in published maps and institutional affiliations.
+
+Page 13 of 13
+
+

@@ -1,0 +1,1297 @@
+Higher Education
+https://doi.org/10.1007/s10734-025-01509-w
+
+Crossing individual university boundaries: a comprehensive
+approach to predicting dropouts in the higher education
+system
+Johannes Berens1 · Andrea Diem2 · Luis Rumert1,6 · Kerstin Schneider1,3,6
+Stefan C. Wolter2,3,4,5
+
+·
+
+Accepted: 14 July 2025
+© The Author(s) 2025
+
+Abstract
+Previous literature on predicting university dropouts is mainly limited to institutional dropouts. Our paper extends this narrow framework by relying on administrative data on study
+trajectories, covering the entire Swiss higher education system. Using machine learning
+techniques, we predict university dropouts at the national level, show how these prediction
+results differ from those using a single university perspective, and provide prediction models for transfers to other higher education institutions. The results show that using only preenrollment data, we can correctly classify about 73% of all students, with an AUC of 79.
+By adding academic performance variables from consecutive semesters, we can correctly
+label about 88% of students after the 4th semester, with an AUC of 89. However, adding
+information on transfers to other Swiss universities instead of using information on single
+institutions only hardly improves the predictive performance of the models. It is, therefore,
+not surprising that in contrast to predicting university dropouts, the models perform poorly
+in predicting transfers to other higher education institutions.
+Keywords Higher education · University dropout · Student success · Prediction · Machine
+learning
+
+* Stefan C. Wolter
+stefan.wolter@skbf-csre.ch
+1
+
+University of Wuppertal, Schumpeter School of Business and Economics, Wuppertal, Germany
+
+2
+
+Swiss Coordination Centre for Research in Education (SCCRE), Aarau, Switzerland
+
+3
+
+CESifo, Munich, Germany
+
+4
+
+University of Bern, Centre for Research in Economics of Education, Bern, Switzerland
+
+5
+
+IZA, Bonn, Germany
+
+6
+
+RWI, Essen, Germany
+Vol.:(0123456789)
+
+Higher Education
+
+Introduction
+University student dropouts are a common phenomenon and are on the political agenda in
+many countries (see Larsen et al., 2013). Dropouts are a concern if many of these dropouts
+could have been avoided with appropriate support and are not merely the result of individual decisions or selection by the universities to maintain the quality of education and
+degrees. Dropouts are not only problematic because of the individual costs they incur, such
+as lost years of income and study costs, but also a loss for society due to lost labor market potential or shortages of skilled labor. Given the individual and societal dropout cost,
+this issue needs to be addressed. Amidst the challenge of preventing avoidable dropouts,
+two key aspects emerge as central. First, early risk detection is necessary to significantly
+enhance the effectiveness of interventions. Second, institutions need information on how
+to differentiate between high-risk and low-risk students to optimize resource allocation.
+The good news is that universities today have extensive, digitally accessible data on their
+students, allowing for developing and testing various forecasting models (see Shafiq et al.,
+2022, for an overview) to better manage universities.
+Forecasting models can be implemented in different manners. However, the existing literature on dropout prediction is often confined to data on a single university, neglecting
+university transfers or graduation at other institutions. This limitation arises because available information is usually restricted to the university where students discontinue their studies. Consequently, it is impossible to differentiate between students who drop out of university altogether and those transferring to another institution, where they either complete
+their studies or eventually drop out. While, from the university’s perspective, the distinction between students dropping out and those transferring may seem less relevant, from an
+education policy perspective, the distinction is important. A university transfer or program
+change could simply be a change or even an optimization in the academic trajectory and
+result in a successful degree completion. On the other hand, a complete dropout from the
+higher education system results in both individual and societal costs. Thus, the importance
+of distinguishing between university switches and dropouts for effective education policy
+has been emphasized, but empirical evidence is lacking.
+Our work contributes to filling this research gap. Using administrative student trajectory data from the entire Swiss higher education system and machine learning techniques,
+we expand the narrow frame of a single university. First, we investigate how well university dropouts can be predicted from a national perspective. We report prediction results
+from a single university as a benchmark and show how adding information on the study
+trajectories of students who transfer between institutions affects the classification results.
+Second, we present models to predict university transfers. Third, we address and discuss
+the importance of variables for predicting university dropouts and university transfers. The
+analyses are based on linked register data from the University of Bern (UBern) and data
+from the Longitudinal Analyses in Education (LABB) program of the Swiss Federal Statistical Office. Note that the starting point in this analysis is the data of students who start
+their studies at a single university, in our case, the University of Bern. However, in contrast
+to other studies, we can track students who leave the University of Bern throughout the
+entire system of higher education, and we know whether the departing students were final
+dropouts, i.e., leaving the higher education system, or only dropouts in the sense that they
+are leaving the University of Bern and transferring to another university.
+The results show that from the national perspective, even before enrollment, we can correctly classify about 73% of all students with an AUC value of 79 and about 88% after the
+
+Higher Education
+
+fourth semester with an AUC value of 89. The models are less successful in predicting
+transfers to different institutions, pointing to a potential area for further research. Finally,
+the ranking of prediction variables differs only marginally between the various models.
+The remainder of the paper is organized as follows: the “Related literature on the prediction of student dropouts” section discusses the literature. The “Institutional setting” section
+describes the institutional setting. The “Data” section presents the data, and the “Empirical strategy” section explains our empirical strategy. The “Results” section describes the
+results, while the first conclusions are drawn in the “Conclusion” section.
+
+Related literature on the prediction of student dropouts
+Over the last 15 years, many studies have been published on predictive analytics in higher
+education. One of the main goals of these studies is to predict the class or label of educational outcomes (Baker, 2010; Baker & Yacef, 2009), and they have shown that a successful prediction of academic success is possible (Alturki et al., 2020). Before classifying
+a student as successful or not, it is essential to define what can be considered academic
+success. For an extensive discussion, we refer to York et al. (2015), who present a conceptual model of academic success. In addition, the predictive setting can differ in the levels
+targeted (Alyahyan & Düştegör, 2020). The assessment of success can, for example, be
+measured on the level of an exam, a course, a single university, or an entire university system. A widely used and more relaxed variation of the definition of academic achievement
+at the university level is to label graduation as academic success. From the perspective
+of a single institution (university), the student leaves the university either with a degree
+(success) or without a degree (dropout). Examples of analyses that predict success in this
+form using a supervised machine learning approach are Berens et al. (2019) and Bötcher
+et al. (2020), who used institutional data on demographics and academic performance and
+combined multiple machine learning methods in order to predict students at risk of dropping out of the university at an early stage. In the structured literature survey of Shafiq
+et al. (2022), most studies can only use data from a single university. This finding is one of
+the main caveats regarding existing research conclusions. It prevents the generalization of
+results of academic success and student performance outside of a single institution. From
+an educational policy perspective, however, the entire system of higher education has a
+higher relevance, but the data needed to analyze these questions at the system level are
+hard to come by.
+In terms of the methods and models used for predicting dropouts, Shafiq et al. (2022)
+also show that the most commonly used machine learning methods are Random Forest,
+Decision Tree, Logistic Regression, and Naive Bayes. Kemper et al. (2020) used Logistic Regression and Decision Tree to analyze several cohorts of Industrial Engineering students. After the first semester, they were able to identify 85% of future dropouts correctly
+and improve their results to a maximum of 95% after the third semester. Palacios et al.
+(2021) used several different methods to predict university dropouts from first-year students
+to senior students over multiple Chilean universities. Overall, their models were correctly
+classifying more than 80% of the students, with an increasing tendency for later semesters. The Random Forest was the best-performing model, and the authors emphasized its
+competitive superiority. Using a dataset from a large US university, Raju and Schumacker
+(2015) compared Logistic Regression, Decision Tree, and a Neural Network for predicting
+student graduation. The best-performing model from the pre-university perspective (only
+
+Higher Education
+
+using data available before the first semester started) was the Logistic Regression. After
+the first semester, however, the Neural Network outperformed the other models. Dekker
+et al. (2009) predicted whether electrical engineering students were successful in receiving
+an intermediate diploma granted after finishing the first year of university studies within
+3 years (their definition of a successful student). They used Decision Trees, BayesianNet,
+Logistic Regression, Random Forest, and a OneR classifier. When only using pre-enrollment data, the best classifier was the BayesianNet, which correctly classified 71% of the
+students. Including data on university performance increased the share of correctly classified students by up to 11 percentage points, with the Decision Tree now performing best.
+In terms of data used as explanatory variables in these models, university dropout can be
+explained by information known prior to enrolling or emerging while studying at the university (Larsen et al., 2013). The most widely used explanatory factors include gender, age,
+socioeconomic background, previous education, field of study, and academic performance
+(Aina et al., 2022; Heublein et al., 2017; Larsen et al., 2013). These factors have also been
+identified as important in the Swiss context (Wolter et al., 2014). Students themselves often
+report multiple reasons for dropouts at the time (Behr et al., 2021; Heublein et al., 2017).
+The most important reasons are performance issues due to high cognitive demands, lack of
+motivation to pursue the chosen degree, and a curriculum with too little practical orientation. Finally, some recent analyses also include behavioral data in the evaluations that go
+beyond observable characteristics of the students and their performance during their studies (see Matz et al., 2023). This is a promising path for future research since the inclusion
+of this information, which is not easily observable, always improves the predictive power
+of the analyses, sometimes significantly. Yet the predictive power of models based on relatively easily observable information is already quite high. Due to the availability of administrative data at the universities, the data can be used to analyze the trajectories of students
+and identify students at risk, as well as to more efficiently allocate support.
+
+Institutional setting
+The Swiss higher education system consists of two types of higher education institutions:
+(1) universities, which have a strong focus on theoretical foundations and (basic) research,
+and (2) universities of applied sciences (UAS, including universities specialized in teacher
+education [UTE]), whose educational programs are more practical and labor market oriented. There are 12 public universities, 10 universities of applied sciences, 18 universities of teacher education, and some small, privately run institutions. All higher education
+institutes offer education at the bachelor’s and master’s level. However, awarding doctoral
+degrees (PhDs) is reserved for universities.
+Two aspects of the institutional setting that distinguish Switzerland are essential for the
+interpretation of this study: even though the proportion of young people who qualify for
+higher education with a university entrance qualification (baccalaureate) is relatively low
+in international comparison (only just over 20% of an age cohort), the universities themselves cannot select the students but are forced to accept all students interested in studying
+at the respective university. In other words, there is no selection of students by the universities that admit them. Secondly, with the exception of medical studies and other minor
+degree courses at different types of higher education institutions, students are also free to
+choose their study program. This less restrictive access to universities and study programs
+allows students to frequently change their program, as well as the university and the type of
+
+Higher Education
+
+university. Dropping out of a degree at a particular university can, therefore, not automatically be interpreted as dropping out altogether, but in many cases, is instead a transfer to
+another field of study and/or another university.
+In general, a bachelor’s degree program is organized over 3 years. However, most students take longer and graduate after around 4 years (median, 3.8 years). Of those who
+started a bachelor’s degree at a university, an average of 55% (UBern, 65%) obtained a
+university bachelor’s degree in the initially chosen field of study1 (up to 8 years after entry)
+and another 19% (UBern, 13%) in a different field.2 Another 8% (UBern, 7%) obtain a
+bachelor’s degree from a university of applied sciences or a university of teacher education, after transferring to the corresponding type of university (total 82%). The other 18%
+(UBern, 15%) did not graduate with a degree.
+Overall, transfers between institutions are common phenomena. Of those who started
+a bachelor’s degree at a university, 10% (UBern, 6%) of students transfer to another university during their bachelor’s degree, and 11% (UBern, 10%) switch to a university of
+applied sciences or teacher education (total 21%). The other 79% remain at their initially
+chosen university until they graduate or drop out without re-enrolling in another higher
+education institution. Overall, the success rate and the rate of transfers vary significantly
+by field of study, which partly explains the differences between the University of Bern and
+the university average. Dropouts and transfers to other higher education institutions mainly
+occur at the beginning of the study program. After the first 2 years of study, two-thirds of
+dropouts, around 90% of university transfers and around 80% of switches to another type of
+university, have occurred. This applies to both the entire Swiss system of higher education
+and the University of Bern.
+
+Data
+Data sources
+We utilize two data sources: first, the register data of the University of Bern, and second,
+the data of the “Longitudinal Analyses in Education (LABB)” of the Swiss Federal Statistical Office (FSO), which encompasses register data of the entire higher education system. The two datasets were linked using an individual identifier (the social security number
+AHVN13).
+The data from the University of Bern provide information for each semester on enrollment (chosen field of study) as well as on academic performance (number of credits earned
+per semester as well as the average grade per semester). The data are available for the academic years 2014/2015 through 2017/2018 and include all students who started a bachelor’s program at the University of Bern in the respective academic years.
+The university system data (LABB) contains harmonized register data of the universities, the universities of applied sciences, and the universities of teacher education, as well
+as some additional variables from other data sources. The data contain annual information
+
+1
+In general, field of study in this study refers to a categorization system of the Swiss Federal Statistical
+Office where study programs similar to each other are grouped together (60 categories). For example, the
+programs English and Language and Literature in English are grouped together.
+2
+The data refer to the 2013 entry cohort and are based on evaluations of register data obtained from the
+“Longitudinal Analyses in Education (LABB)” program of the Swiss Federal Statistical Office (FSO).
+
+Higher Education
+
+on studies (field of study, university) as well as sociodemographic background variables. It
+covers the entire study histories of the students up to the academic year 2018/2019.
+After linking both datasets, the population in the resulting dataset consists of 6879
+students who started their first degree at the University of Bern in the autumn semester
+2014/2015 to 2017/2018. Table A1 in the Online Appendix describes the full sample of
+students. For the prediction of dropouts and transfers, various variables are included that
+have been shown to be predictive for dropouts (see, e.g., Larsen et al., 2013): Sociodemographic characteristics of students (gender, age, nationality, born abroad), information
+on previous education (admission certificate, number of years since baccalaureate degree),
+information on the region of residence and region of origin (canton of residence, type of
+municipality of residence, language spoken in municipality of residence, baccalaureate
+rate, education of the population, tax income per capita, proportion of foreigners, social
+welfare rate), information on studies (field of study, average dropout/change rate), and
+achievements (ECTS examined and passed, average grade) are included.
+Due to our research questions, we work with different analytical subsamples, with each
+subsample considering a unique dropout/transfer definition as the target variable (see the
+“Main variables” section for a description).3 The historic dropout and transfer rate variables, which are based on the 2007 to 2012 entry cohorts and consider dropouts and
+transfers up to 2020, are included as a feature only for the respective target variable (e.g.,
+Dropout rate UBern is only included in the Dropout UBern subsamples). Otherwise, all
+variables are included in each subsample. We remove unlabeled observations, and for
+every target variable, we generate the following prediction settings:
+1.
+2.
+3.
+4.
+5.
+
+We include only information available at the time of matriculation.
+We include information of the first semester.
+We include information of the first and second semester.
+We include information of the first three semesters.
+We include information of the first four semesters.
+
+Variables related to academic performance are described in Table A2 in the Online
+Appendix. Information on academic performance increases the number of features used for
+predictions by three for every additional semester starting with semester 1. For the predictions, we filter separate subsamples for each of the eight prediction tasks and for each of
+the five points in time.
+Overall, categorical variables showed almost no missing data, while numerical variables
+showed a share of values of up to 11%. For the categorical variables, we impute missing
+data with the mode, and for numeric variables, missing values are imputed using the mean.
+We drop observations where data on academic performance is missing. For the predictions, categorical variables are encoded to dummy variables while numerical variables are
+normalized.4
+
+3
+All subsamples are described in the Tables S1 to S16 in the Online Appendix. Tables S18 and S19 compare graduates and dropouts with active students in two subsamples. Tables S20 and S21 compare students
+across all cohorts for two subsamples.
+4
+Figures S3 and S4 in the Online Appendix demonstrate that our results are robust to alternative imputation procedures and that imputation does not systematically bias our findings.
+
+Higher Education
+
+Main variables
+The main variables of interest are the outcomes of dropout and university transfer. We consider six different outcomes for dropout and two for university transfer (see Table 1 for
+a more detailed description). With respect to dropouts at the University of Bern (single
+university setting), we differentiate between (1) dropping out completely from the University of Bern (changing study field and faculty not considered dropping out), (2) dropping
+out from the faculty they initially enrolled in (changing field within the same faculty not
+considered dropping out), and (3) dropping out from the original field (changing field considered dropping out).
+The next three outcomes refer to dropouts in the entire Swiss higher education system
+(multiple university setting). Here, we consider the following variables: (1) dropout from
+the entire Swiss higher education system, (2) dropout from university (switching to a different type of higher education institution will be considered dropping out), and (3) dropout from their initial field of study (changing field or switching to a different type of higher
+education institution will be considered dropping out).
+With respect to transfers between institutions, we consider two outcome variables,
+which measure (1) whether a student transfers from the University of Bern to another university and (2) if a student switches to a different type of higher education institution.
+All variables are measured as binary variables (dropout = 1 versus graduation = 0 and
+transfer = 1 versus no transfer = 0). Students still enrolled at the end of the observation
+period are excluded from the analyses. Due to the short observation period of three to
+seven semesters (depending on the entry cohort), the proportion of students still studying at
+the end of the observation period is substantial. Accordingly, the proportion of students in
+
+Table 1  Description of target variables
+Single university setting
+Dropout UBern
+Dropout Fac UBern
+Dropout Field UBern
+Multiple university setting
+Dropout HE
+Dropout Uni
+Dropout Field Uni
+
+Dropout (versus graduation) at the University of Bern
+Dropout (versus graduation) at the faculty of enrollment of the University of
+Bern
+Dropout (versus graduation) in the original field of study at the University of
+Bern
+Dropout (versus graduation) at any Swiss higher education institution
+Dropout (versus graduation) at any Swiss university
+Dropout (versus graduation) in the original field of study at any Swiss university
+
+Changing institution setting
+Transfer Uni
+Transfer to another university versus no transfer (i.e., dropout or graduation at
+the University of Bern)
+Switch Type
+Transfer to another type of higher education institution (UAS or UTE) versus
+no transfer (i.e., dropout or graduation at the University of Bern)
+The table shows all binary target variables that we predict in the following sections grouped into three different settings
+
+Higher Education
+
+the analytical sample who have dropped out of their studies is pretty high.5 Dropout rates
+range from 35 to 69%, depending on the outcome variable and the observed semester (see
+Table 2). They decrease with an increasing number of semesters at the University of Bern.
+Of those enrolled at the University of Bern for at least four semesters, the dropout rate is
+between 18 and 32%. The transfer rate varies between 4 and 17% depending on the outcome variable and the observed semester.
+The difference in the number of observations in each subsample shown in Table 2
+results from the different dropout definitions in each predictive setting (as described in
+Table 1). Depending on the prediction task, some students are still enrolled or marked
+as dropouts. For example, the difference between the number of students included in the
+Dropout UBern setting and the Dropout HE setting results from the number of students
+who dropped out at the University of Bern but re-enrolled and continue their studies at
+another Swiss higher education institution. Therefore, they are marked as dropouts in the
+first setting but not in the second. This leads to a decrease of 724 students who cannot be
+used for training and testing in the Dropout HE setting.
+The number of observations decreases over the semesters because we have to remove
+students who are not observed in the respective next semester. For example, 325 students
+did not re-enroll for a second semester and dropped out, which reduces N from 2733 to
+2408 observations in the Dropout UBern setting.
+
+Empirical strategy
+We use machine learning methods to predict whether a student will become a dropout or
+transfer to another institution. Traditional machine learning methods can model highly
+non-linear relationships automatically, which is one of the most significant advantages over
+standard regression models.
+For our predictions, the dataset was split randomly into a training and a test set. The
+training set contains about 75% of the original data, and we use it to model the relationship
+between the dependent and the independent variables. The test set contains about 25% of
+the data points and helps to evaluate the performance of the implemented machine learning
+models.
+
+Machine learning methods
+We used two different methods for classification: Logistic Regression and Random Forest. Simple models, such as Logistic Regression, are easy to interpret. Therefore, they
+are applied in a broad range of different classification tasks. Random Forest is a powerful ensemble method that combines multiple classifiers and is only slightly more complex compared to other techniques. Multiple (pruned) decision trees are trained on a
+
+5
+Note that the dropout rates presented here are based on a sample that only includes students who, at
+a given point in time, have either graduated or dropped out; students who are still actively enrolled are
+excluded. Therefore, this definition deviates from those commonly used in official statistics, such as the
+OECD definition, which considers the entire initial cohort of matriculated students when estimating dropout rates. Consequently, in combination with the limited observation period, our estimates of the dropout
+rate are higher than those reported in international comparative statistics (OECD, 2019). Table 3 in the
+Online Appendix shows the share of dropouts if all students from the enrollment cohort are considered.
+
+35%
+48%
+68%
+Share of transfers
+
+2009
+2422
+3479
+N
+
+2408
+2408
+
+1853
+2171
+2970
+N
+
+2408
+2890
+3011
+
+11%
+15%
+
+31%
+42%
+63%
+Share of transfers
+
+51%
+61%
+64%
+
+1774
+1774
+
+1579
+1701
+1723
+N
+
+1774
+1748
+1734
+
+4%
+7%
+
+21%
+27%
+36%
+Share of transfers
+
+33%
+36%
+38%
+
+Share of dropouts
+
+1655
+1655
+
+1515
+1600
+1574
+N
+
+1655
+1609
+1581
+
+N
+
+4%
+5%
+
+18%
+23%
+30%
+Share of transfers
+
+29%
+31%
+32%
+
+Share of dropouts
+
+Enrolled in semester 4
+
+The table shows the different subsamples based on the full sample of students from the University of Bern. Columns with the heading N show the number of students in
+each subsample that graduated or dropped out and can be used for predictions. Columns with the heading Share of dropouts/transfers show the share of the positive class in
+N (share of students labeled as dropout or transfer). The Online Appendix includes formulas describing the estimation of the share of dropouts and transfers. Table A3 in the
+Online Appendix presents the dropout share based on the full initial enrollment cohort
+
+14%
+17%
+
+56%
+66%
+69%
+
+2733
+3342
+3527
+
+Changing institution setting
+Transfer Uni
+2733
+Switch Type
+2733
+
+Dropout UBern
+Dropout Fac UBern
+Dropout Field UBern
+Multiple university setting
+Dropout HE
+Dropout Uni
+Dropout Field Uni
+
+Single university setting
+
+Share of dropouts
+
+N
+
+N
+
+N
+
+Share of dropouts
+
+Enrolled in semester 3
+
+Matriculation/enrolled in semester 1 Enrolled in semester 2
+
+Table 2  Proportion of dropouts/transfers in each subsample
+
+Higher Education
+
+Higher Education
+
+bootstrapped subsample of the training data, while only a subset of randomly selected variables is considered for building the trees. Considering multiple decision trees can reduce
+the bias of our model and improve prediction performance, thereby overcoming the limitations of a simple decision tree classifier.
+Both models were implemented with scikit-learn (1.2.2) in Python. For each prediction,
+we chose hyperparameters using a randomized grid search with 50 iterations and fivefold
+cross-validation (we chose the model with the highest average AUC score). The grid of
+hyperparameter values for each model is shown in Table A4 in the Online Appendix. Since
+both of our models allow for some randomness in their initialization, we run every classification 20 times. We set the threshold for the student at-risk assignment so that we have the
+same share of positive cases in our predictions for the test data as we have positive cases
+in the training data. This results in balanced precision and recall scores. While the two
+machine learning methods show comparable classification performance, Random Forest
+proves better (see Fig. A1 in the Online Appendix). In the following, we, therefore, only
+present the results of the Random Forest.6
+
+Performance measurement
+To evaluate how well our models predict academic success in the binary setting, we
+estimate the accuracy, precision, and recall metrics of the positive class. First, a simple confusion matrix is set up to differentiate between correct and false predictions
+(Table 3).
+Afterwards, we turn the resulting values into performance metrics:
+t +t
+Accuracy (correct labeling): t +fp +fn +t
+t p
+
+Recall (true positive rate): t +fp
+p
+
+p
+
+n
+
+n
+
+n
+
+t
+
+Precision (positive predictive value): t +fp
+p
+
+p
+
+Accuracy measures the share of all observations that were correctly classified. The
+recall metric shows the share of true-labeled observations that were correctly classified, while the precision metric shows the share of the predicted true labels that actually
+have the true label. However, it is important to interpret all three metrics with the distribution of the label in mind since an unbalanced dataset distorts the interpretability of
+the results. In particular, accuracy is susceptible to uneven distribution of the dependent variable. Therefore, we also report the classification accuracy of a majority classifier for a baseline comparison. This classifier always assigns the label with the highest
+share in the training set, representing a naive classification approach that should be outperformed by a useful model. We also present receiver operating characteristic (ROC)
+curves and area under the ROC curve (AUC) values. In our analysis, the ROC curve
+displays the share of dropouts that are correctly classified against the share of graduates that are wrongly classified as dropouts (true positive rate against the false positive
+rate) over all possible classification thresholds. The AUC value summarizes the model
+performance over all thresholds, where a random label assignment results in a diagonal
+ROC curve and an AUC value of 0.5.7
+
+6
+7
+
+The results of the Logistic Regression are shown in Table 5 in the Online Appendix.
+Table S17 in the Online Appendix includes values for the average precision metric for all models.
+
+Higher Education
+Table 3  Confusion matrix for
+performance measurement
+
+Total
+
+Prediction true
+
+Prediction false
+
+Label true
+
+True positive (tp)
+
+False negative ( fn)
+
+Label false
+
+False positive ( fp)
+
+True negative (tn)
+
+Predictive power of variables
+To assess the predictive power of our variables, we rank them by the Gini importance,
+which is estimated by a Random Forest classifier. The trees in the model are constructed
+by performing a split s on a parent node m using a specific variable if it maximizes the
+decrease ΔG(s, m) in the impurity measure G (Gini index):
+
+ΔG (s, m) = G (m) − pL G(mL ) − pR G (mR ),
+with p describing the share of observations in the left or right child node mL∕R. The Gini
+importance measures the sum of the weighted decrease in the Gini index after we split a
+tree on a specific variable x averaged over all NT trees in our model:
+
+GI (x) =
+
+1 ∑∑
+p(m)ΔG(sm , m),
+m∈T∶x(sm )=x
+NT T
+
+where p(m) is the share of observations that reaches node m and x(sm ) is the variable
+used in split sm (Louppe et al., 2013). The Gini importance lies between zero and one, and
+a higher value means that a variable is better suited to distinguish the target labels.
+In addition, we evaluate the importance of different types of variables. We compare
+AUC scores using different subsets of features; i.e., we compare our main results where we
+use all variables with predictions based only on academic performance variables (passed
+credit points, average grade, and examined credit points) and predictions based on study
+characteristics (field of education and average dropout/transfer rate) and academic performance variables.
+
+Results
+Predictions
+In the following, we discuss the classification metrics for the Random Forest classifier.
+We use our model to predict whether a student will be a dropout and expand the dataset
+over time until it contains information on a student’s academic performance in the fourth
+semester. The average metrics are reported in Table 4. Table A6 (see the Online Appendix)
+shows the accuracy evaluation metrics for a majority class classifier. Figure 1 shows ROC
+curves for all prediction tasks.
+First, we focus on the single and multiple university settings. For all six dropout definitions, we observe an increase in every classification metric until the end of the second
+semester. This increase is in line with prior research and shows that more information on
+
+Precision
+
+Recall
+
+AUC​
+
+81.6
+79.8
+78.9
+
+87.3
+86.2
+80.5
+
+93.0
+89.3
+
+82.7
+82.4
+82.3
+
+85.6
+84.9
+82.8
+
+84.4
+81.3
+
+27.8
+29.7
+
+62.7
+70.8
+82.4
+
+73.3
+81.9
+82.7
+
+31.8
+36.3
+
+74.0
+79.7
+86.1
+
+80.2
+85.8
+85.6
+
+31.0
+36.9
+
+77.1
+82.8
+86.6
+
+82.7
+85.3
+86.0
+
+21.1
+23.3
+
+71.0
+76.5
+74.7
+
+73.2
+72.1
+72.8
+
+11.3
+20.0
+
+68.5
+67.7
+66.1
+
+67.9
+66.0
+66.2
+
+Results are reported in percent. Precision and recall are reported for the positive class
+
+Single university setting
+Dropout UBern
+78.3
+Dropout Fac UBern 80.2
+Dropout Field
+80.2
+UBern
+Multiple university setting
+Dropout HE
+81.1
+Dropout Uni
+79.9
+Dropout Field Uni
+80.5
+Changing institution setting
+Transfer Uni
+81.5
+Switch Type
+78.2
+27.6
+30.1
+
+61.8
+69.7
+81.7
+
+74.3
+80.5
+82.9
+
+31.6
+37.0
+
+72.9
+78.4
+85.4
+
+81.3
+84.4
+85.8
+
+31.5
+37.2
+
+76.9
+81.6
+85.9
+
+83.2
+85.8
+86.5
+
+20.0
+24.3
+
+69.9
+73.4
+71.7
+
+72.0
+71.8
+72.3
+
+10.4
+19.7
+
+67.3
+66.9
+67.3
+
+67.1
+66.7
+66.2
+
+67.9
+66.8
+
+79.2
+78.7
+80.4
+
+77.6
+79.8
+80.0
+
+73.8
+73.5
+
+86.8
+87.5
+88.2
+
+86.7
+88.3
+87.7
+
+78.3
+79.8
+
+89.6
+90.9
+91.2
+
+90.4
+91.1
+91.2
+
+80.8
+81.6
+
+89.0
+89.4
+87.7
+
+86.7
+86.4
+87.1
+
+81.1
+84.2
+
+88.8
+87.8
+86.9
+
+86.0
+86.2
+85.0
+
+1.Sem 2.Sem 3.Sem 0.Sem 1.Sem 2.Sem 3.Sem 4.Sem 0.Sem 1.Sem 2.Sem 3.Sem 4.Sem 0.Sem 1.Sem 2.Sem 3.Sem 4.Sem
+
+Accuracy
+
+Table 4  Performance metrics of the Random Forest
+
+Higher Education
+
+Higher Education
+
+academic performance improves the prediction of dropouts. However, starting from the
+third semester, the displayed classification metrics decrease. We understand this as a diversification of dropout reasons over time, rendering them less predictable. The additional
+information from academic performance variables improves the model’s ability to pick up
+students at risk of dropping out due to lacking academic performance, but these students
+make up a lower share of dropouts in later semesters. In comparison to a naive classifier,
+the Random Forest shows a consistent and large improvement in the AUC, with the second semester showing the highest value in both settings (around 90). Accuracy, precision,
+and recall values present a trade-off and increase/decrease depending on the choice of the
+classification threshold. In comparison to the majority classifier (see Table 6 in the Online
+Appendix), our choice shows significant improvements in accuracy while retaining a relatively high level of precision and recall.
+The strictest definition of dropout includes students who leave the higher education
+system (Dropout HE), and from a policy point of view, it might be the most relevant
+definition. The improvement in accuracy through the implementation of the Random
+Forest in comparison to the majority classifier is obvious, but not as pronounced as in
+other prediction tasks. Nonetheless, the AUC value shows that dropout predictions on
+a national level are feasible, especially after the inclusion of academic performancerelated variables.
+Since most research focuses on the perspective of individual institutions, we further
+focus on the way how mislabeled students potentially affect student at-risk identification in the Dropout UBern subsample. By investigating this setting, we ask whether a
+differentiation between a single university dropout and a system-wide dropout results in
+a substantial improvement in the predictive performance of early warning systems. In
+Fig. 2, we show how the AUC score changes if we adjust for these mislabeled students
+in two steps. First, we remove students who left the University of Bern but continue
+their studies at another institution and are, therefore, mislabeled as dropouts. Consequently, the Dropout UBern subsample is left with the same observations included in
+the Dropout HE subsample (2009 observations in the first semester). In the second step,
+we re-label students who were marked as dropouts but graduated at another institution
+as graduates. Thereby, we create the Dropout HE subsample. We observe that the first
+step reduces the AUC slightly, and the second step improves the AUC. Overall, adding information on the study trajectories of students who transfer between institutions
+does not lead to an increase in model performance, especially in the first two semesters,
+when most students drop out of their studies.
+In the final step, we predict if a student will transfer to a different university (Transfer
+Uni) and if a student will switch to a different type of higher education institution (Switch
+Type). Here, the dependent variable is highly unbalanced. Therefore, our choice of setting
+the classification threshold yields poor performance over all semesters. AUC scores only
+increase slowly with additional information on academic performance and stay around 80
+after the second semester. Classification thresholds should be, therefore, picked carefully,
+as indicated by Fig. 1 and the relatively large increase in the false positive rate without the
+improvement of the true positive rate.
+To investigate the predictive power of machine learning models with unbalanced educational data further, we also implement a setting where we try to predict multiple labels at
+once. Similar to the binary cases, our standard Random Forest performs poorly in predicting the underrepresented classes (transfers and switches). Applying over-sampling (e.g.,
+SMOTE) as a preprocessing step only marginally improves the results.
+
+Higher Education
+
+Higher Education
+▸
+
+Fig. 1  ROC curves of the Random Forest. Notes: The figure shows ROC curves for all settings and each
+semester using a tuned Random Forest model. The ROC curves for the Logistic Regression are presented in
+Fig. S1 in the Online Appendix
+
+Variable importance in each setting
+The Gini importance helps to understand the importance of the individual variables in
+the Random Forest model and how much the individual variables contribute to correctly
+classifying students. We rank the independent (explanatory) variables by importance, and
+for reasons of brevity, we report variables with a Gini importance higher than 0.05 before
+enrollment (Table 5) and after semester four (Table 6).
+The overall level of the Gini importance of student characteristics is rather low, indicating that sociodemographic and geographic variables can only explain a small share of the
+variance of the dependent variables. The most important predictor for predicting dropouts
+or transfers in semester 0 is related to the study program itself, i.e., the dropout/transfer rate
+of the study program. The dropout/transfer rate variable increases in importance relative to
+other variables if the dropout definition is linked to the field of study (Dropout Fac UBern,
+Dropout Field UBern, Dropout Field Uni).
+After the first semester, we include variables on academic performance, and by semester four, almost all variables of importance are academic performance variables. In most
+prediction tasks, the academic performance of the most recent semester yields the highest
+Gini importance, while the number of passed credit points is more informative than the
+average grade or number of examined credit points.
+Lastly, we investigate the relative importance of different groups of variables. Figure 3
+shows AUC values if we predict with all variables, with academic performance and study
+program-related variables, and only with academic performance variables. We left out the
+matriculation setting since performance variables are not available at this point in time. In
+
+Fig. 2  AUC values of the Random Forest: Dropout UBern versus Dropout HE. Notes: The figure shows
+AUC values for the Dropout UBern case and two adjustment steps to transform the subsample into the
+Dropout HE subsample. Each boxplot is based on 20 AUC values
+
+0.05
+
+0.14
+
+0.15
+
+0.05
+0.10
+
+0.10
+0.08
+
+0.21
+0.12
+0.12
+0.05
+0.06
+0.08
+0.05
+0.05
+0.05
+
+0.15
+
+0.44
+
+0.07
+0.07
+0.08
+0.06
+
+0.09
+0.07
+0.06
+
+0.10
+
+Dropout Field Transfer Uni
+Uni
+
+0.06
+0.06
+0.06
+
+0.06
+0.06
+0.06
+0.06
+
+0.14
+
+Switch Type
+
+Changing institution setting
+
+The table shows the Gini importance of variables most crucial for the binary dropout/transfer prediction at matriculation. No post-comp. educ. rate: proportion of population
+without post-compulsory education
+
+0.17
+0.05
+0.05
+
+0.46
+
+0.41
+
+0.21
+
+0.15
+0.12
+0.06
+0.06
+0.05
+0.05
+
+Dropout/transfer rate
+
+Field of educ.: health
+Baccalaureate rate
+Tax income per capita
+Social welfare rate
+Age at matriculation
+No post-comp. educ. rate
+Tertiary education rate
+Foreigner rate
+Time since baccalaureate
+
+Dropout Uni
+
+Dropout HE
+
+Dropout Fac
+UBern
+
+Dropout UBern
+
+Dropout Field
+UBern
+
+Multiple university setting
+
+Single university setting
+
+Table 5  Gini importance semester 0
+
+Higher Education
+
+0.14
+0.17
+0.15
+0.09
+0.07
+0.06
+0.05
+0.06
+
+0.14
+0.15
+0.12
+0.08
+0.07
+0.06
+
+The table shows the Gini importance of variables most crucial for the binary dropout/transfer prediction after semester 4
+
+0.13
+0.09
+0.08
+0.06
+0.08
+0.05
+
+0.14
+
+0.13
+0.14
+0.08
+0.08
+0.07
+0.06
+
+0.28
+
+0.25
+0.06
+0.06
+
+Passed credits semester 2
+
+Passed credits semester 4
+Average grade semester 4
+Passed credits semester 3
+Examined credits semester 4
+Examined credits semester 2
+Dropout/transfer rate
+Average grade semester 3
+Average grade semester 2
+Examined credits semester 1
+
+Dropout Uni
+
+Dropout HE
+
+Dropout Fac
+UBern
+
+Dropout UBern
+
+Dropout Field
+UBern
+
+Multiple university setting
+
+Single university setting
+
+Table 6  Gini importance semester 4
+
+0.13
+0.08
+0.08
+0.06
+0.06
+0.05
+
+0.13
+
+Dropout
+Field Uni
+
+0.07
+
+0.09
+0.06
+0.05
+0.05
+0.05
+
+0.08
+
+Transfer Uni
+
+0.06
+
+0.46
+0.08
+
+0.24
+
+Switch Type
+
+Changing institution setting
+
+Higher Education
+
+Higher Education
+Fig. 3  Random Forest AUC values with different feature sets. Notes: The figure shows a comparison of ▸
+AUC values for the Random Forest if we leave out different types of variables in our predictions starting
+after semester 1. Each boxplot is based on 20 AUC values. The Online Appendix shows the mean values in
+Table A7 and the results for the Logistic Regression in Fig. S2
+
+the first semester, model performance is greatly reduced if we restrict the input features
+only to academic performance. Adding study program-related variables increases model
+performance greatly, showing almost no difference in comparison to predictions where we
+use all variables. Only after the second semester do predictions solely based on academic
+performance data show AUC scores on a similar level to the predictions based on the other
+two feature sets.
+
+Conclusion
+This paper presents results on predicting university dropouts using data from the entire
+Swiss higher education system. Unlike previous studies, this comprehensive approach
+allows us to observe dropouts not just for a single university but also at the national level.
+This is particularly relevant from an education policy perspective, as it provides a broader
+understanding of the dropout phenomenon and can inform more effective policy interventions. Moreover, it adds to the discussion of the value of analysis based on one university
+only, therefore ignoring students who change universities.
+Our findings show that the prediction of university dropouts measured at the national
+level performs well. At the time of enrollment, the Random Forest correctly classified 73%
+of dropouts (AUC of 79) or graduates when measured at the whole higher education system level (including all types of higher education institutions) and 71% (AUC of 78) when
+measured at the university system level. Prediction accuracy increases with the number of
+semesters and hence the amount and quality of information, reaching 88 (AUC of 89) and
+86% (AUC of 88), respectively, after the fourth semester. Note that, unlike earlier studies,
+transfers to other universities are observable in our data; hence, we can identify true dropouts. However, while students who change universities are not observed in single university data, this might not substantially affect the performance of the prediction models.
+While this may seem surprising at first glance, the explanation, however, is fairly
+straightforward. Even with the rich data available, transfers from one higher education
+institution to another university or to another type of higher education institution (especially in early semesters) are not predictable. Motives for transferring to another university might be performance-related, but important personal motives or changing interests that explain transferring to another university are not entailed in the data. However,
+regardless of the chosen outcome variable, academic performance is a good predictor of
+dropouts. This applies to individual institutions as well as the higher education system
+as such. Therefore, the performance of the models supports the use of prediction models
+at the level of individual universities. Using machine learning models to predict students at risk can help to implement and allocate measures and programs to avoid unnecessary dropouts, even if data on the national level are not available.
+Classification metrics increase up to the second semester. Thus, if universities want to
+have as few misclassifications as possible, they should wait until exam results from the
+second semester are available. However, there is a clear trade-off between early interventions based on information at enrollment and interventions after the first and second
+
+Higher Education
+
+Higher Education
+
+semesters. At the time of enrollment, it is possible to identify at-risk students quite
+comprehensively because of study program information. However, predicting at enrollment comes with the cost of unnecessarily spending resources on students who would
+not have needed the measures and who might have been incorrectly labeled as potential
+dropouts. If, on the other hand, waiting to gain more information on student performance, chances to address students who are, in fact, at risk increase, but at the price that
+some students who could have benefitted from support already dropped out.
+Moreover, there is also a trade-off between the proportion of dropouts identified
+(recall) and the precision of the predictions. In our analyses, we set the threshold for
+assigning at-risk students in a way that balanced precision and recall. The precision of
+dropout identification could be increased, but at the expense of recall, and vice versa.
+Similar to the choice of the classification threshold, results can vary if models or data
+preprocessing change. With regard to our data, the time horizon of our sample is relatively short. Consequently, our subsamples become fairly small, and classification
+results could change if more training data were available. In addition, dropouts are overrepresented since potentially successful students need more time to finish their studies
+and are therefore not included in our subsamples. If the proposed method were put into
+practice, one would have better access to more labeled data, which could eventually
+alter classification performance.
+Since our sample is based on Switzerland, the results might not apply to other contexts. For example, the Swiss system might be comparable to the system in Germany or
+Austria but not to the USA (Ebner et al., 2013; Hüther & Krücken, 2018). Lastly, our
+analysis is restricted to data from the administrative level. Therefore, variable importance and predictive performance could change if other variables are available. For
+example, including micro-level data such as learning platform activity could improve
+classification metrics and change the ranking of variable importance.
+In addition to using data from one university, our study includes data for the higher
+education system in Switzerland. The results indicate that prediction models using
+the additional data perform well but do not lead to meaningful classification improvements. Further research on data on other countries and higher education systems might
+or might not confirm this finding. A more promising idea is the inclusion of additional
+information related to activity on learning platforms or student engagement (Matz et al.,
+2023).
+But clearly, the identification of potential dropouts is necessary in order to efficiently
+deploy resources for interventions. However, the identification of students at risk and the
+allocation of support to students at risk are not sufficient to prevent students from dropping
+out. Future research should, therefore, investigate how institutions can use these models
+and effectively support students and staff. The results so far are rather sobering. For example, it has been shown that informing students about their risk of not completing their studies and recommending seeking support can lead students to drop out even faster (Schneider
+et al., 2021). Similarly, providing student counselors with information on the dropout probabilities of students seeking support yields no improvement in academic performance or
+dropout probabilities compared to students who received counseling from staff without this
+information (Plak et al., 2022).
+Nevertheless, early warning systems have great potential to accurately target students
+who need additional support. Even though there is still much to learn when it comes to
+the successful utilization of these systems, precise and comprehensive identification is the
+important first step.
+
+Higher Education
+Supplementary Information The online version contains supplementary material available at https://​doi.​
+org/​10.​1007/​s10734-​025-​01509-w.
+Acknowledgements The authors would like to thank the University of Bern, in particular the former Vice
+Rector of the University of Bern, Prof. Dr. Bruno Moretti, and Mr. Urban Rüegg, as well as the Federal Statistical Office (FSO) for providing and linking the data.
+Author contribution KS and SW developed the initial concept for the study. SW and AD were responsible
+for data collection, contracts, and negotiations. JB and KS contributed the methodological aspects, and LR
+performed most of the calculations on this basis in close collaboration with AD, KS, and JB. All authors
+contributed equally to the writing of the article and the literature search.
+Funding Open access funding provided by University of Bern.
+
+Declarations
+Ethics approval and consent to participate The paper uses administrative data of the University of Bern and
+the Federal Statistical Office. The use of the data and the data protection contracts were approved by the vice
+president of the University and the Federal Statistical Office. Ethics approval is not applicable as the study
+was conducted with the explicit consent of the university management and in accordance with federal data
+protection laws.
+Competing interests The authors declare no competing interests.
+Open Access This article is licensed under a Creative Commons Attribution 4.0 International License,
+which permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long
+as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence, and indicate if changes were made. The images or other third party material in this article
+are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the
+material. If material is not included in the article’s Creative Commons licence and your intended use is not
+permitted by statutory regulation or exceeds the permitted use, you will need to obtain permission directly
+from the copyright holder. To view a copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.
+
+References
+Aina, C., Baici, E., Casalone, G., & Pastore, F. (2022). The determinants of university dropout: A review of
+the socio-economic literature. Socio-Economic Planning Sciences, 79. https://​doi.​org/​10.​1016/j.​seps.​
+2021.​101102
+Alturki, S., Hulpus, I., & Stuckenschmidt, H. (2020). Predicting academic outcomes: A survey from
+2007 till 2018. Technology, Knowledge and Learning, 27, 275–307. https://​doi.​org/​10.​1007/​
+s10758-​020-​09476-0
+Alyahyan, E., & Düştegör, D. (2020). Predicting academic success in higher education: Literature review
+and best practices. International Journal of Educational Technology in Higher Education, 17, 3.
+https://​doi.​org/​10.​1186/​s41239-​020-​0177-7
+Baker, R. S. J. (2010). Statistical data mining tutorials. In B. McGaw, P. Peterson, & E. Baker (Eds.), International encyclopedia of education (pp. 112–118). Elsevier.
+Baker, R. S. J., & Yacef, K. (2009). The state of educational data mining in 2009: A review and future
+visions. Journal of Educational Data Mining, 1(1), 3–17. https://​doi.​org/​10.​5281/​zenodo.​35546​57
+Behr, A., Giese, M., Teguim Kamdjou, H. D., & Theune, K. (2021). Motives for dropping out from higher
+education: An analysis of bachelor’s degree students in Germany. European Journal of Education,
+56(2), 325–343. https://​doi.​org/​10.​1111/​ejed.​12433
+Berens, J., Schneider, K., Gortz, S., Oster, S., & Burghoff, J. (2019). Early detection of students at riskpredicting student dropouts using administrative student data from German universities and machine
+learning methods. Journal of Educational Data Mining, 11(3), 1–41. https://​doi.​org/​10.​5281/​zenodo.​
+35947​71
+
+Higher Education
+Böttcher, A., Thurner, V., & Hafner T. (2020). Applying data analysis to identify early indicators for potential risk of dropout in CS students. IEEE Global Engineering Education Conference (EDUCON), 827–
+836. https://​ieeex​plore.​ieee.​org/​docum​ent/​91253​78
+Dekker, G. W., Pechenizkiy, M., & Vleeshouwers, J.M. (2009). Predicting students drop out: A case study.
+In T. Barnes, M. Desmarais, C. Romero, & S. Ventura (Eds.), Proceedings of the 2nd International
+Conference on Educational Data Mining, EDM 2009, July 1–3, 2009, Cordoba, Spain (pp. 41–50).
+Ebner, C., Graf, L., Nikolai, R. (2013). New institutional linkages between dual vocational training and
+higher education: A comparative analysis of Germany, Austria and Switzerland. In: Windzio, M. (eds)
+Integration and Inequality in Educational Institutions. Springer, Dordrecht.
+Heublein, U., Ebert, J., Hutzsch, C., Isleib, S., König, R., Richter, J., & Woisch, A. (2017). Zwischen Studienerwartungen und Studienwirklichkeit. DZHW.
+Hüther, O., & Krücken, G. (2018). Higher education in Germany-Recent developments in an international
+perspective (Vol. 49). Springer International Publishing.
+Kemper, L., Vorhoff, G., & Wigger, B. U. (2020). Predicting student dropout: A machine learning approach.
+European Journal of Higher Education, 10(1), 28–47. https://​doi.​org/​10.​1080/​21568​235.​2020.​17185​
+20
+Larsen, M. R., Sommersel, H. B., & Larsen, M. S. (2013). Evidence on dropout phenomena at Universities.
+Danish Clearinghouse for Educational Research.
+Louppe, G., Wehenkel, L., Sutera, A., & Geurts, P. (2013). Understanding variable importances in forests of
+randomized trees. In C. J. Burges, L. Bottou, M. Welling, Z. Ghahramani, & K. Q. Weinberger (Eds.),
+Advances in neural information processing systems 26 (pp. 431–439). Curran Associates Inc.
+Matz, S. C., Bukow, C. S., Peters, H., Deacons, C., & Stachl, C. (2023). Using machine learning to predict
+student retention from socio-demographic characteristics and app-based engagement metrics. Scientific
+Reports, 13, 5705. https://​doi.​org/​10.​1038/​s41598-​023-​32484-w
+OECD. (2019). Education at a Glance 2019: OECD indicators. OECD Publishing, Paris. https://​doi.​org/​10.​
+1787/​f8d78​80d-​en
+Palacios, C. A., Reyes-Suarez, J. A., Bearzotti, L. A., Leiva, V., & Marchant, C. (2021). Knowledge discovery for higher education student retention based on data mining: Machine learning algorithms and case
+study in Chile. Entropy, 23(4), 485. https://​doi.​org/​10.​3390/​e2304​0485
+Plak, S., Cornelisz, I., Meeter, M., & Klaveren, C. (2022). Early warning systems for more effective student
+counselling in higher education: Evidence from a Dutch field experiment. Higher Education Quarterly, 76(1), 131–152. https://​doi.​org/​10.​1111/​hequ.​12298
+Raju, D., & Schumacker, R. (2015). Exploring student characteristics of retention that lead to graduation in
+higher education using data mining models. Journal of College Student Retention: Research, Theory &
+Practice, 16(4), 563–591. https://​doi.​org/​10.​2190/​CS.​16.4.e
+Schneider, K., Berens, J., & Görtz, S. (2021). Maschinelle Früherkennung abbruchgefährdeter Studierender
+und Wirksamkeit niedrigschwelliger Interventionen. In M. Neugebauer, H.-D. Daniel, & A. Wolter
+(Eds.), Studienerfolg und Studienabbruch (pp. 369–392). Springer.
+Shafiq, D. A., Marjani, M., Habeeb, R. A. A., & Asirvatham, D. (2022). Student retention using educational
+data mining and predictive analytics: A systematic literature review. IEEE Access, 10, 72480–72503.
+https://​doi.​org/​10.​1109/​ACCESS.​2022.​31887​67
+Wolter, S. C., Diem, A., & Messer, D. (2014). Drop-outs from Swiss Universities: An empirical analysis of
+data on all students between 1975 and 2008. European Journal of Education, 49(4), 471–483. https://​
+doi.​org/​10.​1111/​ejed.​12096
+York, T. T., Gibson, C., & Rankin, S. (2015). Defining and measuring academic success. Practical Assessment, Research, and Evaluation, 20, 5. https://​doi.​org/​10.​7275/​hz5x-​tx03
+Publisher’s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps and
+institutional affiliations.
+
+
