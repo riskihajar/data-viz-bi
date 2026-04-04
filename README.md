@@ -80,30 +80,37 @@ Secara konseptual, repository ini menempatkan literature review bukan sebagai re
 
 ## Isi Folder `literature-review`
 
-### 1. `student-dropout-analytics-10-paper.xlsx`
-Berisi daftar **10 paper kandidat** yang relevan dengan topik student performance / dropout analytics, lengkap dengan metadata utama seperti:
-- publisher,
-- topics,
-- tahun,
-- penulis,
-- judul,
-- DOI,
-- link.
+### Ringkasan file utama
 
-### 2. `matriks-literature-review-student-dropout-10-paper.xlsx`
-Berisi matriks ringkasan paper dalam format:
-- **No**
-- **Paper**
-- **Fokus**
-- **Variabel**
-- **Metode**
-- **Temuan**
-- **Gap/Keterbatasan**
+| File / Folder | Deskripsi | Isi utama | Kegunaan |
+|---|---|---|---|
+| `student-dropout-analytics-10-paper.xlsx` | Daftar 10 paper kandidat | NO, Publisher, Topics, Tahun, Penulis, Judul, DOI, LINK | Basis awal seleksi paper |
+| `matriks-literature-review-student-dropout-10-paper.xlsx` | Matriks sintesis 10 paper | Paper, Fokus, Variabel, Metode, Temuan, Gap/Keterbatasan | Membantu analisis perbandingan dan penarikan gap |
+| `papers-pdf/` | Arsip PDF paper yang sudah divalidasi | 10 PDF + file ekstraksi teks pendukung | Referensi utama untuk membaca paper secara langsung |
 
-Matriks ini digunakan untuk memudahkan proses sintesis literature review dan penarikan research gap.
+### Daftar 10 paper kandidat
 
-### 3. `papers-pdf/`
-Berisi arsip PDF paper yang sudah dikumpulkan dan divalidasi terhadap daftar paper target. File dinamai menggunakan pola nomor urut agar mudah dicocokkan dengan matriks dan daftar referensi.
+| No | Tahun | Paper | Fokus singkat |
+|---|---:|---|---|
+| 1 | 2023 | Using machine learning to predict student retention from socio-demographic characteristics and app-based engagement metrics | Prediksi retensi/dropout dari data sosiodemografis dan engagement |
+| 2 | 2024 | Hybrid Approach to Predicting Learning Success Based on Digital Educational History for Timely Identification of At-Risk Students | Prediksi learning success dan identifikasi mahasiswa berisiko |
+| 3 | 2022 | Early warning systems for more effective student counselling in higher education: Evidence from a Dutch field experiment | Evaluasi early warning system untuk counselling mahasiswa |
+| 4 | 2024 | Enhancing the Early Student Dropout Prediction Model Through Clustering Analysis of Students’ Digital Traces | Clustering digital traces LMS untuk prediksi dropout |
+| 5 | 2025 | Predicting Student Dropout from Day One: XGBoost-Based Early Warning System Using Pre-Enrollment Data | Early warning berbasis data pra-enrollment |
+| 6 | 2022 | Assisting Educational Analytics with AutoML Functionalities | AutoML untuk educational analytics dan prediksi performa |
+| 7 | 2020 | Precision education with statistical learning and deep learning: a case study in Taiwan | Prediksi dropout dan intervensi dini berbasis big data |
+| 8 | 2023 | Multi-Class Phased Prediction of Academic Performance and Dropout in Higher Education | Prediksi performa/dropout multi-fase pada tahun pertama |
+| 9 | 2024 | Study regarding the influence of a student’s personality and an LMS usage profile on learning performance using machine learning techniques | Pengaruh personality dan LMS usage terhadap performa belajar |
+| 10 | 2025 | Crossing individual university boundaries: a comprehensive approach to predicting dropouts in the higher education system | Prediksi dropout lintas universitas pada level sistem |
+
+### Ringkasan koleksi PDF
+
+| Status | Jumlah | Keterangan |
+|---|---:|---|
+| PDF tervalidasi | 10 | Semua paper target sudah tersedia di folder `papers-pdf/` |
+| File ekstraksi teks (`.txt`) | 10 | Digunakan untuk membantu validasi isi PDF terhadap judul target |
+
+Matriks dan arsip PDF ini digunakan untuk memudahkan proses sintesis literature review, pembandingan antar paper, dan penarikan research gap.
 
 ---
 
