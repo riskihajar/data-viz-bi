@@ -1,0 +1,2342 @@
+Received 5 September 2024, accepted 30 September 2024, date of publication 28 October 2024, date of current version 7 November 2024.
+Digital Object Identifier 10.1109/ACCESS.2024.3486762
+
+Enhancing the Early Student Dropout Prediction
+Model Through Clustering Analysis of Students’
+Digital Traces
+JANKA PECUCHOVA
+
+AND MARTIN DRLIK
+
+Department of Informatics, Faculty of Natural Sciences and Informatics, Constantine the Philosopher University in Nitra, 949 01 Nitra, Slovakia
+
+Corresponding author: Janka Pecuchova (jpecuchova@ukf.sk)
+This work was supported in part by the Scientific Grant Agency of the Ministry of Education of Slovak Republic and Slovak Academy of
+Sciences under Contract VEGA-1/0490/22, in part by European Commission ERASMUS+ Program 2021 under Grant
+2021-1-SK01-KA220-HED-000032095; and in part by the European Union (EU) NextGenerationEU through the Recovery and Resilience
+Plan for Slovakia under Project 09I03-03-V04-000596.
+
+ABSTRACT Educational Data Mining and learning analytics have gained significant prominence in recent
+years, garnering attention from researchers worldwide. This is primarily due to their potential to improve
+decision-making processes within higher education. This study utilizes Educational Data Mining to suggest
+a clustering-based approach for classifying students based on their academic performance, specifically
+focusing on their interactions within Learning Management Systems in blended learning settings. Log data
+from the Learning Management System Moodle platform was analyzed to determine if valuable insights
+could be derived from student activities without the need for personal or invasive data. Given the large
+dataset, Principal Component Analysis and Uniform Manifold Approximation and Projection were employed
+for dimensionality reduction. Three unsupervised learning models—BIRCH, DBSCAN, and GMM—were
+then applied to identify distinct student clusters. The results from the comparison revealed that the BIRCH
+algorithm was the most effective in accurately categorizing students based on their activities. Further analysis
+of identified clusters revealed a strong correlation between student engagement and academic outcomes,
+with two high-risk clusters demonstrating the highest dropout rates. To better understand the reasons behind
+the found clusters, the course duration was subsequently divided into intervals, and standard machine
+learning methods were applied to predict at-risk students over time, confirming that early identification
+of at-risk students using clustering is feasible. This study demonstrates the efficacy of non-invasive data
+collection and unsupervised learning models in predicting student success, emphasizing the importance of
+temporal and content-specific analysis. The proposed approach leverages clustering algorithms to enhance
+the understanding of student behavior by identifying patterns and grouping students with similar learning
+and engagement profiles. This supports the development of targeted interventions that are tailored to specific
+student needs, ultimately improving retention and success.
+INDEX TERMS Educational data mining, learning analytics, clustering analysis, dropout prediction.
+
+I. INTRODUCTION
+
+Educational data mining (EDM) and learning analytics (LA)
+have been recognized as valuable research disciplines for
+examining and predicting the behavior and performance of
+The associate editor coordinating the review of this manuscript and
+approving it for publication was Senthil Kumar
+
+159336
+
+.
+
+current and future students. Furthermore, a significant rise
+in the volume of data, improved data formats, technology
+developments, and the accessibility of sophisticated analytical tools have all contributed to the growing use of LA
+and EDM methods [1]. Predicting the dropout rate and
+students’ academic performance holds significant importance in higher education, particularly within universities.
+
+2024 The Authors. This work is licensed under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 License.
+For more information, see https://creativecommons.org/licenses/by-nc-nd/4.0/
+
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+However, many existing studies have relied heavily on supervised learning techniques or the use of sensitive personal
+data, which may not be ideal for all educational contexts. There is a need for non-invasive methods that focus
+solely on behavior-related data and can still yield accurate
+predictions.
+Higher education institutions are forced to continually
+increase the quality of education despite the unstable economic situation and societal changes, especially caused by the
+COVID-19 pandemic. Maintaining enrollment levels through
+program completion is vital for the sustainability of higher
+education institutions, which further emphasizes the need for
+data-driven approaches to understand and address student
+retention challenges. Consequently, there is an imperative
+need to employ innovative techniques that can provide deeper
+insights into student engagement and behavior and predict
+academic outcomes more accurately. This research addresses
+this gap by exploring how unsupervised machine learning
+techniques can be applied to data derived solely from students’ interactions within Learning Management Systems
+(LMS), offering a non-invasive way to predict academic outcomes and identify at-risk students.
+This research is motivated by the need to address the
+challenges faced by higher education institutions, including
+student dropout and the accurate prediction of academic
+performance. Machine learning techniques have increasingly
+been utilized to predict student performance at various educational levels. Traditional methods have often relied on
+supervised machine learning techniques, which, while helpful, may not fully capture the complex dynamics of student
+behavior in online learning environments [2], [3], [4].
+In contrast, this study focuses on unsupervised learning
+techniques, which have been less frequently applied in educational settings and offer the potential to uncover hidden
+patterns in student behavior without the need for predefined
+labels. The non-invasive approach to student data analysis
+is ensured by leveraging data derived solely from online
+learning systems. The primary emphasis of this article lies
+in examining the potential of student interactions inside these
+platforms to yield predictive insights while eliminating the
+need to analyze sensitive demographic or extensive personal
+data. More precisely, this article describes a study that examines log files stored in the LMS Moodle to determine if
+valuable insights could be gained from student activities without using personal or invasive data. Given the large dataset
+size and the nature of log files, the data was preprocessed
+using standard techniques. Subsequently, Principal Component Analysis (PCA) was used for dimensionality reduction,
+followed by the non-standard approach of Uniform Manifold
+Approximation and Projection (UMAP), which was applied
+to reduce further the data dimensions. This approach was chosen to capture intricate structures, such as patterns of student
+engagement, performance trends, or behavioral similarities,
+which may not be easily detected using traditional methods, thereby enhancing the clustering process and providing
+deeper insights into student behavior.
+VOLUME 12, 2024
+
+The use of three distinct clustering algorithms—DBSCAN,
+GMM, and BIRCH—offers a unique contribution to the
+domain, as these methods have not been extensively compared in the context of EDM. By evaluating these models
+on LMS log data, this study demonstrates how clustering
+techniques can reveal hidden student behavior patterns and
+provide actionable insights for educational interventions.
+Each algorithm was applied to the dataset in the modeling
+phase, with the number of clusters determined using the
+elbow method and silhouette score to compare these algorithms objectively. Rather than relying on a single method,
+the comparison of these three algorithms offers a more robust
+analysis of the advantages and trade-offs of each clustering
+technique, ensuring that the findings are both comprehensive
+and generalizable.
+To predict at-risk students as early as possible, the course
+duration was divided into four intervals: Q1 (first three weeks
+of the semester), Q2 (6 weeks), Q3 (9 weeks), and Q4
+(13 weeks). Standard supervised machine learning methods
+were applied, including Decision Trees (DT), Support Vector
+Machines (SVM), Logistic Regression (LR), and Random
+Forests (RF) with tuned hyperparameters, to determine if it
+would be possible to identify at-risk students timely.
+This research distinguishes itself from previous studies
+by employing unsupervised learning algorithms and working
+exclusively with LMS log data, thus avoiding the need for
+personal or sensitive information and invasive data collection
+methods. It does not aim to gather personal information
+but instead assesses the analytical significance of individuals’ behaviors in virtual educational settings to predict
+academic results. Additionally, this study incorporates a temporal dimension, enhancing the understanding of how student
+behavior evolves over time and impacts academic outcomes.
+By focusing on the temporal dimension of student behavior,
+this study adds another layer of insight into how patterns of
+engagement evolve throughout the semester, providing early
+warning signals for at-risk students.
+This study utilizes datasets derived from online learning
+systems to showcase the efficacy of clustering algorithms
+in identifying patterns that can be employed to predict student success. The findings underscore the importance of
+time-sensitive analysis and the contextual understanding of
+student interactions, offering a more nuanced perspective on
+how engagement metrics relate to academic results.
+The contributions of this article can be summarized as
+follows:
+Educational data was analyzed using three sophisticated
+unsupervised machine learning models, which exhibit
+notable distinctions from the prevailing supervised and
+unsupervised machine learning approaches.
+• A comprehensive temporal and content analysis of identified clusters of student engagement was realized in a
+virtual learning environment. The correlation with academic performance was shown, providing a foundation
+for targeted educational interventions.
+•
+
+159337
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+•
+
+A prediction model using supervised machine learning techniques to identify at-risk students in various
+temporal intervals of the semester was developed and
+evaluated. Based on the results of previous students’
+data clustering, the feasibility of early intervention was
+demonstrated.
+
+This paper’s remaining sections are organized as follows.
+The second section reviews previous studies focusing on
+applying clustering techniques to predict student performance in higher education. It highlights significant findings
+and identifies gaps that this research aims to address.
+Section III applies the CRISP-DM framework, detailing each
+of its six phases. This section defines the research objectives,
+involves data description, and covers all activities needed
+to create the final dataset from the LMS Moodle. It also
+describes the clustering model tunning and development
+using the BIRCH, DBSCAN, and GMM algorithms. Those
+models are assessed to ensure they meet the requirements set
+in research objectives. Section IV presents the outcomes of
+the clustering analysis, detailing how student groups were
+identified based on their interactions within the learning
+platforms. Section V develops and evaluates a classification
+model based on the clusters identified in the previous section
+to predict student performance. Section 6 analyzes the implications of the findings, the effectiveness of the clustering
+and classification models, and their potential impact within
+real-world education settings. In contrast, Section 7 summarizes the study’s conclusions, discusses its contribution to
+the field of EDM, and outlines possible directions for future
+research.
+II. RELATED WORK
+
+The related work in EDM and LA showcases a broad
+spectrum of methodologies and applications, including supervised and unsupervised machine learning methods, aimed at
+enhancing the teaching-learning process through data-driven
+insights.
+A notable study [5] utilized data mining techniques to analyze educational data from a higher education institution in
+Croatia, focusing on e-course event logs. This study applied
+cluster analysis to categorize student behavior based on similarities in their interactions with course materials. Moreover,
+it utilized decision trees to create decision-making models
+that deepen the understanding of student learning behaviors.
+This approach emphasized the potential of pattern recognition and predictive modeling in identifying and addressing
+educational needs.
+Further, a comprehensive review [6] spanning over a
+decade (2010-2022) discussed the evolution and application
+of EDM techniques across 142 research articles sourced from
+prominent databases like IEEE and Elsevier. The review
+highlighted a predominant use of classification techniques,
+often combined with clustering, association rule algorithms,
+and regression techniques. Such combinations have proven
+effective in classifying and analyzing student performance,
+159338
+
+predicting dropout rates, and enhancing instructor performance. This extensive analysis underscored the ongoing
+advancements in EDM and its critical role in optimizing educational strategies based on various data-driven techniques.
+Another study [7] explored the integration of convolutional neural networks (CNNs) with k-means clustering and
+discriminant analysis to predict students’ academic performance. This innovative approach introduced a novel statistic
+to optimize the determination number in k-means, enhancing
+the clustering reliability and, subsequently, the accuracy of
+performance predictions.
+Bardach et al. [8] examined how context-related problems
+and motivational factors like personal best goals influence university students’ dropout intentions. This study
+underscored the importance of considering structural and
+individual factors in dropout prediction models.
+Similarly, Xing and Du [9] demonstrated the potential of educational games as predictive tools for academic
+performance, showcasing the versatility of machine learning applications in education. Additionally, Mubarak et al.
+[10] emphasized the significance of temporal stability in
+learning behaviors when predicting student dropout, which
+aligns with the approach of analyzing student performance
+across specific timeframes in this research. Finally, Fei and
+Yeung [11] highlighted how procrastination and learning
+strategies impact student success in blended learning environments, further supporting the importance of behavioral
+analysis in predictive modeling.
+Moreover, technology’s role in data analysis within education has become crucial for assessing student achievement
+and behavior patterns. Researchers could use state-of-theart models like decision trees and DBSCAN for clustering
+to predict educational institutes’ performance with higher
+accuracy. These techniques helped in understanding not just
+the outcomes but also the influencing factors behind student
+behavior and achievement, highlighting the multifaceted benefits of EDM in educational settings [12].
+Vital et al. [13] used k-means and hierarchical machine
+learning techniques for student performance cluster analysis
+cluster analysis. They demonstrated that the methods used
+are reliable for predicting student academic success. They
+showed essential contributing elements through linkages in
+dendrograms and hierarchical clustering that affect student
+results, such as extracurricular activity, attendance, and the
+number of failed classes.
+Similarly, Govindasamy and Velmurugan [14] compared
+four clustering algorithms: fuzzy c-min, k-means, k-medoids,
+and expectation maximization (EM). The study used data
+from 131 college students to predict the student’s performance on the semester’s final exam. According to the study’s
+findings, fuzzy c-means and EM required more time to install
+but produced superior clustering quality in terms of purity and
+normalized mutual information.
+Another study [15] focused on the issue of delayed thesis
+completion in undergraduate programs in a more targeted
+analysis. Employing various clustering algorithms, including
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+k-means and k-medoids, this research correlated students’
+Grade Point Averages and course grades with thesis completion times, uncovering moderate correlations that suggest
+higher academic performance correlates with faster completion. This insight not only aids in understanding factors that
+delay graduation but also supports institutions in guiding
+students more effectively through their studies.
+Further exploring the integration of digital technologies in
+education, a study [16] on student engagement in a Blended
+Learning (BL) environment applied the SimpleKmeans clustering technique to identify diverse student engagement
+patterns. This approach demonstrated the variability in how
+students interact with learning resources, emphasizing the
+need for personalized educational strategies to optimize
+learning outcomes.
+A study [17] analyzing the academic performance of business students in Malaysia focused on the shift to online
+learning during the COVID-19 pandemic. Utilizing k-means
+clustering, the research revealed an improvement in students’
+Cumulative Grade Point Average during the pandemic, suggesting that the new learning modalities might have positively
+impacted their academic achievements.
+Lastly, a study [18] that benchmarked algorithms like kmeans, hierarchical clustering, and fuzzy C-means against
+multiple internal validity metrics analyzed the effectiveness
+of various clustering algorithms. This evaluation was pivotal in determining the most suitable algorithms for mining
+knowledge from student engagement data, showcasing the
+need to tailor data mining approaches to specific educational
+contexts for optimal outcomes.
+However, dropout rates are not caused by a single factor [8]. Instead, they depend on a variety of factors and differ
+throughout universities. This study will look at students’
+behavioral characteristics in clustering their performance in
+addition to factors obtainable from learning management
+systems.
+
+III. METHODOLOGY AND RESULTS
+
+The CRISP-DM (Cross Industry Standard Process for Data
+Mining) methodology was selected as pivotal to this study
+because it guided the development of clustering techniques
+alongside predictive models as a standard approach in the
+knowledge discovery process. This methodology is for academic research, including EDM and LA domains, due to its
+structured approach to tackling complex data-driven problems [19]. Figure 1 shows the conceptual framework of the
+research.
+The analysis was conducted using Python 3.8 within the
+Anaconda distribution, a popular choice for data science due
+to its comprehensive suite of data-centric Python packages.
+The packages were utilized as follows:
+•
+
+Data Management: Pandas were used to import and
+manage data frames, facilitating efficient data manipulation and cleaning.
+
+VOLUME 12, 2024
+
+Array Computing: NumPy was employed for highperformance array computing, which is crucial for
+handling large datasets typically involved in student performance analysis.
+• Machine Learning Models: Scikit-learn provided the
+machine learning algorithms necessary for clustering
+and classification tasks, thanks to its robust, welldocumented libraries.
+• Data Visualization: Matplotlib was used to generate
+static plots, and Seaborn was used for more advanced
+statistical visualizations to aid in interpreting data and
+communicating findings.
+•
+
+This combination of Python libraries and tools enabled
+the robust analysis and insightful visualization of complex
+patterns in student engagement and performance, which is
+integral to developing actionable insights in educational settings.
+A. BUSINESS UNDERSTANDING
+
+Analyzing student behavior and academic performance data
+is crucial to understanding why dropout rates are high, particularly in higher education institutions [8]. Similarly, to many
+other universities, failures in exams and a lack of interest
+in the courses are the main reasons for student dropouts at
+Constantine the Philosopher University in Nitra.
+In this study, patterns in student engagement are identified through LMS logs to explore their correlation with
+academic performance, aiming to reduce dropout rates and
+improve graduation metrics. After identifying these patterns,
+clustering algorithms are used to group students with similar
+engagement behaviors. Subsequently, classification methods,
+including Logistic Regression, Random Forest, SVM, Decision Trees, and K-Nearest Neighbors, are applied to assign
+individual records to the identified clusters. This combined
+approach supports academic planning and decision-making
+by enabling targeted interventions.
+Previous research [20], [21], [22] indicated that meaningful
+analytical results are contingent upon the full utilization of
+virtual learning environments. This presented study gains
+valuable insights into students’ course persistence by analyzing anonymized course log data, which captures student
+behavior such as assignment submissions, quiz or test performance, and interaction with course materials. This approach
+ensures that the analysis respects student privacy while providing actionable insights by identifying patterns that could
+indicate potential risks of dropout or disengagement.
+The semester was organized into four quarters over
+13 weeks, providing several occasions to assess student
+engagement without making the course overly dependent on
+activities directly tied to their final grades. Students engaged
+in several optional tasks, quizzes, and activities and could
+participate in lecture-based open-ended questions throughout
+each quarter. The only semi-mandatory activity, a mid-term
+test in the ninth week, was not a requirement for advancing
+to the final examination. This flexible course structure was
+159339
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 1. Conceptual methodological framework based on CRISP-DM methodology used in the study.
+
+designed to encourage natural student engagement, providing
+a richer dataset for the selected unsupervised learning algorithms to analyze. The primary aim of this research was to
+explore the potential of unsupervised learning algorithms in
+interpreting engagement data obtained from LMS Moodle log
+files for the examined course, which record various student
+activities across the course, and their subsequent impact on
+academic performance. Furthermore, the aim was to identify
+whether any of the algorithms could successfully cluster
+students into meaningful groups based on their engagement
+data, with the goal of exploring how these clusters correlate
+with their academic outcomes. The intent was to provide
+educators with a data-driven approach to better understanding and enhancing student engagement in blended learning
+environments.
+159340
+
+B. DATA UNDERSTANDING
+
+The dataset used in this research was obtained from
+the course opened at Constantine the Philosopher University in Nitra. The course consisted of online activities
+of 152 university students enrolled in a blended Computer Science course. This course combined traditional
+lectures and lab sessions with online interactions and online
+access to course materials during the winter semester
+from September 25, 2023, to December 21, 2023. LMS
+Moodle served as a central virtual learning platform for
+this course. Students could access digital course materials,
+engage in collaborative projects, submit assignments, participate in quizzes, and take active responsibility for their
+learning journey in line with the self-regulated learning
+paradigm.
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+TABLE 1. Brief description of Moodle logs attributes.
+
+Moodle’s built-in logging system was used to meticulously
+record each student’s course interactions, including activities such as quiz attempts, assignment submissions, forum
+participation, and access to course materials. The generated
+log files included detailed data on each student’s identity,
+the IP address used for each session, precise timestamps of
+activities, and descriptions of the actions taken. Over the 13week academic semester, these records amounted to 150,883
+entries, forming a comprehensive dataset for analysis. The log
+file structure, including several key elements, is described in
+Table 1.
+This dataset, comprising anonymized log data from Moodle, offered a unique opportunity to analyze various aspects of
+student behavior and interaction with the course. The analysis
+aimed to uncover patterns in online engagement—such as
+quiz performance, assignment submissions, forum participation, and resource access—and assess the impact of these
+activities on student performance. By applying clustering
+algorithms, distinct student behavior groups were identified,
+providing valuable insights into the effectiveness of blended
+learning environments and helping to tailor interventions for
+improved academic outcomes.
+C. DATA PREPARATION
+
+Effective data pre-processing is crucial to ensure the integrity
+and suitability of the dataset for subsequent clustering algorithms. The designed methodology encompasses five key
+pre-processing techniques:
+Data Transformation: In this phase, converting all categorical variables to numeric values was crucial. After addressing
+the categorical variables, the next step was data normalization
+or scaling to ensure uniformity in measurement scales. These
+conversions were essential, especially within algorithms that
+compute distances between data points, such as clustering
+algorithms.
+Data Cleaning: This stage involved removing or correcting
+erroneous data entries, handling missing values, and eliminating outliers. This process was essential to avoid skewed
+results and improve the reliability of the clustering outcomes.
+VOLUME 12, 2024
+
+Attribute Selection: It was focused on identifying and
+retaining the most significant attributes that contribute to
+the analysis while discarding redundant or irrelevant ones.
+It was based on their predictive ability regarding student
+engagement and performance.
+Dimensionality Reduction: Although not previously mentioned, this technique is often vital in managing datasets with
+many variables. It simplifies the input dataset by reducing the
+number of dimensions without losing important information.
+Each of these stages plays a vital role in refining the
+dataset, enhancing its structure and quality, and ensuring that
+it is optimally prepared for effective analysis using clustering
+algorithms.
+
+1) DATA TRANSFORMATION
+
+Most machine learning algorithms generally require numeric
+input and output variables. This restriction must be addressed
+when implementing and developing machine learning models. This implies that all characteristics, including categories
+or nominal variables, must be transformed into numeric
+variables before entering data into the clustering and classification model [23].
+Therefore, in the process of data transformation, the
+variable Component was mapped to the numerical values:
+Assignment: 0, Attendance: 1, Course: 2, Project: 3, Quiz:
+4, Study_material: 5. Similarly, Action and Target were also
+converted into numerical representations using predefined
+mappings, thus enabling these categorical attributes to be
+processed by various machine learning algorithms.
+Machine learning models are designed to identify relationships between input variables (features) and output variables
+(predictions or target outcomes). This means the model uses
+input data, such as student engagement metrics, to predict specific outcomes, such as academic performance or
+likelihood of course completion. However, the scale and distribution of the domain data may differ for each variable.
+Moreover, input variables may have distinct units, which
+means they may have different scales. Differences in scaling
+among input variables may increase the complexity of the
+modeled problem. Large input values can result in a model
+that learns large, weighted values. A model with weighted
+values is frequently unstable, so it may perform poorly during
+learning and be sensitive to input values, resulting in a larger
+error. On top of that, normalization was performed using
+the StandardScaler or z-transformation and MinMaxScaler
+methods to form datasets for three different models. The first
+method, StandardScaler, allowed each attribute’s values to
+be in the same range so that a comparison could be made.
+Z-transformation normalization refers to normalizing every
+value in a dataset such that the mean of all values is 0 and the
+standard deviation is 1. In the second method, MinMaxScaler
+converted all attributes into a range [0, 1], which means the
+minimum value of the attribute was zero, and the maximum
+value of the attribute was one [24].
+159341
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+As mentioned before, the intention was to apply BIRCH,
+DBSCAN, and GMM in the modeling phase. The choice
+between StandardScaler (Z-transformation) and MinMaxScaler (normalization) depends on the data and the context
+of the problem. BIRCH and DBSCAN are sensitive to the
+scale of the data since they rely on the distance between
+data points. The GMM assumes that the data is Gaussian.
+Therefore, it benefits from scaling that keeps this assumption
+intact. Considering those facts, StandardScaler was used to
+maintain the data structure.
+Subsequently, several additional time-related attributes
+were extracted from the timestamp attribute to provide
+deeper insights into the temporal patterns of student interactions. These included weekday, week, and month. Such
+detailed temporal information could help to understand student engagement trends over time.
+Ensuring the privacy of student data was paramount.
+Hence, each student’s data was anonymized. This step was
+critical to maintaining confidentiality and compliance with
+data protection regulations while still allowing individual
+tracking across the dataset.
+The attributes IP address and description were removed
+from the dataset. The rationale for omitting the IP address
+was that it did not contribute to the academic analysis; its
+primary function of identifying users, locations, or devices
+was not relevant to the study’s objectives, which focused
+on educational outcomes. Similarly, while providing narrative context, the description field did not offer quantifiable
+data for clustering or pattern recognition and was thus
+deemed non-essential for the analytical processes. These
+pre-processing steps ensured the dataset was clean, wellstructured, and aligned with the study’s objectives to explore
+the impact of various educational engagements on student
+performance.
+
+FIGURE 2. Box plot of numerical variables for outlier analysis.
+
+3) DATA FILTERING (ATTRIBUTE SELECTION)
+
+Too many attributes in educational datasets can cause dimensionality issues and difficulties when processing and analyzing data. Moreover, the calculation of distance by clustering
+algorithms may not be effective for high-dimensional data.
+To address this, feature selection methods were applied to
+identify the most relevant attributes for this study.
+The feature selection process began with a correlation
+matrix to examine the pairwise relationships between numerical variables in the dataset. Values close to 1 or -1 indicate a
+strong positive or negative correlation, respectively, suggesting that as one variable increases, the other variable tends also
+to increase (positive) or decrease (negative). Values around
+0 suggest no linear correlation.
+
+2) DATA CLEANING
+
+The second data preparation phase involved rigorous checks
+for missing values and outliers within the log files. Every
+entry in the dataset was checked, ensuring completeness and
+consistency across all data points. This examination confirmed the absence of missing entries, which was crucial
+for maintaining the integrity of subsequent analyses. Outlier
+analysis was another critical component of this stage. Statistical techniques were utilized to identify any extreme values
+within numerical attributes that could potentially skew the
+results of the selected clustering algorithms.
+The results of this analysis are visually represented in
+Figure 2 using a box plot. The box plot depicts the distribution
+of data points, highlighting the minimum, maximum, quartiles, and any potential outliers. The analysis indicated that no
+extreme outliers were present, affirming the robustness of the
+dataset for detailed analysis. These initial steps were vital for
+ensuring that the dataset was complete and representative of
+the proper patterns and behaviors within the student population, thereby enhancing the reliability of the obtained findings
+from clustering algorithms.
+159342
+
+FIGURE 3. Correlation matrix of numerical variables.
+
+The correlation matrix (Figure 3) suggested that most
+variables have a low correlation, implying little redundancy
+between them. This is beneficial when performing clustering
+as it reduces the risk of multicollinearity affecting the results.
+In addition, a variance threshold for feature selection
+was applied to ensure the effectiveness of the unsupervised
+machine learning model. Variance, as a metric, quantifies the
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+dispersion of a dataset distribution. It is pivotal in unsupervised learning, particularly in clustering, where identifying
+distinct patterns is crucial. Selecting attributes with considerable variance is essential to prevent a bias in the clustering
+model towards certain attributes that may not be as discriminative. Attributes with high variance demonstrate a wide
+range of values (high cardinality), suggesting they can contribute unique information for clustering.
+Next, a variance threshold of 0.3 was applied to filter out
+low-variance attributes, ensuring the remaining features had
+sufficient variability to contribute meaningfully to the clustering process. This threshold was chosen based on its suitability
+for distinguishing relevant behavioral patterns within the
+data. The variance of each student attribute is illustrated in
+Figure 4. As can be seen, all attributes exceeded the variance
+threshold of 0.3. As a result, this indicated that other attributes
+exhibited significant variability and were likely to contribute
+valuable insights into student behavior patterns.
+
+FIGURE 4. Variance threshold of numerical variables.
+
+The steps taken for feature selection confirmed that the
+attributes retained were relevant, as the correlation results
+showed low redundancy between most variables, reducing the risk of multicollinearity and ensuring more reliable
+clustering. Additionally, the variance results indicated significant variability across all features, further supporting their
+potential to provide valuable insights into student behavior
+patterns.
+4) DiMENSIONALITY REDUCTION
+
+In the data preparation phase of the analysis, dimensionality reduction was crucial for managing the computational
+complexity and enhancing the visualization of the examined
+educational dataset. Principal Component Analysis (PCA)
+was initially applied to reduce the dimensionality of the
+examined dataset while retaining 95% of the variance. This
+variance retention threshold dictated the number of compoVOLUME 12, 2024
+
+nents selected by PCA, effectively condensing the dataset into
+a lower-dimensional space that preserves the most informative features for clustering.
+Figure 5 presents two graphs to illustrate the process of
+determining the number of principal components. Figure 5a,
+‘‘% Explained Variance,’’ displays the individual contribution
+of each principal component to the dataset variance. It is
+evident that the four components account for the highest
+variance, with each subsequent component contributing progressively less.
+On the other hand, Figure 5b, ‘‘% Cumulative Variance,’’
+has a marked point labeled ‘‘CV = 0.954’’ at the fifth
+component, which implies that approximately 95.4% of the
+total variance has been captured by the first five principal
+components. This suggests that selecting six components
+would retain most of the information contained in the original
+dataset while substantially reducing its dimensionality.
+Upon identifying the six optimal components through
+PCA, which accounted for 95.4% of the variance, Uniform Manifold Approximation and Projection (UMAP) was
+applied to visualize the data in a two-dimensional space.
+UMAP is renowned for its effectiveness in preserving both
+local and global data structures and provides an insightful
+representation for further analysis. The utilization of UMAP
+after PCA serves two main purposes. First, it simplifies
+the complexity of multi-dimensional data, making it more
+manageable for computational processes. Second, and most
+importantly for this analysis, it facilitates a more intuitive
+visualization of the inherent clustering of the dataset.
+The UMAP model was configured with two components to
+reduce the high-dimensional data into a two-dimensional representation, making it easier to visually explore and interpret
+the complex relationships within the dataset. This dimensionality reduction helps uncover patterns and groupings that are
+not easily observable in the original multi-dimensional space,
+allowing for a clearer understanding of the underlying structure in the data. The parameter n_neighbors was set to 150,
+influencing UMAP’s balance between local and global structure in the data. In contrast, min_dist, set to 0.5, controlled
+how tightly UMAP packs the points in the low-dimensional
+space. These specific settings were chosen to strike a balance
+between the granularity of the clusters and the broad arrangement of the data, allowing for clear differentiation between
+clusters while maintaining the overall data distribution. The
+resulting two-dimensional embedding crafted by UMAP captures the intrinsic geometry of the high-dimensional space
+and presents it in a way that is intuitive for human observers.
+The UMAP embedding displayed in Figure 6 illustrates
+distinct clusters and densities, indicating variability in student engagement and activity levels. These groupings provide
+critical insights into how students interact within the learning
+environment, reflecting different learning styles or engagement strategies. The visualization helps pinpoint areas of high
+density and notable outliers, facilitating a deeper analysis
+in the clustering phase to tailor educational interventions
+effectively.
+159343
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 5. a) Explained variance by component b) Cumulative variance by component.
+
+FIGURE 6. UMAP visualization of the dataset.
+
+D. MODELLING
+
+In recent years, researchers have garnered significant attention to the use of clustering techniques for predicting student
+performance. Clustering involves grouping similar objects
+into one cluster while distinctly different objects are grouped
+into separate clusters. This technique proves particularly
+useful when labeled information within a student dataset
+is unknown. Moreover, dividing large datasets into smaller,
+logical clusters facilitates more straightforward examination
+and interpretation by researchers.
+Among the various clustering methods, the k-means
+algorithm is often a preferred choice due to its simplicity in
+implementation and straightforward results. K-means groups
+the objects based on their proximity to the centroid of the
+clusters. The elbow method is commonly used to determine
+the optimal number of clusters. This technique involves calculating the total within-cluster variance—or inertia—for
+different numbers of clusters (k) and identifying the point
+159344
+
+where the variance curve initially levels off, indicating the
+most appropriate value for k.
+However, the k-means algorithm, despite its popularity, has
+certain limitations, particularly for the type of educational
+data analyzed in this study. K-means assumes that clusters
+are spherical and equally sized, which may not always reflect
+the true structure of complex educational data. Additionally,
+it is sensitive to outliers and noise, which can skew the results
+when dealing with datasets like student interaction logs. More
+advanced clustering techniques, better suited for handling the
+nuances of the examined data, were explored due to these
+limitations.
+The choice of BIRCH, DBSCAN, and Gaussian Mixture
+Models (GMM) was guided by several key considerations:
+• BIRCH (Balanced Iterative Reducing and Clustering
+using Hierarchies): Is particularly effective for handling
+large datasets, such as the vast amount of interaction data
+generated in online learning environments. Its incremental and hierarchical nature allows it to process data
+in a memory-efficient manner, making it suitable for
+educational data that grows over time. Furthermore,
+BIRCH can automatically adjust to the available computational resources, ensuring that it delivers optimal
+clustering quality based on the dataset size. This is a
+critical advantage in educational settings where data is
+often multi-dimensional and complex.
+• DBSCAN (Density-Based Spatial Clustering of Applications with Noise): One of DBSCAN’s main advantages is its ability to discover clusters of arbitrary shape
+and handle noise effectively. This is especially useful
+when working with student engagement data, which
+often includes sparse or irregularly distributed patterns
+of interaction. DBSCAN’s sensitivity to density allows
+it to differentiate between dense areas of student activity
+(indicating high engagement) and outliers, making it a
+powerful tool for identifying distinct groups of students
+while filtering out noise.
+• GMM (Gaussian Mixture Models): Unlike algorithms
+such as k-means, which assume hard assignments (i.e.,
+each data point belongs to one cluster), GMM provides
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+soft cluster assignments, meaning each data point is
+assigned to a cluster with a probability. This probabilistic approach is valuable for educational data where student behavior might not fit neatly into rigid categories.
+GMM allows to capture more nuanced relationships and
+latent variables within the data, offering a better understanding of student performance and engagement levels.
+Other potential algorithms, such as hierarchical clustering and spectral clustering, were considered but ultimately
+excluded for the following reasons:
+Hierarchical clustering, while useful for smaller
+datasets, becomes computationally expensive and inefficient with larger datasets, such as the LMS log data used
+in this study. This method also struggles with handling
+noise, which is often present in real-world educational
+data.
+• Spectral clustering was also considered, as it can handle
+non-linearly separable data. However, its high computational cost and sensitivity to scaling issues made it less
+suitable for the size and nature of the examined dataset.
+•
+
+In summary, the selection of BIRCH, DBSCAN, and
+GMM for this study was based on their ability to handle
+the high-dimensional, noisy, and complex nature of student
+engagement data. These algorithms offer distinct advantages
+that are well-suited to the unique challenges posed by educational data, making them a superior choice over more
+commonly used algorithms like k-means. By leveraging these
+advanced techniques, the aim is to uncover subtle patterns
+and relationships within student data that can inform targeted
+interventions. These methods enable the segmentation of student populations based on engagement, potentially leading to
+more effective educational strategies and improved academic
+outcomes.
+1) SELECTING THE OPTIMAL NUMBER OF CLUSTERS
+
+Determining the optimal number of clusters for clustering
+algorithms is a critical step in ensuring the meaningful
+segmentation of data. Two widely recognized methods,
+the elbow method, and the silhouette score analysis, were
+employed to ascertain the most appropriate clustering solution for the examined educational dataset. The Elbow method
+is a heuristic method for determining the number of clusters
+in a dataset. It involves plotting the explained variance as a
+function of the number of clusters and picking the elbow of
+the curve as the number of clusters to use. This method looks
+for the point at which the rate of decrease sharply changes,
+indicating that additional clusters do not significantly contribute to the explanation of variance.
+The Elbow Method (Figure 7) illustrates that as the number of clusters increases, the within-cluster sum of squares
+(WCSS) decreases because the data points are closer to the
+centroids of their clusters. The point where the decline in
+WCSS starts to level off is aimed at indicating that adding
+more clusters does not significantly improve the variance
+explained by the model in the data.
+VOLUME 12, 2024
+
+FIGURE 7. Elbow method for optimal k value.
+
+The results indicated that the sharpest decrease in WCSS
+occurs between 1 and 4 clusters, with the curve flattening out
+beyond this point. This visual cue suggests that an appropriate
+number of clusters for these data could be around 4, as further
+increases in the number of clusters do not result in a substantial reduction in WCSS.
+Following the elbow method, silhouette score analysis was
+utilized to validate the cluster count further. The silhouette
+score is a measure of how similar an object is to its own cluster
+compared to other clusters. The higher the silhouette score,
+the more appropriately the objects have been classified.
+The silhouette analysis provided a clear insight into the
+cohesion and separation of the clusters formed in the proposed educational dataset. As depicted in the silhouette plots
+(Figure 8) for k = 4, 5, 6, 7, the width of the silhouette reflects
+how well each data point lies within its cluster. The aim was
+to find a balance between the highest average silhouette score
+and the most uniform silhouette width across all clusters. The
+silhouette score was approximately 0.3659 for k = 4, indicating a reasonably good structure given the complex nature of
+educational data. However, when increasing the number of
+clusters to k = 5 and k = 6, the silhouette score decreased
+slightly to 0.3483 and 0.3563, respectively, suggesting that
+the additional clusters might not capture more meaningful
+distinctions between student behaviors.
+However, the silhouette score for k = 7 was 0.3691,
+marginally higher than for k = 4. However, when considering
+the visual consistency of the silhouettes across the clusters,
+k = 4 demonstrated a more balanced distribution with relatively uniform silhouette widths, which is preferable for the
+interpretability and reliability of the clustering results.
+The optimal number of clusters for this research was established by a comprehensive approach, integrating the Elbow
+method with silhouette score analysis. The Elbow method
+suggested a natural clustering solution around 4 clusters,
+as indicated by the point at which the WCSS began to
+decrease at a slower rate. Further substantiation came from
+the silhouette analysis. Not only did a four-cluster solution
+yield a satisfactory silhouette score, but it also demonstrated
+a uniform distribution of silhouette widths. This uniformity
+159345
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 8. Silhouette score analysis plot for k = 4,5,6,7.
+
+TABLE 2. Results of parameter tunning.
+
+implies that all clusters are well-defined and significant to
+each other, with each cluster exhibiting strong internal cohesion and clear separation from other clusters.
+2) HYPERARAMETERS TUNNING
+
+Hyperparameter tuning is a critical process of machine learning. It involves selecting the optimal parameters for a learning
+algorithm to maximize its performance. Hyperparameters,
+which are values set before the learning process begins, significantly influence how the algorithm behaves and learns
+from the data. Unlike supervised learning algorithms, where
+tools like GridSearch can automate parameter optimization
+159346
+
+by systematically testing a range of parameter combinations
+against a performance metric, clustering algorithms often
+lack direct feedback mechanisms such as a clear accuracy
+measure. This is particularly true for algorithms used in unsupervised learning tasks like clustering, where the true labels
+are unknown, and evaluation metrics are less straightforward.
+As a result, parameter tuning for clustering algorithms
+typically requires a manual or semi-manual approach. This
+involved a loop to test with various parameter combinations.
+This study evaluates three clustering algorithms—BIRCH,
+DBSCAN, and GMM—to analyze student behavior based
+on log data from an educational platform. Each algorithm
+was meticulously tuned to optimize accuracy in detecting
+and interpreting behavioral patterns inherent in the logs.
+The parameters for each algorithm were carefully selected
+and adjusted through an iterative process involving multiple
+experiments with the student log data. This parameter tuning was essential to adapt each algorithm to the nuances of
+log-based data, which contained detailed records of student
+interactions. The specific tested tuning values of parameters
+are presented in Table 2, with the best parameters for each
+algorithm.
+3) BIRCH
+
+BIRCH (Balanced Iterative Reducing and Clustering using
+Hierarchies) is a clustering algorithm specifically designed
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+for larger datasets. Educational datasets typically feature varied data types and structures, reflecting students’ diverse
+interactions and behaviors within a digital learning environment. BIRCH’s incremental and dynamic clustering capabilities allow it to adapt effectively to such diversity. The
+algorithm processes data in small batches through its CF
+Tree (Clustering Feature Tree), which captures essential data
+summaries without the overhead of processing the full dataset
+at once. This method reduces the computational load and
+minimizes memory usage, crucial for handling larger datasets
+on limited resources [25].
+Moreover, BIRCH’s hierarchical nature is advantageous
+for educational data as it mirrors the layered complexity of learning behaviors and outcomes. By constructing a
+multi-level hierarchy of clusters, BIRCH can reveal subtle patterns and relationships within the data that simpler
+clustering techniques might overlook. This feature is particularly useful in educational settings for grouping students by
+learning behaviors, outcomes, or needs, providing actionable
+insights that can inform personalized learning interventions.
+Finally, BIRCH’s ability to refine and adjust clusters
+dynamically as new data becomes available supports ongoing
+monitoring and analysis of student performance and engagement. This is essential in educational settings where student
+behaviors and performance continuously evolve, requiring
+adaptive analytical approaches.
+
+structure. These hyperparameters were selected with an eye
+toward computational efficiency and the anticipated diversity within the educational data. Combining these settings
+with a predefined cluster count of four—based on the Elbow
+method and silhouette scores—it was possible to capture
+the data structure shown in Figure 9. It depicts the results
+of BIRCH clustering applied to the examined educational
+dataset, refined through PCA, and visualized using UMAP
+for two-dimensional embedding. The visualization distinguishes the following four clusters with varied sizes and
+characteristics:
+Cluster 0 (Orange): Encompasses 37,996 data points,
+suggesting it contains the most common behavioral or
+characteristic patterns among the students.
+• Cluster 1 (Green): This cluster consists of 39,445 data
+points, making it almost as large as Cluster 0. This
+suggests the presence of another significant grouping
+with unique characteristics.
+• Cluster 2 (Red): A smaller cluster with 35,785 data
+points likely represents a specific subset of behaviors
+or academic engagement that differs from the larger
+clusters.
+• Cluster 3 (Blue): Includes 37,645 data points, indicating
+a substantial group with unique behavioral patterns or
+characteristics similar in size to Cluster 2.
+•
+
+The broad dispersion of points within Cluster 0 and Cluster
+1 suggests that students in these groups engage in various
+activities within the course. They may participate in multiple
+interactions, from accessing study materials to completing
+assignments and quizzes. This variability indicates diverse
+behaviors and engagement strategies among these students.
+In contrast, a more compact formation of Clusters 2 and
+Cluster 3 suggests that students in these groups might be
+engaging in more specific activities. Perhaps they were more
+focused on particular aspects of the course, such as specific
+types of assignments or content areas, indicating a more
+homogeneous interaction pattern.
+4) DBSCAN
+
+FIGURE 9. Visualization of BIRCH with PCA and UMAP.
+
+Therefore, the BIRCH clustering technique was applied
+after refining the dataset’s structure with PCA and UMAP.
+To suit the unique characteristics of the examined educational
+data, BIRCH’s hyperparameters were fine-tuned, ensuring
+the best possible clustering given the size and nature of the
+data. The threshold for the BIRCH algorithm, which controls
+the maximum radius of the sub-clusters, was set to 0.3,
+providing a balance between the precision of the clusters
+and the algorithm’s ability to scale. The branching factor,
+determining the number of child nodes in the BIRCH tree,
+was set to 70, allowing a comprehensive yet manageable tree
+VOLUME 12, 2024
+
+As clustering techniques suitable for the educational dataset
+being examined are investigated, a transition is made from
+BIRCH to exploring the capabilities of DBSCAN. Unlike
+centroid-based methods, DBSCAN is adept at identifying
+clusters with irregular shapes and resilient to outliers, making
+it a robust choice for data with complex structures. DBSCAN
+operates on the premise of identifying core samples within
+high-density areas and categorizing non-core samples (which
+can either be ‘border’ points or ‘noise’) based on the density
+of their local neighborhood [25].
+This approach is determined by two key hyperparameters:
+min_samples and epsilon. These parameters were iteratively
+refined through multiple experiments with the student log
+data to ensure a balance between the sensitivity of the
+algorithm to local point densities and its ability to distinguish between distinct clusters effectively. The DBSCAN
+159347
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+algorithm was finally configured with min_samples adjusted
+to 15 and epsilon set to 0.4 to identify substantive clusters while filtering out minor noise fluctuations. This setup
+allowed the algorithm to extend its reach sufficiently to
+include points in a neighborhood yet maintained tight enough
+clusters that accurately reflected genuine groupings in the
+data.
+The resultant clustering, as shown in Figure 10, illustrates the application of DBSCAN to the refined educational dataset, visualized through the lens of UMAP
+for two-dimensional representation. This figure effectively
+demonstrates how DBSCAN articulates the complexities and
+intrinsic patterns within the educational environment, providing a clear view of the different student clusters.
+
+Clusters 2 and 3 are spread across the plot, suggesting
+that students in these clusters might be engaging in
+various course activities. This diversity could imply that
+these students were exploring a wide array of content or
+participating in different types of learning interactions
+that did not cluster around specific central tendencies.
+The broader dispersion might indicate less consistency
+in the type of activities students were engaged in,
+reflecting a more exploratory or varied approach to the
+coursework.
+On the other hand, Clusters 0 and Cluster 1, located at
+the top and bottom of the plot, show a denser and more
+concentrated pattern of points. Such concentration suggests
+that the students in these clusters were likely engaged in
+more specific, perhaps even specialized, activities that were
+characteristic of their group. The density of points might
+indicate a higher consistency and uniformity in the activities
+they were engaged in, potentially signaling that these students
+were focused on particular aspects of the course that required
+similar patterns of interaction or study behaviors.
+5) GMM
+
+FIGURE 10. Visualization of DBSCAN with PCA and UMAP.
+
+The visualization color-codes the following four distinct
+clusters, each representing a unique grouping within the student data:
+• Cluster 0 (Purple): Positioned predominantly in the
+lower part of the plot with 42,736 data points. This
+dense and concentrated distribution suggests a group of
+students consistently engaged in core course activities,
+showing a high uniformity in their interactions with
+structured course materials.
+• Cluster 1 (Blue): With 43,856 data points situated
+toward the upper part of the plot. This cluster is similar
+to Cluster 0 in terms of engaging in core activities. Still,
+it displays additional behaviors that suggest a blend of
+the consistent and exploratory approaches seen across
+other clusters.
+• Cluster 2 (Yellow) and Cluster 3(Green): These clusters, containing 33,475 and 30,818 data points respectively, are positioned on the left and right sides of
+the plot. Both clusters exhibit a wide range of activities, indicating a diverse and exploratory approach to
+coursework. Clusters 2 and 3 share similar engagement
+patterns, showing less concentration and more varied
+interactions compared to Clusters 0 and 1. Moreover,
+159348
+
+This comparative analysis also explores the use of GMM to
+uncover the latent structures within the educational dataset.
+GMM offers a probabilistic framework that accommodates
+the presence of subpopulations within the overall distribution.
+This aspect might be particularly relevant to educational data,
+which often contains such hidden stratifications. The GMM
+operates under the assumption that the data is generated from
+a mixture of several Gaussian distributions, each corresponding to a cluster. Each Gaussian, or ‘component’ in the mixture
+model has its own mean and covariance, which allows for
+acquiring a wide variety of cluster shapes and orientations
+that could be present in complex educational data [25].
+The following parameters were set for GMM configuration
+through an iterative loop process to ensure the most effective
+clustering analysis. The optimal number of Gaussian components was determined to be 4. This decision was made to
+maintain consistency with the number of clusters identified in
+other clustering techniques used in this study, such as BIRCH
+and DBSCAN, allowing for comparability across different
+algorithms. To adequately capture the diverse patterns and
+relationships among data points, the ‘full’ covariance type
+was selected for GMM. This choice allowed each component
+to independently model its variance structure, accommodating the complexity and subtleties inherent in examined data.
+The maximum number of iterations was set to 250. This
+parameter ensured that the GMM algorithm had sufficient
+opportunity to converge on the best solution, reflecting an
+optimal balance between computational efficiency and accuracy in clustering analysis.
+The GMM clustering results were visualized using a
+UMAP-reduced scatter plot (Figure 11). This visualization
+method enriches the understanding of the cluster by representing the data’s underlying probability distributions. Each
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+data point is colored according to its highest posterior probability of cluster membership, offering a detailed illustration
+of the potential overlaps and ambiguities within the clusters.
+This nuanced approach highlights the probabilistic nature
+of GMM and provides a more complex view of student
+groupings compared to the definitive classifications typical
+of methods like BIRCH. The GMM clustering applied to the
+dataset and visualized using PCA and UMAP (Figure 11)
+effectively grouped the students into four distinct clusters,
+similar to the results obtained with BIRCH and DBSCAN.
+
+FIGURE 11. Visualization of GMM with PCA and UMAP.
+
+The cluster distribution and engagement patterns revealed
+by GMM are as follows:
+• Cluster 0(Purple): This cluster comprises 40,735 data
+points and is located primarily in the lower right part
+of the plot. It displays a variety of student activities,
+suggesting that these students were engaged in a broad
+range of coursework-related interactions.
+• Cluster 1(Blue):This cluster, with 37,962 data points,
+is found toward the bottom of the plot. It is characterized
+by more specific, perhaps specialized activities, indicating that these students were likely engaged in distinct
+tasks that required similar patterns of interaction.
+• Cluster 2(Green): This cluster contains 41,333 data
+points and is situated on the right side of the plot, merging slightly into the upper region. Similar to Cluster 0,
+it shows a wide range of activities, indicating diverse and
+exploratory approaches to the educational content.
+• Cluster 3(Yellow): Including 30,851 data points positioned on the left side, this cluster indicates a group of
+students engaged in distinct, likely specialized activities similar to those observed in Cluster 1 but possibly
+involving different types of learning interactions or content areas.
+E. EVALUATION
+
+In the previous phase, various clustering algorithms, such as
+BIRCH, DBSCAN, and GMM, were employed to analyze
+VOLUME 12, 2024
+
+the student engagement data. The data were consistently
+formed into four clusters, with each method reinforcing the
+robustness of these groupings.
+Each visualization and clustering technique successfully
+highlighted two distinct clusters of students, differentiated
+by their engagement levels and variety of activities. These
+clusters represent students with a wide range of interactions,
+including participation in quizzes, assignments, discussions,
+and other course-related tasks. The broad spectrum of activities within these clusters suggests that students exhibit diverse
+learning strategies and study habits, indicating variability in
+how they interact with the course content. This differentiation may reflect flexible engagement patterns, where some
+students explore multiple facets of the learning environment,
+while others may focus more narrowly on specific tasks.
+The other two clusters identified in each model exhibited
+more specific and unique engagement patterns. These clusters
+consist of students with more narrowly focused activities,
+suggesting a specialization or a concentrated interest in particular aspects of the course. This type of clustering points to
+a group of students who might be focusing on specific tasks,
+projects, or learning outcomes, demonstrating a more targeted
+approach to their education.
+In this evaluation phase, the quality and accuracy of the
+clustering results were assessed and validated. This phase
+serves as a critical measure to determine which clustering
+algorithm demonstrates the most effective performance using
+the input data from the study. Evaluation of clustering is an
+independent process distinctly separated from the clustering
+operation itself. It is conducted only after the clustering algorithms have produced their final outputs.
+Two methods are practiced in measuring the quality of
+clustering results: internal and external validation. Internal
+validation is the process of evaluating clustering and comparing it to the results of the clustering itself, namely the
+relationship between the structures of clusters that have
+been formed. This is more realistic and efficient in solving problems involving educational datasets with increasing
+dimensions. This study used the following three types of
+internal validation methods that are often used in clustering
+studies:
+Davies-Bouldin index (DB),
+the silhouette coefficient index,
+• Calinski-Harabasz index (CH).
+•
+•
+
+Analyzing the performance metrics of three distinct clustering algorithms — DBSCAN, BIRCH, and GMM — on
+the educational dataset provides clear insights into their
+clustering efficacy. As a result, BIRCH stands out with
+the highest Calinski-Harabasz Index at 122,309, signaling
+clusters with excellent density and separation. This is complemented by its Davies-Bouldin Index of 0.769, the lowest
+among the three, which indicates that the clusters are not only
+well-separated but also less dispersed. The algorithm’s superiority is further solidified by the highest Silhouette Score of
+159349
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 12. Comparison of cluster magnitudes for a) BIRCH, b) DBSCAN, and c) GMM.
+
+0.565, confirming that BIRCH creates the most distinct and
+well-defined clusters among the algorithms tested (Table 3 ).
+TABLE 3. Results of parameter tunning.
+
+GMM follows closely with a Calinski-Harabasz Index of
+119,669, suggesting that it also forms well-defined clusters,
+albeit slightly less so than BIRCH. Its Davies-Bouldin Index,
+while low at 0.832, is not quite as optimal as BIRCH’s,
+pointing towards slightly more dispersed clusters. While the
+Silhouette Score of 0.435 for the GMM algorithm indicates
+moderate performance, it suggests that the clusters are relatively distinct and separated, though not as robustly defined
+compared to BIRCH.
+Lastly, DBSCAN, with a Calinski-Harabasz Index of
+94,906, fell behind the other two methods, suggesting its
+clusters are less dense and more overlapping. This interpretation is supported by the Davies-Bouldin Index of 0.966, the
+highest value reported, which further implies that the clusters
+are less compact and more intermingled. The Silhouette Score
+for DBSCAN is 0.328, which suggests that the clusters it
+identifies are reasonably distinct but may not exhibit as strong
+cohesion or separation as those formed by other algorithms
+such as BIRCH and GMM. Simultaneously, this score indicates that while the clusters are identifiable and separated
+from each other to a certain degree, they are tightly grouped
+and may showcase an overlapping cluster structure.
+Given the context of Moodle LMS logs, where a balanced
+and clear segmentation of student behavior is crucial, BIRCH
+proves to be the most effective algorithm. It not only provides
+159350
+
+the most balanced cluster distribution but also maintains high
+separation and low dispersion, making it the best fit for such
+data. While GMM shows promise, particularly if probabilistic cluster memberships are of interest, BIRCH’s ability to
+create distinct and evenly distributed clusters makes it the
+preferred choice for application. In conclusion, BIRCH’s
+performance across all metrics indicates it is the superior
+algorithm for clustering in this context. It offers a robust
+solution for discerning patterns in student engagement and
+learning behaviors within Moodle.
+In addition to assessing the internal validity of the obtained
+clustering results through metrics, the magnitude of each
+cluster was also examined. By visualizing the number of data
+points in each cluster, the relative size and distribution of clusters could be observed, offering a clearer picture of the overall
+clustering landscape. This approach helps in understanding
+the scalability of each cluster and in identifying any potential
+imbalances or biases in how data points are grouped, which is
+crucial for interpreting the practical significance of clustering
+outcomes.
+The BIRCH magnitude results (Figure 12a) demonstrate
+a relatively balanced distribution of data points across four
+clusters, with cluster sizes ranging closely together, indicating a uniform dataset segmentation. Figure 12b displays a
+different pattern, where one of the clusters (Cluster 3) is
+significantly smaller than the others. This could suggest that
+DBSCAN identified a denser but smaller cluster, possibly an
+outlier group or a subgroup within the dataset. The GMM
+magnitude results (Figure 12c) indicate that the GMM partitioned the data into four clusters with varying sizes. Similar
+to BIRCH, the GMM produced more balanced clusters. However, the size of Cluster 4 is noticeably lower than the others,
+which might reflect a subgroup with distinct characteristics
+or a higher degree of separation from the rest.
+As a result, it can be confirmed that each algorithm’s
+clustering reflects its underlying principles and the nuances
+it detects in the data. BIRCH’s even distribution suggests that
+uniform groupings were found across its clustering features.
+DBSCAN’s varied cluster sizes indicate its density-based
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+approach, potentially revealing less dense areas or outliers
+as separate clusters. GMM’s result, with one smaller cluster,
+suggests the presence of a distinct group with a specific
+probability distribution that differs from the larger clusters.
+These bar charts not only provide a quantitative comparison
+of cluster sizes but also highlight the differences in how each
+algorithm interprets the same data. Such insights can offer the
+choice of the most suitable algorithm for particular types of
+analysis or encourage further investigation into the distinct
+characteristics that define each cluster.
+Considering the computational resource usage and performance metrics alongside the previously discussed clustering
+quality metrics gives a comprehensive understanding of the
+efficiency and effectiveness of the algorithms applied to the
+educational dataset. This analysis was conducted on a laptop
+equipped with an Intel Core i7 9750H Coffee Lake processor,
+a configuration that includes 16GB DDR4 RAM and dual
+storage options with a 512GB SSD for fast access and a
+1TB HDD for additional capacity. The laptop also features an
+NVIDIA GeForce RTX 2070 Max-Q graphics card, ensuring
+processing power for complex data operations. To assess the
+performance and resource utilization of different clustering
+algorithms, results were averaged from 150 tests, providing a
+solid statistical base for comparison. This setup allowed for
+a detailed examination of each algorithm’s CPU and memory
+usage under controlled conditions.
+DBSCAN exhibited a higher CPU usage at 25.67%, which
+is considerably more than the other two algorithms. This is
+likely due to the complexity of dealing with a density-based
+clustering approach. However, its memory usage was moderate at 1.10%, and it performed its clustering relatively quickly,
+taking just 4.66 seconds to complete.
+BIRCH demonstrated excellent efficiency with the lowest
+CPU usage at 7.51%. Its memory usage was also slightly
+lower than DBSCAN’s at 1.01%, suggesting that BIRCH is
+resource-efficient. Despite taking the longest time to run at
+5.55 seconds, considering the high quality of its clustering
+indicated by the earlier metrics, the slightly longer runtime
+may be a justifiable trade-off.
+GMM strikes a balance between resource usage and
+performance time. It required more CPU resources than
+BIRCH (9.55%) but less than DBSCAN (1.15%), and it used
+slightly more memory than the other two algorithms (1.15%).
+Notably, GMM was the fastest, completing its task in just
+2.76 seconds. This indicates a high level of computational
+efficiency, particularly when the clustering quality is also
+considered.
+In summary, if the primary concern is the quality of
+clustering, BIRCH appears to be the superior choice due
+to its exceptional performance in creating distinct and
+well-separated clusters. However, GMM stands out as the
+most computationally efficient algorithm, with a balance of
+lower CPU usage and the fastest processing time. Although
+DBSCAN utilized more CPU resources, it maintained reasonable memory usage and performed clustering tasks rapidly.
+The decision between these algorithms may ultimately hinge
+VOLUME 12, 2024
+
+on the specific requirements of the use case. If computational
+resources are limited, BIRCH might be favored for its lower
+CPU and memory usage. On the other hand, if speed is the
+priority, GMM’s quick processing time presents a compelling
+case, especially since it also offers high-quality clustering
+results.
+F. DEPLOYMENT
+
+In adapting the deployment phase of the presented CRISPDM methodology, the focus shifts from traditional model
+deployment to validating and interpreting the relevance of
+the clustering outcomes within educational settings. This step
+is crucial as it allows to understand and effectively apply
+the insights gained from the clustering process to real-world
+educational scenarios.
+This research section focuses on the temporal dynamics
+of student interactions with the course during the semester.
+However, before the examination of the specific characteristics of the input attributes, it is important to note the scale
+of the used dataset. The dataset contained a total of 150,881
+records from 152 students. This extensive dataset means that
+the clusters identified are not unique to individual students; a
+single student may appear across multiple clusters. This overlap highlights the complex nature of student behaviors and
+interactions with the course content, demanding a nuanced
+approach to analyzing cluster characteristics and their implications.
+Initially, the attribute weekday was examined, which represented the days of the week—Monday through Sunday—
+during which students accessed the course. Examining the
+distribution of course logins across different weekdays, patterns of engagement and peak activity days can be inferred.
+This analysis is visualized in Figure 13, which displays
+the frequency of course access for each day of the week.
+By examining these patterns, deeper insights can be gained
+into how students interact with the learning management system at different times, which can be pivotal for understanding
+their engagement and learning behaviors.
+In the context of this analysis, it is crucial to consider the
+course schedule to fully understand the temporal dynamics of
+student interactions. Exercises for the course were scheduled
+on Mondays, Tuesdays, Thursdays, and Fridays. However,
+analyzing exact student attendance on these specific days
+may not provide meaningful insights due to the flexibility
+in attendance. Students often attended sessions on the most
+convenient days rather than strictly adhering to the prescribed
+schedule. This flexibility in attendance patterns needed to
+be considered as it may influence the typical engagement
+metrics and could obscure the impact of scheduled activities
+on actual student engagement.
+For students in Cluster 0 and Cluster 1, the data shows a
+relatively stable access pattern with peak activity on Tuesday,
+Thursday, and Friday, Saturday. This suggests that students
+in this cluster engage diligently with course materials, aligning their study efforts with the structured schedule of the
+course exercises held on Mondays, Tuesdays, Thursdays, and
+159351
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 13. Student behavioral analysis by attribute weekday for different clusters.
+
+Fridays. The continued high activity on Friday and Saturday
+may indicate that these students not only finish any pending
+duties but also possibly use the weekend to get ahead in
+preparation for the upcoming week. This pattern suggests
+a proactive approach to managing their coursework, where
+weekends are utilized to finalize pending assignments and
+study in advance. This behavior reflects a diligent and responsible attitude toward academic commitments.
+Cluster 2 displays a distinct pattern of increased activity
+over the weekend, with Saturday showing the most significant
+engagement. This trend may suggest that students in this
+cluster face commitments during the weekdays, such as work
+or family responsibilities, that limit their weekday course
+interactions. Alternatively, they might prefer to concentrate
+their study efforts over the weekend. It is also possible that
+these students had scheduled course exercises on Friday,
+which could lead to lower activity levels during the rest of
+the week, as they might use weekdays to prepare for these
+sessions and the weekend to complete associated tasks or
+further study the material.
+Cluster 3 again has very low weekday activity, with a sharp
+increase on Saturdays. This pronounced weekend activity
+could suggest that students defer most of their coursework to
+the weekend, potentially indicating possible procrastination,
+time management challenges, or other external constraints
+during the weekdays.
+Activity levels are noticeably lower on Wednesday in each
+cluster, aligning with the absence of scheduled course exercises. This dip is consistent with the overall pattern observed
+159352
+
+across the dataset, where Wednesday looks like a break in the
+academic week. The reduced engagement on this day does not
+necessarily signify a lack of responsibility but rather a regular
+decrease in activity, which can be utilized for other duties.
+As can be seen, distinct engagement patterns across the
+clusters have been identified from this analysis. Clusters
+0 and 1 demonstrate relatively active engagement throughout the weekdays, indicating a consistent involvement with
+the course materials during the scheduled days. Cluster 2,
+although less active during weekdays, may not necessarily
+reflect disengagement; this pattern could be attributed to students primarily enrolled in Friday sessions as per the course
+schedule. Lastly, Cluster 3 significantly differs from the others, showing the lowest overall activity, which might suggest
+different challenges or priorities that affect their course participation.
+Given these insights, the decision was made to realize a further analysis of weekly engagement throughout the semester
+(Figure 14). This next phase could help to understand how
+consistently students participate in the course over time and
+may reveal additional patterns or needs specific to each cluster.
+Cluster 0’s semester-long activity pattern begins with gradual engagement, likely reflecting an initial orientation period
+and adjustment to the course. As the semester progressed,
+there was a notable increase in activity, peaking around the
+mid-semester mark, possibly due to the buildup of coursework and preparation for mandatory assessments. The sharp
+decline in activity during Week 6 is aligned with a scheduled
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 14. Student behavioral analysis by attribute week.
+
+holiday, leading to a predictable period of reduced activity
+as students take time off. Then, there was a sudden increase
+in activity, suggesting a period of concentrated effort as
+students returned to their studies and began preparing for
+important evaluations. The pronounced peak in Week 9 corresponds with the schedule of a mid-term test, likely driving
+a surge in course logins as students access study materials
+and review sessions offered through the LMS. The spike in
+activity demonstrates the students’ responsiveness to impending assessments and their commitment to preparation. After
+Week 9, the subsequent decrease in logins may be attributed
+to relief after the mid-term test, with students potentially
+focusing on other courses. As the semester draws to a finish,
+the activity lessened further, reflecting the end of regular
+classes and a possible shift to offline study methods as final
+assessments approach.
+Therefore, Cluster 0 represents a cohort of students whose
+engagement was significantly influenced by the course timeline, displaying flexibility and a reactive approach to the
+academic workload and assessment schedule. The level of
+activity during the initial weeks of the semester is significantly higher compared to other clusters. The objective of
+these students appeared to be the mid-term examination,
+which their efforts throughout the semester were leading up
+to. The decrease in accesses following the mid-term test is
+less significant than for the other clusters. This suggests that
+the students were more responsible for their course activities.
+Cluster 1 exhibits a pattern of engagement over the
+semester that is remarkably similar to the aforementioned
+VOLUME 12, 2024
+
+Cluster 0, with a gradual increase in activity, peaking around
+key academic weeks. Notably, the initial activity in the first
+two weeks was low, indicating a slower start or less immediate engagement with the course. However, unlike Cluster 0,
+the activity in Cluster 1 significantly declined in the final
+weeks of the semester, suggesting that students may shift
+their study efforts away from the LMS to other methods of
+preparation for final exams or completing assignments. During the mid-semester weeks, Cluster 1 shows higher activity
+levels. This increase could be influenced by a larger number
+of students, naturally resulting in more logins and interactions
+within the LMS. Despite this, the consistency in engagement
+during these weeks indicates a stable pattern of accessing
+course materials, likely in response to upcoming assessments
+or deadlines.
+Cluster 2 indicates an activity beginning from Week 3,
+suggesting that these students missed crucial early coursework, possibly affecting their foundational understanding and
+preparation for subsequent material. The activity remained
+modest but steady through the middle of the semester, which
+could imply a consistent yet minimal interaction with the
+course materials or platform. This pattern suggests that while
+these students participated, they might be less reliant on
+the LMS or possibly balancing their coursework with other
+commitments. The peak around Week 9, which coincides
+with an exam period, indicates a surge in logins, perhaps
+as students seek to access revision materials, past papers,
+or other resources in preparation for exams. The rise in activity around an exam period is a common trend, often reflecting
+159353
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 15. Student behavioral analysis by attribute month.
+
+last-minute studying or increased use of practice quizzes
+and other revision tools available on the LMS. Contrary to
+common assumptions, there is a noticeable continuation of
+high activity in the LMS after the exam period. This sustained
+interaction might suggest that students took advantage of
+opportunities to improve their grades during this period. After
+the exams, they got the chance to retake the mid-term test,
+allowing students to enhance their overall performance. The
+continued engagement could also indicate that students utilized this time to complete or resubmit coursework, thereby
+seeking to maximize their academic outcomes before the end
+of the term.
+On the contrary, Cluster 3 indicates sporadic and low
+engagement throughout the semester, with a noticeable peak
+in activity around Week 9. This is a unique pattern compared
+to the other clusters. In early Weeks (1-3), there appears to be
+no activity, which could indicate severe issues with engagement or a misunderstanding about the course requirements,
+particularly in a blended learning environment where early
+interaction is crucial. During weeks 4-7, the engagement
+was still minimal. It did not show a strong upward trend,
+suggesting that the students in Cluster 3 may not fully utilize the online resources provided or may be relying more
+heavily on the in-person aspects of the course. The noticeable
+increase in activity starting Week 7 and peaking in Week
+9 indicates a last-minute surge in LMS usage, likely due to
+students attempting to catch up and prepare for the mid-term
+test. This spike reflects an intensive, albeit brief, engagement
+period where students may have been trying to compensate
+159354
+
+for earlier disengagement. After the mid-term test, there is
+a sharp drop in activity, with engagement levels tumbling
+down further in Week 10 and becoming almost non-existent
+in Weeks 11 to 13. This pattern suggests that the peak was an
+isolated event, as students returned to their previous minimal
+usage of the online course components after the test. This
+demonstrates that no efforts to enhance continuous involvement were effectively maintained.
+The engagement patterns observed across the different
+clusters during the semester reveal consistent behaviors both
+weekly (Figure 14) and monthly (Figure 15), reflecting the
+interconnected nature of academic timelines. Clusters 0 and
+1 demonstrate very similar and stable patterns of interaction
+with the LMS, maintaining steady activity levels throughout
+the various weeks and months. This consistency suggests that
+students in these clusters regularly engaged with the course
+content, aligning their study habits closely with the academic
+calendar.
+In contrast, Cluster 2 shows a unique engagement. There
+was zero activity in the first month, followed by average levels in October and November. Notably, the activity is higher
+in December compared to other clusters. This suggests that
+despite potential time constraints earlier in the semester, students in Cluster 2 might utilize the final month to catch up on
+or complete tasks or perhaps to improve their overall course
+grades. This spike in activity could be driven by the closing of
+grading periods, prompting students to intensify their use of
+the LMS. Overall, this pattern suggests that students in Cluster 2 might be engaging with the LMS sporadically, possibly
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 16. Student behavioral analysis by attribute component.
+
+intensifying their use around critical academic periods, such
+as mid-term tests. Maintaining engagement through periodic
+check-ins or reminders during weeks of lower activity could
+help sustain their academic involvement.
+The last Cluster 3 exhibits no activity in September
+and December, with the lowest engagement occurring
+in October. All significant interactions were concentrated
+around November, likely in response to mid-term assessments. This spike in activity during a single month suggests
+that students in this cluster might only engage with the LMS
+when critically necessary, possibly due to the mid-term test.
+Supporting these students effectively might require targeted
+interventions designed to enhance engagement, ensuring that
+they are not only preparing for tests but also consistently
+engaging throughout the semester.
+Beyond analyzing when students access the course, examining what specific course components they were engaged
+with is equally important. This approach helps to understand the temporal engagement patterns and the content that
+attracts the most attention or is possibly the most challenging. By identifying which resources were most frequently
+accessed or which activities reported the highest participation, educators can gain valuable insights into student
+preferences and potential areas of difficulty within the course.
+Figure 16 illustrates how students interacted with various course elements in different clusters. Although there
+were no mandatory assignments, the value of 32.79% for
+VOLUME 12, 2024
+
+Cluster 0 suggests a high engagement with optional tasks
+or activities that students chose to undertake, suggesting a
+proactive approach to their learning. The engagement with
+study materials (26.5%) also remained significant, indicating
+that students frequently utilized provided resources such as
+lecture notes and other resources to aid their learning. This
+underscores their dedication to understanding the course content thoroughly. The quiz component, with a value of 22.77%,
+includes various quizzes under thematic units in addition
+to the mid-term test, showing a robust engagement. This
+suggests that quizzes served as both reinforcement of learning and as a significant measure of student self-assessment
+throughout the course. The course content (12.97%) category
+includes direct interactions with the core content, such as
+instructional videos or interactive modules. The relatively
+lower engagement could suggest that students might prioritize active learning tools (like quizzes and assignments)
+over passive content consumption. Despite being relatively
+low, the engagement with grade reports (4.96%) observed
+in Cluster 0 reflects a targeted interest in this component
+among students. This suggests that students in this cluster
+might be strategically checking their grade reports to identify
+opportunities for improving their marks towards the end of
+the semester, particularly once other coursework has been
+substantially completed.
+A balanced distribution across various course components
+was observed in Cluster 0. On the other hand, Cluster 1 shows
+159355
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+a more concentrated focus on assignments (36.92%) and
+quizzes (36.62%), which together dominate the engagement
+landscape. This cluster’s students might probably prioritize
+activities directly tied to assessment and immediate feedback.
+Engagement with course content (20.08%) was substantial
+but less than that seen with assignments and quizzes, indicating a preference for direct application and assessment over
+broader content exploration. Study materials were the least
+engaged (6.38%), suggesting that students might rely more on
+core materials and direct assessments to guide their learning.
+Based on the previous assumptions and the information
+gathered, Cluster 2’s primary periods of activity were concentrated in the weeks leading up to and following the mid-term
+test. This pattern of engagement is reflected in the components they interacted with most frequently. The high levels of
+activity in assignments (31.41%) and quizzes (27.25%) suggest that students were likely attempting to absorb as much
+knowledge as possible from these resources. Such engagement indicates a strategic effort to prepare thoroughly for
+the mid-term assessments and deeply understand the course
+content (26.79%). The sustained activity observed after Week
+9 through the end of the semester likely relates to students’
+endeavors to improve their grades after the mid-term test.
+This prolonged engagement suggests that students continued
+to leverage the LMS extensively to enhance their understanding and possibly to take advantage of opportunities for grade
+improvement. Whether through additional quizzes, revisiting
+course materials, or completing supplementary assignments,
+their consistent use of the LMS after mid-term test indicates a
+proactive approach to maximizing their academic outcomes.
+While Cluster 2 demonstrates significant interaction with
+assignments, quizzes, and course content, it is notable that
+their engagement with supplementary study materials was
+markedly lower. This limited interaction with study materials,
+accounting for only 3.46% of their overall engagement, suggests that these resources were not considered critical to their
+learning strategy. This behavior underscores a keen student’s
+interest in passing their courses using available educational
+resources. Such insights into engagement patterns highlight
+the importance of providing continuous access to learning
+aids and support throughout the semester, catering specifically to the needs of students who intensify their study efforts,
+at least during crucial academic periods.
+The engagement in Cluster 3 underscores a highly focused
+approach, predominantly around quiz participation (52.17%),
+which far exceeds other components. This dominant focus
+on quizzes supports the hypothesis that students in this
+cluster prioritized direct testing opportunities around the midterm week, possibly as a mean to gauge or enhance their
+understanding rapidly. Course content (28.62%) also plays a
+significant role, aligning with the need for immediate access
+to relevant information to their quiz preparations. Conversely,
+the low engagement with assignments (14.48%) and checking
+up on their attendance (4.74%) suggests a selective interaction with the course, driven by the necessity of assessment
+rather than a comprehensive educational experience.
+159356
+
+Following the comprehensive evaluation of student
+engagement across the clusters, the final step is to delve
+into the specific actions that students have undertaken on
+various course components (Figure 17). This analysis could
+provide a deeper understanding of how students interact with
+the LMS and which activities on components dominate their
+engagement.
+Cluster 0 shows a balanced distribution of actions, with the
+majority being viewing (51.64%) and downloading (32.52%)
+materials and a significant portion (15.84%) of activities
+related to submission, which likely includes submitting
+assignments and completing quizzes. This suggests an active
+and engaged learning approach, with students taking advantage of the LMS to access and submit course materials.
+Cluster 1 has a higher proportion of viewing (68.35%) and
+a smaller amount of downloading (7.29%) and submitting
+(24.36%). The emphasis on viewing over downloading could
+indicate a preference for online engagement with content
+directly through the LMS rather than working with offline
+materials. The relatively high submission rate shows that
+these students also actively complete and submit assignments
+or assessments.
+Cluster 2 is dominated by viewing activities (80.7%), with
+very little downloading (2.19%) and a moderate submission
+rate (17.11%). The overwhelming focus on viewing might
+suggest that students used the LMS primarily as a reference or
+review tool, possibly for going over lectures and notes, with
+less emphasis on submitting assignments.
+Cluster 3 also primarily engages in viewing activities
+(75.83%) but has a higher submission rate (23.59%) compared to Cluster 2 and almost negligible downloading (0.5%).
+The substantial quiz submission activity (52.17%) is closely
+tied to previous findings of learning strategy as students prepared for their mid-term examinations. This pattern indicates
+a focused effort where students were intensively engaged in
+quizzes to absorb and review course material rapidly. This
+indicates a group of students who were more focused on the
+consumption of information, with little to no material being
+downloaded for offline study.
+The data across all clusters underscores the central role
+of the LMS as a viewing platform for course material, with
+varying degrees of interaction with downloadable content
+and assessment submission. For Clusters 2 and 3, strategies that encourage broader and more interactive use of the
+LMS features could be beneficial. For instance, incorporating interactive elements that cannot be downloaded, such as
+in-browser assessments, might increase overall engagement
+with the LMS and ensure a more holistic use of the platform’s
+capabilities.
+In this research, the decision not to focus on the variable target within the LMS logs was driven by a strategic
+choice to concentrate on variables that provide a broader
+understanding of student behaviors and interactions in the
+learning management system. The target variable is specific
+to particular activities or content within the course, which
+may not generalize well across different courses or disciVOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 17. Student behavioral analysis by attribute action.
+
+plines, potentially limiting the scope and applicability of the
+findings. By focusing on more generalizable variables like
+component and action, the analysis aimed to uncover more
+universally applicable insights across various educational
+contexts, thereby enhancing the robustness and relevance of
+this study.
+IV. DISCUSSION
+
+Combining all the analyses of the clusters’ time and activity
+patterns presents a multi-faceted view of student engagement
+in a blended learning environment. We will discuss it more
+precisely in this section from the segmentation and possible
+contribution to the student dropout prediction point of view.
+A. QUALITATIVE CHARACTERISTIC OF FOUND CLUSTERS
+OF STUDENTS BASED ON THEIR PERFORMANCE
+
+Cluster 0 represents a group of students who took a comprehensive approach to the course. They engaged steadily across
+the semester and actively used the LMS for a wide range
+of activities. They showed a pattern of accessing, viewing,
+downloading materials, and submitting assignments, suggesting consistent engagement with both content consumption
+and assessment completion.
+Cluster 1 exhibits high student engagement primarily
+through viewing materials on the LMS, which peaks around
+assessments, indicating their use of the platform as a direct
+learning tool. Despite lower downloading activities, their submission rates remained robust, suggesting a balance between
+online interaction and completing evaluative tasks. Similar
+VOLUME 12, 2024
+
+to this pattern, the cluster maintains a high level of activity
+throughout the entire semester, reflecting a consistent reliance
+on the LMS for both learning and assessment preparation.
+Cluster 2 stands out with a high focus on viewing content,
+especially around the midterm period, with very little content
+being downloaded. This emphasizes a pattern of involvement
+that is mostly influenced by immediate academic needs rather
+than consistent study habits. In addition, they thoroughly
+examine assignments, quizzes, and course materials before
+the mid-term examination, as seen by their engagement with
+grade reports. This behavior demonstrates their prioritization
+of academic achievement, particularly during crucial evaluation periods rather than consistently throughout the entire
+semester.
+Cluster 3 is characterized by a low level of activity throughout the semester, with most interaction concentrated around
+mid-term tests, which represent a semi-mandatory activity.
+Their primary engagement revolved around quizzes, indicating their involvement in both viewing and submitting.
+However, they showed little interest in assignments and study
+materials, as evidenced by their minimal interaction with
+these components.
+Overall, these analyses suggest diverse engagement strategies among the student clusters. While some demonstrate
+a balanced and sustained use of the LMS, others are more
+assessment-driven in their interaction. The insights gained
+underscore the importance of tailoring support to meet the
+varying needs of students and enhancing the effectiveness of
+the blended learning experience. Strategies such as interactive and mandatory online activities and early engagement
+159357
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+monitoring could be implemented to encourage a more uniform engagement across all clusters and throughout the
+semester.
+To better understand the connection between student
+engagement and academic performance in a blended learning
+environment, this study has taken the next step of correlating the observed activities within each cluster to the actual
+academic outcomes of the students. By mapping grades
+and other measures of academic success onto the identified patterns of LMS usage, the aim is to expose how
+different modes of interaction with course materials may
+influence student performance. In this endeavor, the focus
+is on discerning whether certain behaviors – such as regularity of LMS usage, diversity of activity types, and the
+timing of interactions – can be linked to higher grades or
+improved comprehension of course content. An investigation
+of whether patterns of minimal engagement or last-minute
+activity spikes correlate with lower academic achievement is
+also done.
+The outcome of this analysis is expected to provide educators with valuable insights that could shape course design, the
+scheduling of assessments, and the allocation of resources.
+Additionally, it could help identify which student behaviors
+should be encouraged or reformed to promote better academic results. By closely aligning the used educational strategies with the data-driven understanding of student engagement, the goal is to boost academic performance and enhance
+the overall learning experience within the blended courses.
+The course timeline was divided into four equally spaced
+periods to better analyze student performance. Everything
+students did during the first three weeks of the course was
+included in the submissions attribute in the first quarter (Q1).
+In addition to the first quarter data, the second quarter (Q2)
+data included newly recorded interactions up to the midcourse. The same reasoning was followed in the third and
+fourth quarters (Q3 and Q4) (Table 4 ). Simultaneously, the
+student’s achievements were mapped in these submissions
+to four ordinal values to normalize the differences between
+absolute values of received grades.
+As a result, the following insights summarized in Table 5
+were achieved, which have also been supplemented with
+time-series visualizations of individual attributes across the
+quartiles, as shown in Figure 18. Cluster 0 is characterized
+by a robust pattern of engagement with the LMS, where students participated actively and systematically throughout the
+semester. Their interaction with the LMS was not limited to
+just accessing study materials but also involved regular submissions and high achievement in quizzes and mid-term test.
+This persistent approach has yielded positive results in their
+academic performance, with a majority regularly achieving
+higher grades and maintaining a 100% pass rate, indicating no
+dropouts. This group’s consistent and disciplined interaction
+with the LMS, including a balanced approach to viewing,
+downloading, and submitting assignments, correlates with
+their strong academic outcomes, mostly ranging from A to
+C grades.
+159358
+
+TABLE 4. List of performance attributes with description.
+
+Cluster 1 exhibits patterns comparable to Cluster 0, demonstrating consistent engagement and an even greater frequency
+of participation in the LMS. Regarding academic performance, it has been observed that the assignments they
+actively worked on were submitted quite effectively. However, regarding the quizzes, the outcomes were somewhat
+inferior compared to Cluster 0. This can be linked to the
+cluster’s lack of emphasis on study materials, which is also
+seen in the subsequent grades, where around 79.41% of the
+grades were D’s. However, the overall success rate was 100%.
+Cluster 2 started the semester with sparse engagement,
+possibly missing crucial early interactions with the course
+content on the LMS. Over time, students’ activity increased,
+specifically around periods with significant academic events
+such as mid-term test, suggesting a reactive approach to study
+habits driven by assessment timelines. During the mid-term
+exam period, there was a noticeable rise in students’ activity.
+However, this increase did not lead to outstanding performance in submissions in Q3 and Q4.
+Although they were actively involved, most students did
+not achieve the highest score ranges. The assessment of
+quizzes and the mid-term test yielded a low outcome, with
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+most students in this group achieving an E grade, accounting
+for 85.35%. In addition, there was a dropout rate of 14.65%,
+underscoring the impact of irregular study habits on academic
+achievement.
+Cluster 3 demonstrated minimal engagement, with an enormous peak during the mid-term test period. The limited
+interaction with the LMS throughout the semester and the
+low academic performance, particularly with the majority
+scoring the lowest grades (Fx), suggest that students in this
+cluster might have struggled to engage effectively with the
+course. Their peak activity during the mid-term test period
+was insufficient to elevate their overall academic performance, as evidenced by their dropout rate (61.54%) and lower
+grades. Perhaps it could have been possible to mitigate this
+high dropout rate if students had utilized the final weeks to
+improve their grades or exerted effort similarly to what was
+observed in Cluster 2. Overall, the analysis across all clusters
+reveals a clear trend of consistent and varied engagement with
+the LMS correlates with better academic outcomes.
+Cluster 0 exemplifies how systematic use of all available
+resources and regular submission of assignments can lead
+to high academic achievement. Meanwhile, the sporadic and
+lower engagement levels in Clusters 2 and 3 underscore the
+need for strategies to enhance consistent interaction with
+the course content throughout the semester. The insights
+suggest that encouraging regular engagement with the LMS
+and providing support mechanisms for students to adopt
+efficient study habits could lead to improved academic performance and reduced dropout rates. These findings highlight
+the importance of creating interventions that align with students’ diverse needs and engagement patterns to enhance
+their academic success in a blended learning environment.
+B. CLASSIFICATION MODEL OF STUDENTS EARLY
+DROPOUT BASED ON RESULTS OF STUDENTS’
+PERFORMANCE CLUSTERING
+
+Given that the log files stored within the LMS Moodle have
+proven to be beneficial in understanding students’ behavior
+within the system and strongly correlate with their academic
+performance, it was decided to utilize classification models
+to assign these records to identified clusters. Predictions for
+specific periods have been made as it is essential to support
+students in Cluster 2 and Cluster 3 throughout the semester
+and encourage higher activity levels. The first predicted timeframe will be Q1, representing the first three weeks of the
+course. The subsequent timeframe will be Q2, including Q1
+plus the following three weeks, thus covering the first six
+weeks. Similarly, Q3 and Q4 will be proceeded with.
+After employing the BIRCH algorithm to identify four
+distinct class labels, the clustered dataset has been utilized
+to develop a classification model tailored to predict student
+performance. This development focuses on selecting the optimal model to classify students based on accurately generated
+performance class labels.
+To ensure the robustness and generalizability of the predictive models, 10-fold cross-validation was employed. This
+VOLUME 12, 2024
+
+method systematically splits the dataset into 10 folds, with the
+model being trained on 9 folds and tested on the remaining
+fold. This process is repeated 10 times, ensuring that each
+part of the data contributes to both the training and testing phases. The performance of these classification models
+is systematically documented in Table 6. To enhance the
+applicability of the findings and enable proactive educational
+interventions, the prediction model was applied at several
+critical stages throughout the academic year. Specifically,
+predictions for the following timeframes were implemented:
+Q1, Q1-Q2, Q1-Q3, and Q1-Q4. This approach allows the
+assessment of student performance incrementally, facilitating timely interventions that can significantly alter academic
+outcomes. By analyzing performance at these successive
+intervals, educators can make informed decisions earlier in
+the academic process rather than awaiting end-of-course
+results. This strategy helps identify students who may require
+additional support early on. Simultaneously, it also aids in
+refining educational strategies and resource allocation to
+enhance overall student achievement.
+Therefore, a comprehensive classification analysis was
+conducted to understand this relationship between student
+behavior, as recorded in log files, and their academic performance. The input dataset comprised six predictive features
+(weekday, week, month, component, action, target)extracted
+from the log files and target class representing a particular
+cluster.
+SMOTE (Synthetic Minority Over-sampling Technique)
+was utilized to address significant class imbalances among
+the clusters. This was crucial as the initial data showed
+Cluster 0 having 6,647 instances and Cluster 1 with 6,456,
+whereas Cluster 2 had only 2,568 and Cluster 3 even fewer at
+2,129. Using SMOTE enabled to enhance the representation
+of the minority classes, Cluster 2 and Cluster 3. The application of SMOTE not only balanced the class distribution but
+also enhanced the models’ sensitivity to these underrepresented groups.
+Subsequently, a range of machine learning models were
+applied, including Logistic Regression (LR), Random Forest (RF), Support Vector Machine (SVM), and K-Nearest
+Neighbors (KNN) to ascertain the likelihood of correctly
+predicting a student’s cluster membership—a classification
+derived from their engagement patterns. Each model was
+meticulously tuned with a set of hyperparameters suited to the
+structure and complexity of the examined dataset. The main
+focus was on Clusters 2 and 3, which are crucial due to a
+higher incidence of potential dropouts among these students.
+Effective early intervention in these clusters can significantly
+impact student retention and success. As a result, the findings related to Cluster 2 analysis model performance can be
+summarized as follows:
+•
+
+The RF model exhibits a precision of 0.60 and a recall of
+0.85, achieving an F1 score of 0.71. This suggests that
+while the model effectively identifies a high percentage
+of at-risk students (high recall), it also has a significant
+159359
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+TABLE 5. Results for performance attributes for each cluster.
+
+159360
+
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+FIGURE 18. Visualization of academic activity trends by quartile in identified clusters.
+
+VOLUME 12, 2024
+
+159361
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+TABLE 6. Classification model scores for Q1 (3 weeks).
+
+rate of false positives (436), indicating a potential for
+over-identification of students as at-risk.
+• LR shows similar performance with a precision of 0.61,
+recall of 0.85, and an F1 score of 0.71. The model maintains a high sensitivity but with a considerable number
+of false positives (418), matching the trend observed in
+the case of RF.
+• The SVM demonstrates a slightly better precision of
+0.61 and a recall of 0.83, with an F1 score of 0.70. The
+model slightly reduces the false positive count to 409 but
+still identifies many students incorrectly as at-risk.
+• KNN has the lowest precision among the models at
+0.57, with a high recall of 0.90, leading to the highest
+false positives (523) but the lowest false negatives (77),
+indicating that while it is very good at detecting potential
+dropouts, it also misclassifies a considerable number of
+students.
+In the case of Cluster 3, the analysis of model performance
+can be summarized as follows:
+The RF model achieves a precision of 0.80 and a recall
+of 0.66, resulting in an F1 score of 0.72. It has fewer false
+positives (105) compared to Cluster 2, suggesting a more
+conservative approach in flagging students as at-risk.
+• LR shows similar figures with a precision of 0.80 and a
+recall of 0.65, achieving an F1 score of 0.72. This model
+also indicates a more cautious identification strategy
+with 104 false positives.
+• SVM achieves a precision of 0.79 and a recall of 0.66,
+with an F1 score of 0.72. Like RF and LR, it shows
+•
+
+159362
+
+a balanced approach with a moderate count of false
+positives (112).
+• KNN presents the highest precision of 0.85 but the
+lowest recall of 0.59, reflected in an F1 score of 0.70.
+This model is the most conservative, with the fewest
+false positives (66), but misses many at-risk students,
+evidenced by the highest false negatives (262).
+The early prediction results across all models indicate a
+crucial trade-off between identifying at-risk students and
+avoiding the misclassification of students who are not at risk.
+The high recall rates are promising for early intervention.
+However, the significant number of false positives, particularly in Cluster 2 across all models, suggests that while
+interventions are necessary, they need to be targeted and
+nuanced to avoid overburdening students who are not at
+risk. The application of SMOTE in this context helped to
+improve model learning on a limited number of data but also
+emphasizes the need for careful calibration of the intervention
+thresholds based on the predictive results.
+For the initial six weeks of the semester (Q1-Q2), the classification model scores summarized in Table 7 reveal crucial
+insights into the predictive capabilities concerning students
+at higher risk of dropping out, particularly in Clusters 2 and
+3. The data distribution within each cluster during this period
+was as follows: Cluster 0 had 14,428 students, Cluster 1 had
+16,108, Cluster 2 had 9,942, and Cluster 3 had 7,106. From
+each cluster, 30% of the data was used for testing, resulting
+in test sizes of 4,328 for Cluster 0, 4,832 for Cluster 1,
+2,983 for Cluster 2, and 2,132 for Cluster 3. Due to the
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+TABLE 7. Classification model scores for Q1-Q2 (6 weeks).
+
+underrepresentation of at-risk student population clusters, the
+SMOTE technique was also used. The findings, which will be
+summarized in the next paragraph, were shown by an in-depth
+analysis of the results for these two critical clusters.
+Cluster 2 Analysis of model performance:
+RF shows strong precision and recall (0.84 and 0.85,
+respectively) with an F1 score of 0.85. This balance suggests a reliable identification of at-risk students, though
+with a considerable number of FP = 471.
+• LR exhibits lower precision (0.79) but high recall (0.92),
+resulting in an F1 score of 0.85. This model has a high
+sensitivity but is prone to a significant number of false
+positives (1267), suggesting it may overestimate the
+number of at-risk students.
+• SVM with a precision of 0.90 but a lower recall of
+0.75, the F1 score is 0.81. This model, while precise,
+fails to capture a significant portion of at-risk students,
+as indicated by 746 false negatives.
+• KNN shows a high precision of 0.88 but a lower recall
+of 0.74. It identifies a high percentage of at-risk students
+with many false positives (FP = 491), which could
+impact resource allocation.
+•
+
+Cluster 3 analysis of model performance:
+RF achieves higher precision and recall (0.86 and 0.91,
+respectively), leading to a superior F1 score of 0.88. The
+model effectively identifies at-risk students with fewer
+errors, evidenced by 259 false positives, which is lower
+compared to Cluster 2.
+• LR shows excellent precision (0.98) with good recall
+(0.85), resulting in an F1 score of 0.91. This model is
+•
+
+VOLUME 12, 2024
+
+highly accurate in its predictions, with only 37 false positives, marking it as exceptionally efficient for Cluster 3.
+• SVM with a precision (0.81) and recall (0.92) balance
+out to an F1 score of 0.86, making it a reliable model
+for identifying at-risk students, albeit with a moderate
+number of false positives (422).
+• KNN achieved a precision that dips to 0.79 while maintaining a high recall of 0.92, culminating in an F1 score
+of 0.85. Despite the high sensitivity, the model incurs
+many false positives (485).
+Across the models, varying degrees of effectiveness were
+observed in identifying at-risk students in Clusters 2 and 3.
+The RF model shows a strong balance between precision and
+recall, especially in Cluster 3. In contrast, the LR, particularly
+for Cluster 3, stands out for its precision, suggesting its application in environments where minimizing false positives is
+crucial. The SVM and KNN models highlight the challenges
+of balancing false positives and negatives, emphasizing the
+need for tailored strategies that consider the specific dynamics of each student cluster.
+The evaluation of classification models (Table 8 ) over the
+initial nine weeks of the semester encompassing the first three
+quarters (Q1 through Q3). These periods mark significant
+phases in the academic timeline, each adding a layer of data
+richness that enhances the predictability and reliability of the
+models.
+Specifically, for this analysis, the following amount of
+data points was available: 27,787 for cluster 0, 32,416 for
+cluster 1, 24,512 for cluster 2, and 36,406 for cluster 3. Again,
+30% of the data were selected for the test set from each
+class, resulting in sample sizes 8,336 for Cluster 0, 9,725 for
+159363
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+TABLE 8. Classification model scores for Q1-Q3 (9 weeks).
+
+Cluster 1, 7,354 for Cluster 2, and 10,922 for Cluster 3. Given
+the relatively equal distribution among individual classes, the
+sampling approach was deemed unnecessary.
+Cluster 2 analysis of model performance:
+• LR demonstrated high precision (0.91) and excellent
+recall (0.97), leading to an F1 score of 0.94 and an
+accuracy of 0.95. However, it had a significant number
+of false positives (678).
+• RF achieved high precision (0.96) and very good recall
+(0.91), resulting in an F1 score of 0.94 and matching
+accuracy. False positives were lower (278) than LR, but
+false negatives were considerably higher (662).
+• SMV showed high precision (0.93) but lower recall
+(0.84), leading to an F1 score of 0.88 and an accuracy of
+0.92. It had a moderate number of false positives (462)
+but a significant number of false negatives (1167).
+• KNN exhibited exceptional precision (0.96) and good
+recall (0.91), with an F1 score of 0.94 and accuracy of
+0.91. This model had relatively few false positives (278)
+but many false negatives (662).
+Cluster 3 analysis of model performance:
+• LR showed even higher precision (0.95) and recall
+(0.97), achieving an F1 score of 0.96. This model had
+fewer false positives (559) than Cluster 2 but more false
+negatives (324), indicating a slightly less balanced but
+still effective prediction capability.
+• RF resulted in slightly lower precision (0.93) and similar
+recall (0.94) with an F1 score of 0.93 and the same
+accuracy. Like Cluster 2, it had fewer false positives
+(793) but many false negatives (656).
+159364
+
+SMV excelled with high precision (0.98) and high recall
+(0.95), achieving an F1 score of 0.97. It had far fewer
+false positives (211) and false negatives (546), indicating
+a highly effective model for this cluster.
+• KNN achieved lower precision (0.93) and excellent
+recall (0.93), resulting in an F1 score of 0.93. The number of false positives was higher (793), matching the
+false negatives (656).
+•
+
+Across all models, Clusters 2 and 3 exhibit variations in
+performance, with certain models excelling in precision while
+others in recall. The LR model was notably effective in both
+clusters for maximizing recall, which is crucial for the early
+identification of at-risk students. However, the high number
+of false positives suggests that while it captures most at-risk
+students, it also incorrectly flags some who may not require
+interventions. The RF and KNN models demonstrated a good
+balance between precision and recall. Still, they suffered
+from a high number of false negatives, potentially missing a
+substantial number of at-risk students. Conversely, the SVM
+model, particularly in Cluster 3, stood out for its high precision and recall, suggesting its suitability for applications
+where both accurate identification and comprehensive coverage of at-risk students are critical. These results underscore
+the importance of choosing a suitable model based on the specific needs of the educational setting and the characteristics
+of the student behavior being analyzed.
+Finally, the dataset was also thoroughly analyzed to assess
+student performance across the four clusters, encompassing
+all quarters up to Q4. The distribution for this entire semester
+period was as follows: Cluster 0 had 37,996 data points,
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+TABLE 9. Classification model scores for Q1 – Q4 (13 week).
+
+Cluster 1 had 39,455, Cluster 2 had 35,785, and Cluster 3 had
+37,645. Upon evaluating the last period, the models confirmed promising results, as summarized in Table 9. As was
+expected, the classification report for each model reveals
+robust precision, recall, and F1 scores across all clusters,
+indicating a high level of consistency in the models’ predictive accuracy. Notably, the AUC ROC values, which serve
+as a benchmark for classification performance where a score
+of 1 represents a perfect model, were impressive across the
+board, reflecting each model’s strong discriminative ability.
+Upon analyzing the rates of false positives and false
+negatives for each cluster, variability was observed, which
+provides insightful nuances in the prediction capabilities
+of each model. These findings underscore the viability of
+employing machine learning algorithms to forecast cluster
+membership based on student log data. At the same time,
+this predictive modeling approach confirms the relationship
+between engagement patterns and academic outcomes. Moreover, it emphasizes the possibility of using such analyses to
+customize educational interventions and support mechanisms
+that are responsive to students’ various behaviors during their
+learning process.
+Determining the ‘best’ classifier involves a nuanced consideration of these metrics in the context of the specific
+application and priorities. Logistic Regression and Random
+Forest demonstrated a higher recall, effectively identifying a
+broader set of at-risk students. This characteristic is crucial
+VOLUME 12, 2024
+
+for interventions aimed at minimizing the number of students
+who might drop out unnoticed. However, the high recall
+comes with lower precision in the Q1 and Q2 periods, which
+is associated with higher FP, meaning that these models may
+also incorrectly classify some students as at-risk. This could
+lead to over-intervention, where resources might be allocated
+to students who do not actually require help.
+In contrast, SVM and KNN focused on high precision,
+which results in fewer FP but higher FN due to low recall values. This trade-off suggests that while they effectively target
+students who are at risk, they may exclude some students who
+could benefit from interventions.
+In conclusion, understanding the strengths and limitations
+of each model in terms of recall and precision allows educational institutions to tailor their predictive analytics strategies
+effectively. This tailoring ensures that interventions are
+appropriately targeted and aligned with the overarching goals
+of supporting student success in the most resource-efficient
+manner possible.
+V. CONCLUSION
+
+The research’s findings emphasize the noticeable impact of
+student engagement on academic performance. The BIRCH
+algorithm’s ability to classify students into clusters based
+on their LMS Moodle activity levels underscores the predictive power of engagement metrics. A nuanced understanding
+emerges from the distinct clusters:
+159365
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+Cluster 0 represents consistent and thorough student
+engagement associated with higher grades.
+• Cluster 1 indicates moderate engagement and average
+performance.
+• Cluster 2 is characterized by activity centered around
+mid-term assessments and is linked to borderline passing
+grades.
+• Cluster 3 shows minimal engagement and is associated
+with failing grades and a high dropout rate.
+The discussion of findings revealed by clustering algorithms elucidates the diverse student engagement strategies
+within a blended learning course. Notably, BIRCH’s effective segmentation of student behaviors correlates closely
+with academic achievements, from consistent engagement
+to minimal interaction patterns. While BIRCH exemplifies
+algorithmic precision in capturing student engagement, the
+nuanced performance of DBSCAN and GMM highlights the
+complexity of student behavior analytics.
+Limitations of this study include its concentration on a
+single academic institution and course, which may restrict
+the generalizability of the findings. When analyzing multiple
+courses with different structures across various disciplines,
+it becomes challenging to identify consistent or useful
+patterns of student behavior, as each course may exhibit
+distinct dynamics. Therefore, as taken in this study, a more
+focused approach allows deeper insights into individual
+course dynamics and offers to refine course structures to
+better capture student behavior. However, one approach that
+could enhance the predictive model without incorporating
+personal data would be considering a student’s performance
+in other courses as a contextual factor. This information
+could be leveraged to refine predictions in the course under
+study, providing a more comprehensive view of a student’s
+academic trajectory based solely on their online traces.
+In addition, using log files assumes that the records accurately
+and comprehensively capture a student’s activity.
+Despite these limitations, the study provides a framework
+that uses LMS data to predict academic achievement. This
+framework gives educators a proactive tool to identify students who may be in danger of underperforming or dropping
+out.
+Furthermore, as educational datasets continue to grow, particularly with the increasing shift towards online and hybrid
+learning environments, the scalability of the chosen clustering algorithms becomes a critical consideration. BIRCH,
+by design, scales well with large datasets, making it particularly suited for growing data environments. On the other
+hand, DBSCAN’s computational complexity may hinder its
+performance when faced with extremely large datasets, as calculating distances between data points can become intensive.
+GMM, with its probabilistic nature, may also encounter
+computational constraints as dataset size increases. Future
+research should explore how these algorithms perform in
+larger-scale educational settings, and the development of
+more scalable clustering methods could enhance their practical application for institutional-level data analytics.
+•
+
+159366
+
+The generalizability of the findings is another important
+factor. Since the study was conducted within the context
+of a single institution and course, future studies should
+consider replicating this methodology across different institutions and learning environments to better understand how
+student engagement patterns differ. However, the use of a
+standard LMS Moodle log file in this experiment not only
+offers a solid baseline for future studies but also ensures
+reproducibility thanks to its widely accepted format. This will
+help establish whether the insights from clustering algorithms
+like BIRCH, DBSCAN, and GMM hold true across various
+educational contexts, improving the applicability of the findings to diverse educational settings.
+Future research could benefit from a broader dataset that
+includes data collected over multiple teaching periods of the
+same course, resulting in larger cohorts. This would help
+contextualize their engagement in the specific course being
+studied and offer a more robust predictive model without
+compromising the focus on online traces. Longitudinal studies would also be beneficial in tracking changes in student
+engagement over multiple teaching periods, providing further
+insights into the stability and adaptability of the predictive
+model. Additionally, as the nature of learning environments
+evolves, particularly with the rise of hybrid and fully online
+formats, it will be valuable to assess whether the same
+engagement patterns identified in this study apply to those
+contexts. This would ensure that predictive models are adaptable to various learning formats and can be used to address
+emerging challenges in student engagement and retention.
+Nonetheless, this research’s contribution is substantial,
+offering a predictive framework that identifies at-risk students using clustering and classification and facilitates timely
+educational interventions. This study’s findings underscore
+the importance of a systematic approach to monitoring student engagement through learning management systems. The
+BIRCH algorithm’s effective clustering allows for a predictive model that aligns closely with academic performance.
+The confirmation of consistent engagement correlating with
+higher academic achievement and sporadic interaction with
+lower outcomes calls for educational strategies that promote
+regular LMS usage. The drawn conclusion emphasizes the
+potential of machine learning in shaping educational policies
+and supporting students’ academic journeys, reflecting on
+the critical role of data-driven interventions in enhancing the
+quality of higher education.
+Conclusively, this study advances the comprehension of
+the link between student LMS engagement and academic
+outcomes. By applying clustering algorithms, it was demonstrated that predicting a student’s likelihood of academic
+success or failure is possible based on their digital footprints within an LMS. The BIRCH algorithm, in particular,
+showed superior performance in delineating student groups
+with different academic trajectories. By identifying engagement patterns that indicate academic success, educators and
+administrators can tailor support to students in a more targeted and effective manner. Moreover, the potential of these
+VOLUME 12, 2024
+
+J. Pecuchova, M. Drlik: Enhancing the Early Student Dropout Prediction Model
+
+predictive models to be integrated into early warning systems
+within LMS platforms can help institutions take a proactive
+approach in reducing dropout rates and improving student
+performance. Furthermore, the predictive model derived from
+this research offers a tool to pre-emptively address challenges
+in student performance, thereby contributing to the broader
+goals of educational success and student dropout.
+REFERENCES
+[1] S. Križanić, ‘‘Educational data mining using cluster analysis and decision
+tree technique: A case study,’’ Int. J. Eng. Bus. Manage., vol. 12, Jan. 2020,
+Art. no. 184797902090867, doi: 10.1177/1847979020908675.
+[2] S. M. Dol and P. M. Jawandhiya, ‘‘Classification technique and its
+combination with clustering and association rule mining in educational
+data mining—A survey,’’ Eng. Appl. Artif. Intell., vol. 122, Jun. 2023,
+Art. no. 106071, doi: 10.1016/j.engappai.2023.106071.
+[3] G. Feng, M. Fan, and Y. Chen, ‘‘Analysis and prediction of students’
+academic performance based on educational data mining,’’ IEEE Access,
+vol. 10, pp. 19558–19571, 2022, doi: 10.1109/ACCESS.2022.3151652.
+[4] O. O. Oladipupo and O. O. Olugbara, ‘‘Evaluation of data analytics based
+clustering algorithms for knowledge mining in a student engagement
+data,’’ Intell. Data Anal., vol. 23, no. 5, pp. 1055–1071, Oct. 2019, doi:
+10.3233/ida-184254.
+[5] L. A. Muhammed, ‘‘Educational data mining: Analyzing teacher
+behavior based student’s performance,’’ in Proc. 4th Int. Conf.
+Comput. Informat. Eng. (IC2IE), Sep. 2021, pp. 181–185, doi:
+10.1109/IC2IE53219.2021.9649366.
+[6] N. Andre, N. Suciati, H. Fabroyir, and E. Pardede, ‘‘Educational
+data mining clustering approach: Case study of undergraduate student
+thesis topic,’’ IEEE Access, vol. 11, pp. 130072–130088, 2023, doi:
+10.1109/ACCESS.2023.3332818.
+[7] L. M. Nkomo and M. Nat, ‘‘Student engagement patterns in a blended
+learning environment: An educational data mining approach,’’ TechTrends,
+vol. 65, no. 5, pp. 808–817, Jul. 2021, doi: 10.1007/s11528-021-00638-0.
+[8] L. Bardach, M. Lüftenegger, S. Oczlon, C. Spiel, and B. Schober,
+‘‘Context-related problems and university students’ dropout intentions—
+The buffering effect of personal best goals,’’ Eur. J. Psychol. Educ., vol. 35,
+no. 2, pp. 477–493, Aug. 2019.
+[9] W. Xing and D. Du, ‘‘Dropout prediction in MOOCs: Using deep learning
+for personalized intervention,’’ J. Educ. Comput. Res., vol. 57, no. 3,
+pp. 547–570, Mar. 2018.
+[10] A. A. Mubarak, H. Cao, and I. M. Hezam, ‘‘Deep analytic model for student
+dropout prediction in massive open online courses,’’ Comput. Electr. Eng.,
+vol. 93, Jul. 2021, Art. no. 107271.
+[11] M. Fei and D.-Y. Yeung, ‘‘Temporal models for predicting student dropout
+in massive open online courses,’’ in Proc. IEEE Int. Conf. Data Mining
+Workshop (ICDMW). Piscataway, NJ, USA: Institute of Electrical and
+Electronics Engineers, Nov. 2015, pp. 256–263.
+[12] M. Ahmad, N. I. B. Arshad, and A. B. Sarlan, ‘‘An analysis of students’
+academic performance using K-means clustering algorithm,’’ in Advances
+on Intelligent Informatics and Computing. Cham, Switzerland: Springer,
+2022, pp. 309–318, doi: 10.1007/978-3-030-98741-1_26.
+[13] T. P. Vital, B. G. Lakshmi, H. S. Rekha, and M. DhanaLakshmi, ‘‘Student performance analysis with using statistical and cluster studies,’’
+in Soft Computing in Data Analytics. Singapore: Springer, Aug. 2018,
+pp. 743–757, doi: 10.1007/978-981-13-0514-6_71.
+[14] K. Govindasamy and T. Velmurugan, ‘‘Analysis of student academic performance using clustering techniques,’’ Int. J. Pure Appl. Math., vol. 119,
+no. 15, pp. 309–323, 2018. Accessed: May 8, 2024. [Online]. Available:
+https://acadpubl.eu/hub/2018-119-15/4/652.pdf
+[15] F. Alshareef, H. Alhakami, T. Alsubait, and A. Baz, ‘‘Educational data
+mining applications and techniques,’’ Int. J. Adv. Comput. Sci. Appl.,
+vol. 11, no. 4, pp. 729–734, Jan. 2020, doi: 10.14569/ijacsa.2020.0110494.
+[16] D. Hooshyar, M. Pedaste, and Y. Yang, ‘‘Mining educational data to predict
+students’ performance through procrastination behavior,’’ Entropy, vol. 22,
+no. 1, p. 12, Dec. 2019, doi: 10.3390/e22010012.
+[17] K. DeFreitas and M. Bernard, ‘‘Comparative performance analysis of clustering techniques in educational data mining,’’ IADIS
+Int. J. Comput. Sci. Inf. Syst., vol. 10, no. 2, pp. 65–78, 2015.
+Accessed: May 8, 2024. [Online]. Available: https://www.iadisportal.org/
+ijcsis/papers/2015180205.pdf
+VOLUME 12, 2024
+
+[18] M. Shoaib, N. Sayed, N. Amara, A. Latif, S. Azam, and S. Muhammad,
+‘‘Prediction of an educational institute learning environment using
+machine learning and data mining,’’ Educ. Inf. Technol., vol. 27, no. 7,
+pp. 9099–9123, Mar. 2022, doi: 10.1007/s10639-022-10970-4.
+[19] C. Schröer, F. Kruse, and J. M. Gómez, ‘‘A systematic literature review
+on applying CRISP-DM process model,’’ Proc. Comput. Sci., vol. 181,
+pp. 526–534, Jan. 2021.
+[20] R. Ahuja, A. Jha, R. Maurya, and R. Srivastava, ‘‘Analysis of educational
+data mining,’’ in Harmony Search and Nature Inspired Optimization Algorithms. Singapore: Springer, Aug. 2018, pp. 897–907, doi: 10.1007/978981-13-0761-4_85.
+[21] M. A. Rahman, N. S. Sani, R. Hamdan, Z. A. Othman, and A. A. Bakar,
+‘‘A clustering approach to identify multidimensional poverty indicators
+for the bottom 40 percent group,’’ PLoS ONE, vol. 16, no. 8, Aug. 2021,
+Art. no. e0255312, doi: 10.1371/journal.pone.0255312.
+[22] B. Perez, C. Castellanos, and D. Correal, ‘‘Applying data mining techniques to predict student dropout: A case study,’’ in Proc. IEEE 1st
+Colombian Conf. Appl. Comput. Intell. (ColCACI), May 2018, pp. 1–6,
+doi: 10.1109/COLCACI.2018.8484847.
+[23] M. Y. N. N. Hafzan, D. Safaai, M. Asiah, M. M. Saberi, and S. S. Syuhaida,
+‘‘Review on predictive modelling techniques for identifying students at risk
+in university environment,’’ in Proc. MATEC Web Conf., vol. 255, 2019,
+p. 03002, doi: 10.1051/matecconf/201925503002.
+[24] X. Li, Y. Zhang, H. Cheng, F. Zhou, and B. Yin, ‘‘An unsupervised ensemble clustering approach for the analysis of student
+behavioral patterns,’’ IEEE Access, vol. 9, pp. 7076–7091, 2021, doi:
+10.1109/ACCESS.2021.3049157.
+[25] Á. M. Navarro and P. Moreno-Ger, ‘‘Comparison of clustering algorithms
+for learning analytics with educational datasets,’’ Int. J. Interact. Multimedia Artif. Intell., vol. 5, no. 2, p. 9, 2018, doi: 10.9781/ijimai.2018.02.003.
+
+JANKA PECUCHOVA received the master’s
+degree in applied informatics from the Faculty
+of Natural Sciences and Informatics, Constantine the Philosopher University in Nitra, Slovakia,
+in 2020, and the Ph.D. degree in applied informatics from the Research Study Program, Constantine
+the Philosopher University in Nitra, in 2023. Her
+doctoral thesis focused on the area of knowledge
+discovery in the learning analytics domain. Since
+2023, she has been an Assistant Professor with the
+Department of Informatics, Faculty of Natural Sciences and Informatics,
+Constantine the Philosopher University in Nitra. Her research interest is to
+find and apply the most suitable techniques for the collection, measurement,
+and analysis of available educational data on different types of stakeholders
+in virtual learning environments to understand and optimize the learning
+process and the entire environment in which the learning process takes place.
+
+MARTIN DRLIK received the master’s degree
+in biophysics from the Faculty of Mathematics,
+Physics, and Computer Science, Comenius University in Bratislava, Slovakia, in 2001, and the
+Ph.D. degree in the research study program (theory
+of computer science education) from the Constantine the Philosopher University, Nitra, Slovakia, in
+2009. Since 2019, he has been an Associate Professor with the Department of Informatics, Faculty
+of Natural Sciences and Informatics, Constantine
+the Philosopher University in Nitra. He is actively involved in Knowledge Discovery Research Group projects that focus on learning analytics
+and technology-enhanced learning. He is the author and reviewer of many
+scientific conferences and journals. His research interests include learning analytics, educational data mining, data and software engineering, and
+database systems.
+
+159367
+
+

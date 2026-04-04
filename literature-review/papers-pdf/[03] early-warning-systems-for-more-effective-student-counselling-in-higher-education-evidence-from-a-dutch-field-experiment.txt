@@ -1,0 +1,2099 @@
+Received: 14 July 2020
+
+| Revised: 20 October 2020 | Accepted: 23 November 2020
+
+DOI: 10.1111/hequ.12298
+
+RESEARCH ARTICLE
+
+Early warning systems for more effective student
+counselling in higher education: Evidence from a
+Dutch field experiment
+Simone Plak
+| Ilja Cornelisz
+Chris van Klaveren
+Faculty of Behavioral and Movement
+Sciences, Amsterdam Center for Learning
+Analytics, Vrije Universiteit Amsterdam,
+Amsterdam, the Netherlands
+
+| Martijn Meeter
+
+|
+
+Abstract
+Early Warning Systems (EWS) in higher education accommodate student counsellors by identifying at-risk students
+and allow them to intervene in a timely manner to prevent
+student dropout. This study evaluates an EWS that shares
+student-specific risk information with student counsellors,
+which was implemented at a large Dutch university. A randomised field experiment was conducted to estimate the
+effect of EWS-assisted counselling on first-year student
+dropout and academic performance. The results show that
+the EWS accurately predicts at-risk students. Yet, EWSassisted counselling did not reduce dropout, nor improved
+academic performance. Solving the underlying problem of
+poor academic performance might require additional actionable feedback and recommended counselling practices.
+
+Samenvatting
+Early Warning Systems (EWS) ondersteunen studieadviseurs
+in het hoger onderwijs door studenten in nood te signaleren
+en zo vroegtijdige interventies mogelijk te maken om studentuitval te voorkomen. Deze studie evalueert de implementatie van een EWS die student-specifieke risico-informatie
+deelde met studieadviseurs op een grote Nederlandse universiteit. Om het effect van EWS-ondersteund advies op
+
+This is an open access article under the terms of the Creative Commons Attribution License, which permits use, distribution and
+reproduction in any medium, provided the original work is properly cited.
+© 2021 The Authors. Higher Education Quarterly published by John Wiley & Sons Ltd
+Higher Educ Q. 2022;76:131–152.	﻿	
+
+wileyonlinelibrary.com/journal/hequ
+
+| 131
+
+|
+
+PLAK et al.
+
+eerstejaarsuitval en prestaties te schatten werd een gerandomiseerd veldexperiment uitgevoerd. De resultaten tonen
+dat het EWS accuraat studenten in nood signaleert. Echter,
+verminderde EWS-ondersteund advies studentuitval niet,
+en waren prestaties ook niet verbeterd. De oplossing voor
+het onderliggende probleem van onvoldoende academische
+prestaties ligt wellicht in het aanbieden van aanvullende
+praktische feedback en aanbevolen begeleidingsprocedures.
+
+1 | I NTRO D U C TI O N
+Since the turn of this century, participation rates in higher education have increased by 10 percentage points or
+more in many regions across the globe, including the United States, Europe, East Asia and Latin America (Altbach
+et al., 2009; OECD, 2003, 2014; Scott-Clayton & Sacerdote, 2016). This is accompanied by a substantial increase
+in the number of students who drop out (OECD, 2003, 2014), which is undesirable given the quasi-experimental
+evidence indicating that the wage return of an additional college year for these students at the margin is 9 per
+cent, (Oreopoulos & Petronijevic, 2013; Scott-Clayton & Sacerdote, 2016). Concerns about student dropout rates
+have led to increased scrutiny of college completion and developments towards holding universities accountable
+for graduation and dropout rates (Bettinger & Baker, 2014).
+Common efforts to reduce student dropout in higher education include remediation policies, providing financial aid, and pre-entry interventions aimed at improving the match between study programme requirements
+and student competencies and preferences. However, the effects of these efforts are largely disappointing.
+Remediation programmes demonstrate no or mixed effects (Calcagno & Long, 2008; Scott-Clayton & Rodriguez,
+2015), while the costs of these programmes are enormous (Scott-Clayton et al., 2014). Establishing the effectiveness of financial aid on college completion can be challenging, as it is difficult to identify causal effects
+based on non-experimental data, and because financial aid programmes are often combined with other support
+programmes, which makes it cumbersome to isolate the financial aid effect (Page & Scott-Clayton, 2016; Van
+Klaveren et al., 2019). However, results show that, when combined with other support programmes, financial aid
+increases degree attainment and improves grades (Angrist et al., 2009; Page & Scott-Clayton, 2016). Additionally,
+a recent study investigating solely the effectiveness of financial aid in five Italian universities found that receiving
+a grant resulted in students achieving more credits and having a lower probability of dropping out in their first
+year (Graziosi et al., 2020). Pre-entry interventions aimed at informing pre-entry decision-making, shaping expectations and improving academic preparation are suggested to likely have an impact on student retention and
+success in higher education (Thomas, 2011). However, a recent field experiment aimed at improving programme
+enrolment decisions at a Dutch university by providing students information on their expected future study success for that particular programme finds no effect on dropout (Van Klaveren et al., 2019).
+One effort that has been effective in reducing dropout in higher education is proactive student counselling.
+For instance, Bettinger and Baker (2014) find that proactive individual student coaching improves student retention and graduation rates. They mention that student counsellors can help students academically prepare for
+their courses, give them access to appropriate information, help them integrate into the university community,
+and ‘nudge’ them to complete necessary tasks. Other studies conducted in non-experimental settings also find
+student counselling to positively relate to student retention and performance (Bahr, 2008; Kot, 2014; Swecker
+et al., 2013; Young-Jones et al., 2013). Additionally, respondents to a survey, which was sent to all 2-year and
+4-year public and private colleges in the United States, indicated student counselling interventions are one of
+the three campus retention practices with greatest impact on student retention (Habley & McClanahan, 2004).
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+132
+
+| 133
+
+Besides empirical evidence for the effectiveness of student counselling in reducing dropout, Tinto's theoretical
+model of student dropout in higher education, which is arguably the most recognised model in the field, also acknowledges the importance of interactions with faculty and staff, like student counsellors, for student retention
+(Tinto, 1975, 2012). What is problematic, however, is that student counsellors often have caseloads that can span
+many hundreds of students (Hughes & Scott-Clayton, 2011), making individualised student counselling difficult,
+if not impossible. Additionally, relevant risk information to act upon (e.g., student grades) is frequently only observed at a stage in the academic year where it might already be too late to rectify any problems.
+A promising low-cost intervention that can facilitate student counsellors’ efforts towards the reduction of
+dropout are Early Warning Systems (EWS). Essentially, EWS use machine learning techniques to optimally predict
+student dropout as early as possible and visualise these predictions together with relevant student background
+characteristics and performance measures through dashboards. Using data to predict student success and inform
+decision-making in higher education is an emerging approach to reduce dropout (Agasisti & Bowers, 2017; Baepler
+& Murdoch, 2010; Picciano, 2012; Von Hippel & Hofflinger, 2020). Machine learning models, such as random forests and support vector machines, are employed to predict student dropout or achievement from demographic
+and performance data extracted from student information systems and learning management systems (Aulck
+et al., 2016; Kotsiantis et al., 2003; Lykourentzou et al., 2009). Creating an EWS dashboard that visualises these
+student-specific risk predictions together with other relevant student information allows for more timely and effective interventions, which explains why several studies call for the use of EWS with the aim to reduce dropout
+(Balfanz et al., 2014; Beck & Davidson, 2001; Macfadyen & Dawson, 2010; Sclater, 2016).
+Providing such an EWS dashboard to student counsellors enables them to offer more informed feedback
+and specific recommendations to students. In general, feedback is among the most critical influences on student
+learning (Hattie & Timperley, 2007). Students identified as at risk of not completing their course who received a
+warning email obtained higher final grades than at-risk students who were not warned, which suggests that just
+making students aware of their potential academic risk increases grades (Jayaprakash et al., 2014). More specifically, three dashboards designed for student counsellors in higher education—Student Explorer, LISSA (Learning
+dashboard for Insights and Support during Study Advice), and LADA (Learning Analytics Dashboard for Advisors)—
+were found to support student counsellors in their practices. Student Explorer assigns each student to one out of
+three labels—‘encourage’, ‘explore’ and ‘engage’ (in increasing order of risk)—and counsellors indicated this helped
+them to quickly identify students in need of support (Krumm et al., 2014). LISSA visualises student performance
+and progress, and was found to support the dialogue between students and counsellors. The dashboard was
+mainly successful in triggering insight at the beginning of a conversation and was useful to support difficult decision-making processes (Charleer et al., 2017; Millecamp et al., 2018). In addition to visualising performance like
+Student Explorer and LISSA, the LADA dashboard includes a chance of success prediction based on a predictive
+algorithm. The results indicate that LADA enabled counsellors to evaluate more scenarios (i.e., more potential
+avenues to advice to students) in the same amount of time, which allowed them to make better-informed decisions
+(Gutiérrez et al., 2020).
+These three dashboards effectively supported student counsellors in their decision-making processes and in
+dialogues with students. However, these dashboards were not evaluated in terms of student outcomes. In fact,
+many EWS and dashboards have been developed to support learning or teaching, but only a few studies focus
+on the empirical evaluation of the effectiveness of these dashboards and systems (Gašević et al., 2015; Verbert
+et al., 2013). And if dashboards are evaluated, they are often evaluated on their usability and acceptance, and not
+on their benefit to learners (Jivet et al., 2018; Verbert et al., 2020).
+To our knowledge, there are two impact evaluations of two large-scale EWS interventions in higher education, which targeted students directly, both in the United States: ECoach, implemented at the University of
+Michigan, and Course Signals, implemented at Purdue University, Indiana. Both EWS interventions show positive results regarding student performance and retention. Students who used ECoach (previously called E2Coach)
+during a course received feedback on their progress and on how their work compared to their peers, as well as
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+PLAK et al.
+
+|
+
+PLAK et al.
+
+predictions about their final course grades (McKay et al., 2012). Additionally, personalised messages from recent
+graduates, peer testimonials, and customised study and assignments recommendations were delivered to each
+student in the form of a personalised web page (Huberth et al., 2015). To evaluate the programme, they defined
+a ‘better-than-expected’ (BTE) measure, and the results show that (1) ECoach users had higher BTE scores than
+non-users, and that (2) moderate and high intensity users had higher BTE scores than low intensity users (Huberth
+et al., 2015).
+Students who used Course Signals (CS) also received feedback on their course performance through a traffic
+light displayed on their personal Learning Management System (LMS) course page. A red sign indicated a high
+likelihood of being unsuccessful, a yellow sign denoted a potential problem of succeeding, and a green light signals a high likelihood to succeed in the course (Arnold & Pistilli, 2012). These success predictions for each course
+were determined by grades, demographic characteristics, past academic history and data from the LMS. Based
+on the student's traffic light classification, course instructors could send personalised emails. Course Signals was
+evaluated for three subsequent academic years in terms of student performance and retention, and the empirical
+results showed that students who used CS in at least one course had higher retention rates than students not
+using CS (Arnold & Pistilli, 2012).
+The empirical results of the above programmes are promising for the potential of EWS in higher education.
+Yet, students were not randomly assigned to ECoach/Course Signals or a control group. As such, the observed
+performance differences between users and non-users may—to some extent—reflect selective tool participation,
+rather than the effectiveness of the EWS. Additional experimental evaluations of EWS are therefore warranted to
+confirm their effectiveness in reducing dropout and promoting performance.
+This study describes the results of a randomised controlled field experiment that evaluates the effectiveness
+of a Dutch EWS-assisted student counselling programme at the Vrije Universiteit (VU) Amsterdam for twelve
+bachelor programmes in the academic year 2016–2017. The EWS-assisted counselling programme was implemented with the objective to support tutors and student advisors in their regular counselling activities. The developed dashboard shared student-specific risk and background information with student counsellors. We show
+that these risk predictions resulted from a well-validated machine learning model. By providing information on
+dropout risks to student counsellors on a weekly basis, the system allowed for (1) proactive and timely invitations
+by student counsellors of at-risk students for an individual appointment to perform coaching interventions, and
+(2) feedback to students to make them better aware of their performance and their risk of dropping out. The
+additional student-specific background information was provided to foster a more effective dialogue between
+student and counsellor on the underlying causes of the observed dropout risk and low performance and on how
+to improve these outcomes. This study evaluates if the Dutch EWS-assisted counselling programme accurately
+predicted students at risk, whether it yielded the aforementioned expected counselling procedures, and whether
+it ultimately reduced dropout and increased academic performance.
+This study contributes in two important ways. First, it contributes by conducting a large-scale randomised
+field experiment throughout the academic year, such that the effectiveness of EWS-assisted counselling relative
+to counselling as usual is evaluated rigorously. The full cohort of first-year students enrolled in the twelve participating bachelor programmes in 2016 was 1,577, of which a sample of 758 students provided informed consent
+and participated in the experiment. Subsequently, these 758 students were randomly assigned to receive EWSassisted student counselling or counselling as usual.
+Second, this study contributes by applying machine learning methods to make out-of-sample predictions of
+dropout risks for first-year students. In the field of computer science, it is well known that machine learning
+models can outperform alternative risk identification procedures that are based on heuristic or theory-based
+approaches (see, for example, Luca et al., 2016; Sansone, 2018). Although machine learning models have been
+deployed in the field of learning analytics (LA) and educational data mining, the adoption of such models in the
+social science literature is limited. The models used to predict dropout risk in this study are the logistic model, the
+additive logistic model (with thin plate splines), the support vector machine model and the random forest model.
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+134
+
+| 135
+
+These models are examined and compared in terms of their (relative) performance, using registration data of two
+previous first-year student cohorts at VU Amsterdam, and by exploiting cross-validation and out-of-bag estimation methods. The best-performing model, the additive logistic model, was used in the EWS-assisted counselling
+intervention to predict student-specific dropout risk throughout the first-year.
+This article proceeds as follows. The next section outlines the experimental design used to evaluate the effectiveness of EWS-assisted counselling. Section 3 describes the four machine learning models that were estimated
+to predict dropout risk, outlines the prediction procedure, and reports on the performance of the models. The
+EWS-assisted counselling programme and how it relates to counselling as usual in the context of this study is
+described in Section 4. Section 5 describes the experimental data and presents the descriptive statistics. The
+empirical findings are presented in Section 6, which are followed by conclusions and a discussion in Section 7.
+
+2 | E X PE R I M E NTA L D E S I G N
+The field experiment was conducted at VU Amsterdam in the Netherlands, in the academic year 2016–2017. VU
+Amsterdam is one of the two large publicly-funded universities in Amsterdam and the three participating faculties
+were the Faculty of Science, the Faculty of Behavioral and Movement Sciences and the Faculty of Business and
+Economics.
+At the beginning of each academic year, all first-year students take a mandatory digital Dutch proficiency test.
+Upon taking this test, students were digitally invited to participate in the EWS-assisted counselling experiment.
+In total, 1,577 students enrolled in one of the twelve participating bachelor programmes offered within the three
+faculties were invited to participate, of whom 758 students (i.e., 49%) gave informed consent. The participating
+students were randomly assigned within bachelor programmes to receive EWS-assisted counselling or counselling
+as usual. See Section 5 (Tables 2 and 3) for all descriptive statistics and equivalence tests.
+Within one week after randomisation, all students were informed by email about their assignment status. The
+intervention group received EWS-assisted counselling throughout the whole first academic year, while the control
+group received counselling as usual. At the end of the academic year, all students were asked to fill out an online
+follow-up questionnaire concerning their meetings with counsellors. This questionnaire was filled out by 125 of
+the 758 participants (16.5%). Additionally, 15 out of the 31 involved student counsellors were interviewed about
+their use of the EWS dashboard.
+
+3 | M AC H I N E LE A R N I N G , PR E D I C TI O N PRO C E D U R E A N D O U TCO M E S
+3.1 | Machine learning approach
+In order to offer EWS-assisted counselling to first-year students who enrolled in the academic year 2016–2017, it
+is necessary to generate a student-specific prediction of the risk of first-year dropout. To estimate the association
+between first-year dropout and student characteristics, information was used of all students of the two previous
+cohorts (i.e., 2013–2014 and 2014–2015). Based on these estimates, an out-of-sample student-specific prediction
+was made of the dropout risk for students who enrolled in the academic year 2016–2017.
+This explicit focus on out-of-sample prediction and addressing over-identification issues enables machine
+learning models to outperform alternative estimation models that use heuristic or theory-based approaches (Luca
+et al., 2016; Sansone, 2018). While still relatively underexposed in the social science literature, there are several
+policy-relevant issues that do not require causal inference but would benefit greatly from these more accurate
+predictions (Kleinberg et al., 2015). Due to the increased recognition of the importance of predictive modelling,
+machine learning is currently gaining momentum (Belloni et al., 2014; Mullainathan & Spiess, 2017; Varian, 2014)
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+PLAK et al.
+
+PLAK et al.
+
+and as a result has been used in, for example, teacher tenure decisions (Chalfin et al., 2016), and to predict college
+dropout (Aulck et al., 2016; Ekowo & Palmer, 2016).
+
+3.2 | Competing prediction models
+The four estimated and evaluated prediction models are the logistic model (LM), the additive logistic model (ALM),
+the support vector machines (SVMs) model and the random forest (RF) algorithm. These statistical models are
+shown in Table 1, where the parameters are indicated by Greek letters, x denotes the vector of input variables
+(i.e., x = [ x1 , x2 , . . . , xm ]), and y represents a variable that indicates 1 if dropout was observed, and 0 otherwise. The
+conditional probability of dropping out given the input variables (i.e., P (y = 1|x)) is denoted by p, and prop represents the proportion of observations with class label i that can take on values 0 (no dropout) and 1 (dropout). We
+explain these four models in the following four paragraphs.
+LM served as baseline prediction model, as it is frequently used in social and computer science literature for
+binary classification problems, such as predicting dropout. The advantage of this model is the use of a Sigmoid
+function which ensures that the predicted probabilities for belonging to a certain dropout class (i.e., dropout or
+non-dropout) will always be between 0 and 1.
+ALM is an extension of the logistic model. The single parameters (regression weights) in the LM are substituted by functions of the input variables, called thin plate spline functions, thereby enabling the model to better
+approximate a multidimensional input space x (for an extensive discussion on thin plate regression splines, see
+Wood, 2003). However, such increased flexibility also entails a bigger risk of overfitting, which is why this model
+includes regularisation term with a smoothing parameter 𝜆 that penalises steep slopes. Including this term acknowledges that a specification that better fits the data goes at the expense of degrees of freedom. Penalisation
+parameters for multiple input variables can be added to the model, such that there is one 𝜆i = 1, …, m for each of
+the m variables included. The algorithm thus optimises the trade-off between degrees of freedom and the number
+of regression splines.
+Analogous to logistic models, SVMs were developed for two-class categorisations. SVMs differ from LMs in
+that class assignments (i.e., dropout or non-dropout) are not transformed into probabilities. Instead a sign function
+is used, such that units are assigned to either one of the two classes. The objective of SVMs is to find the hyperplane (in two dimensions the hyperplane is a line) that separates the two classes such that the units of the two
+categories are divided by a clear gap that is as wide as possible. Hence, the model parameters are set to maximise
+the margin—the minimum distance between the hyperplane and the closest point. The SVM used in this study
+thus uses the sign function to categorise students as either dropout or non-dropout, based on the observed input
+vector x. An extensive overview of SVMs can be found in Guenther and Schonlau (2016).
+Similar to SVMs, RF models aim to effectively separate the observed data points into the class they belong
+to. Decision tree (DT) models are the building blocks of RF models. DT models recursively partition the data set
+into two groups. To get the best split—the split that improves the classification most significantly—the entropy (E)
+function given in Table 1 is minimised at every split of the DT. This function indicates the messiness of the data, as
+TA B L E 1
+
+The four estimated and evaluated prediction models
+
+Abbreviated name
+LM
+ALM
+SVM
+RF
+
+Statistical model
+(
+)
+log 1 −p p = 𝛽 0 + 𝛽 1 x1 + … + 𝛽 m xm
+(
+)
+( )
+( )
+log 1 −p p = 𝛽 0 + f x1 + … + fm xm + 𝜆 ∫ f �� (x)2 dx
+(
+)
+y = sign 𝛽 0 + 𝛽 1 x1 + … + 𝛽 m xm
+�
+�
+∑1
+E = − i = 0 propi ⋅ log propi
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+|
+
+136
+
+it is lowest when the subsets are homogenous with respect to the dropout variable (i.e., the subsets only contain
+non-dropouts or only dropouts). This data-splitting process is repeated until the E function indicates that no split
+exists that yields more homogeneous subsets (i.e., no split yields improved classification). DTs are prone to overfitting and small changes in the data can cause large changes in the final tree obtained, which is why the RF algorithm
+is used. This approach increases generalisation accuracy by building many individual DTs on bootstrap samples
+and then averaging predictions over those individual trees. It additionally randomly selects a subsample of the x
+input variables at each splitting step of an individual tree (Amit & Geman, 1997)—a procedure often referred to
+as feature bagging. This study estimates 200 trees as to ensure stable convergence of the estimated prediction
+outcomes.
+
+3.3 | Prediction procedure and prediction outcomes
+The prediction procedure is illustrated in Figure 1. The figure indicates that the prediction models were trained
+and tested on data of the 2013/2014 and the 2014/2015 first-year student cohorts. The input variables used in
+the prediction models are shown in Appendix A. The model parameters were trained using 5-fold cross-validation
+on a randomly drawn sample of 85 per cent of the 2014/2015 cohort data, and the models were tested on the
+15-per-cent hold-out set of the 2014/2015 cohort data and on a random sample of 15 per cent of the 2013/2014
+cohort data.
+The 5-fold cross-validation method used to train the models randomly partitions the training data sample
+into five equal-sized random subsamples. One of the five subsamples is then used to validate the model (i.e., to
+determine the mean absolute error of the model), while the remaining subsamples are used to estimate the model
+parameters. The validation measure used was the mean absolute error (MAE), which is the mean difference between the model's predicted probability to drop out and actual observed dropout. The cross-validation process is
+repeated five times, with each of the five subsamples used once as validation sample. In total, five model parameters are obtained for each input variable, which are then averaged in the final prediction model. The advantage of
+this method over repeated random subsampling is that all observations are used for both training and validation,
+and that each observation is used for validation only once (see Trippa et al., 2015).
+The performance of the four final prediction models (i.e., the trained LM, ALM, SVM and RF) was evaluated
+by the MAE of the out-of-sample predictions—the predictions for the 2013–2014 and 2014–2015 cohort random
+
+FIGURE 1
+
+Prediction procedure [Colour figure can be viewed at wileyonlinelibrary.com]
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+| 137
+
+PLAK et al.
+
+|
+
+FIGURE 2
+
+PLAK et al.
+
+Evaluation of model performance [Colour figure can be viewed at wileyonlinelibrary.com]
+
+15-per-cent test samples (that were not used to train the model parameters). Figure 2 displays the performance
+evaluation of the prediction models. The prediction models were evaluated at the start of the academic year
+(start), at the end of each of the six consecutive study terms (p1 until p6), and at the end of the summer holiday
+when students have taken their resits (summer).
+The figure is divided in panels A, B and C to give structure to the discussion of the results. Panel A shows the
+out-of-sample (the 2014 cohort test sample) MAEs for the different prediction models and indicates that the ALM
+performs better than the other prediction models.1 Panel B visualizes the percentages again for the ALM model,
+now also including performance after the summer. 2 The visualisation shows that predictions in later periods are
+relatively more accurate, which can be explained by the fact that in later periods more information is available on
+credits obtained and grades achieved. Compared to at the start of the academic year, dropout is mainly predicted
+by students' high school performance, which has previously often been found to be a strong predictor of student
+success in higher education (e.g., Cerdeira et al., 2018; Murtaugh et al., 1999). All input variables of the prediction
+models are listed in Appendix A. Lastly, Panel C shows that the ALM performs only slightly worse when the 2013
+test set is used, indicating that the prediction model performs similarly for different student cohorts and thus that
+parameter estimates are generalisable from one year to the next.
+
+4 | E WS -A S S I S TE D CO U N S E LLI N G
+Student counselling at VU Amsterdam is provided by tutors and student advisors, collectively referred to as
+student counsellors. The main task of tutors is to teach seminars to groups of 20 to 25 students twice a week
+throughout the academic year. In addition, tutors set up mandatory 15-min individual meetings with their students to discuss a student's academic performance several times a year. The main responsibility of student advisors is to advise and coach students. Student advisors are available during walk-in hours and additionally have
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+138
+
+several individual meetings with students every day. These meetings are not mandatory and are initiated by either
+the advisor or the student. For the 758 students participating in the field experiment, a total of 23 tutors and eight
+student advisors were involved in student counselling.
+The EWS-assisted counselling programme was implemented with the objective to support tutors and student
+advisors in their daily work. During a meeting organised in January 2016 (i.e., before the implementation of EWSassisted counselling), student counsellors expressed that offering effective remediation and student support is
+often inhibited because students at risk are frequently identified too late. In response, a dashboard (see Figure 3)
+was developed together with the counsellors that provided a dropout prediction for each student as indicated by
+the prediction model, even before the start of the academic year, and displayed student-specific performance and
+background information. Student counsellors received this dashboard for the intervention group students every
+week.
+Figure 3 shows how the predicted risk is displayed, as well as the development of the risk predictions over
+study terms. The student-specific background and performance characteristics are compared to average student characteristics and to characteristics of students who are in the highest decile of the performance distribution. The performance-related information included is the average and maths high school grades, the obtained
+European Credits (ECs)—course credits conforming to the European Credit Transfer and Accumulation System
+(ECTS) —the highest course grade, the number of no-shows at exams in their current programme, and the achieved
+score on the mandatory language proficiency test taken at the beginning of the academic year. The background information displayed is partly extracted from student administration systems (e.g., travelling time, number of days
+since application, and enrolled in multiple study programmes), and presents answers on a digital questionnaire
+that students filled out before enrolling in the bachelor programme to learn whether this programme matched
+their personal interests and competencies (Van Klaveren et al., 2019). Among other things, this questionnaire
+measured students’ expectations of their study success and the number of hours they perform paid work.
+
+DŽŶŝƚŽƌͲϮϬϭϲͲdĞƌŵ ϯ
+EĂŵĞ
+^ƚƵĚĞŶƚ ŶƵŵďĞƌ
+&ĂĐƵůƚǇΎͬWƌŽŐƌĂŵ
+ĐĂĚĞŵŝĐ ǇĞĂƌ
+
+ƌŽƉ ŽƵƚ ĐŚĂŶĐĞ
+
+΀ŶĂŵĞ΁
+΀ƐƚƵĚĞŶƚ ŶƵŵďĞƌ΁
+΀&ĂĐƵůƚǇ΁ͬ΀WƌŽŐƌĂŵ΁
+ϮϬϭϲͲϮϬϭϳ
+
+^Ğǆ
+ŐĞ ;Ăƚ KĐƚŽďĞƌ ϭ͕ ϮϬϭϲͿΎ
+,ŝŐŚ ƐĐŚŽŽů stK
+ƌŽƉ ŽƵƚ ĐŚĂŶĐĞ ƐƚƵĚǇ ƉƌŽŐƌĂŵ ůĂƐƚ ǇĞĂƌΎ
+
+DĂůĞ
+ϭϴ
+zĞƐ
+Ϯϯй
+
+dĞƌŵ ϯ
+ϯϯ͘ϰй
+
+ĞǀĞůŽƉŵĞŶƚŽĨĚƌŽƉŽƵƚĐŚĂŶĐĞ
+WƌŝŽƌ ƚŽ
+ĞŶƌŽůůŵĞŶƚ
+
+Ϯϳ͘ϵй
+
+dĞƌŵ ϭ
+ϯϰ͘ϲй ;ϲ Ϳ
+
+dĞƌŵ Ϯ
+Ϯϰ͘Ϯй ;ϭϴ Ϳ
+
+DŽƟǀĂƟŽŶ
+
+dĞƌŵ ϯ
+ϯϯ͘ϰй ;ϭϴ Ϳ
+
+WĞƌĨŽƌŵĂŶĐĞ
+
+ǀŐ͘
+
+dŽƉ
+
+KƌŝĞŶƚĂƟŽŶ ŝƐ ƉƌĞƐĞŶƚ
+/ŶƚĞŶƐŝǀĞ ŽƌŝĞŶƚĂƟŽŶ ƉƌŽŐƌĂŵ
+KƉĞŶ ĚĂǇ
+ƌŽĐŚƵƌĞ
+ŽŶĮĚĞŶĐĞ ŝŶ ƐƚƵĚǇ ƐƵĐĐĞƐƐ
+WƌŽĂĐƟǀĞ ƐƚƵĚǇ ďĞŚĂǀŝŽƌ
+,ŽƵƌƐ ƉĂŝĚ ǁŽƌŬ ĂŶĚ ƐŝĚĞ ĂĐƟǀŝƟĞƐ
+ŶƌŽůůĞĚ ŝŶ ƚǁŽ ƉƌŽŐƌĂŵƐ Ăƚ sh
+η ĚĂǇƐ ƐŝŶĐĞ ĂƉƉůŝĐĂƟŽŶ
+
+zĞƐ
+zĞƐ
+zĞƐ
+EŽ
+ϴ
+ϴ
+ϭϯ
+EŽ
+Ϯϯϳ
+
+ϵϮй
+ϳϭй
+ϴϱй
+Ϯϲй
+ϴ
+ϳ
+ϭϳ
+ϱй
+ϭϰϯ
+
+ϵϮй
+ϳϭй
+ϴϱй
+Ϯϲй
+ϵ
+ϴ
+ϳ
+ϱй
+Ϯϯϭ
+
+ƉƉůŝĐĂƟŽŶ ĚĂƚĞ͗
+
+η ƐƚƵĚǇ ƉƌŽŐƌĂŵƐ ŝŶ ƚŚĞ ƉĂƐƚ Ϯ ǇĞĂƌƐ
+
+ϭ
+
+ϭ
+
+ϭ
+
+ŶƌŽůůŵĞŶƚ ĚĂƚĞ͗
+
+ϬϵͲϬϭͲϮϬϭϲ
+
+ǀŐ ƚƌĂǀĞůŝŶŐ ƟŵĞ ďǇ ƉƵďůŝĐ ƚƌĂŶƐƉŽƌƚ
+ƚŽ ƚŚĞ sh ;ŵŝŶƵƚĞƐͿ
+
+ϳϬ
+
+ϱϴ
+
+ϭϵ
+
+ǆŝƚ ĚĂƚĞ͗
+
+ϬϴͲϯϭͲϮϬϭϳ
+
+ǀĞƌĂŐĞ ŐƌĂĚĞ ŚŝŐŚ ƐĐŚŽŽů
+DĂƚŚ ŐƌĂĚĞ ŚŝŐŚ ƐĐŚŽŽů
+>ĂŶŐƵĂŐĞ ƉƌŽĮĐŝĞŶĐǇ ŐƌĂĚĞ
+,ŝŐŚĞƐƚ ŐƌĂĚĞ
+η Ύ
+η  ƉĂƌƟĂů ƌĞƐƵůƚƐΎ
+η ŶŽͲƐŚŽǁƐ Ăƚ ĞǆĂŵŝŶĂƟŽŶƐΎ
+ϬϴͲϬϭͲϮϬϭϲ
+
+^DϮϬϭϲǀϭϬ͖ĚĂƚĂƵƉĚĂƚĞĂƚϬϮͲϭϲͲϮϬϭϳϭϬ͗ϯϬD
+'ƌĞĞŶ с ĂďŽǀĞ ĂǀĞƌĂŐĞͬƉŽƐŝƟǀĞ ƐĐŽƌĞ͖ ŽƌĂŶŐĞ с ĂǀĞƌĂŐĞ ƐĐŽƌĞ͖ ƌĞĚ с ďĞůŽǁ ĂǀĞƌĂŐĞͬŶĞŐĂƟǀĞ ƐĐŽƌĞ
+Ύ DĞĂƐƵƌĞ ŝƐ ǁĞŝŐŚĞĚ ŝŶ ƚŚĞ ĐŚĂŶĐĞ ƚŽ ĚƌŽƉ ŽƵƚ ŝŶ ƚŚŝƐ ƚĞƌŵ
+
+FIGURE 3
+
+EWS dashboard [Colour figure can be viewed at wileyonlinelibrary.com]
+
+ϲ͘ϯ
+ϳ
+ϳϱ
+ϲ͘ϱ
+ϭϴ
+Ϭ
+Ϭ
+
+ǀŐ͘
+
+dŽƉ
+
+ϲ͘ϳ
+ϲ͘ϴ
+ϳϳ
+ϲ͘ϯ
+ϭϮ
+Ϭ
+Ϭ
+
+ϳ͘ϱ
+ϴ͘ϭ
+ϴϴ
+ϴ͘ϯ
+ϯϬ
+Ϭ
+Ϭ
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+| 139
+
+PLAK et al.
+
+|
+
+PLAK et al.
+
+Most variables included in the dashboard are constant from before the start of the academic year, except for
+obtained course credits, course grades and the number of no-shows at exams. These performance-related variables do not change every week, yet by providing the counsellors the dashboard weekly, they are reminded to use
+it in their daily practice. By weekly providing this student-specific risk, performance and background information
+to student counsellors, the dashboard allowed for:
+1. timely coaching interventions,
+2. proactive invitation of at-risk students for individual meetings to perform these interventions,
+3. raising students’ awareness of their performance and dropout risk,
+4. a more effective dialogue between student and counsellor (on the underlying causes of poor performance).
+Student counsellors received a training on the content of the dashboard, and could use the dashboard at their
+own discretion and according to their insights and needs.
+
+5 | DATA A N D D E S C R I P TI V E S TATI S TI C S
+Table 2 presents descriptive statistics for the 758 students in the experimental sample and the full first-year
+student cohort (N = 1,577), and includes the p-values of equivalence tests. The upper panel of the table presents
+student characteristics, whereas the lower panel shows student proportions per bachelor programme. The upper
+panel indicates the selective nature of the experimental sample in that participating students are, on average,
+younger, less often have an immigrant background, applied for their bachelor programme earlier, and graduated
+more often in 2016 (i.e., directly prior to university enrolment) compared to all students in the cohort. Although
+there are no significant differences in achieved language test score and high school grade point average (GPA),
+the groups do differ on the two outcome variables dropout and obtained credits. Students in the experimental
+sample, on average, dropped out less frequently and obtained about three ECs more by the end of the first year
+(one academic year equals 60 course credits, conforming to ECTS).
+The lower panel of Table 2 shows that the distribution of students over bachelor programmes in the experimental sample is fairly similar to the full first-year cohort proportions. There are two exceptions. The proportion
+of Movement Sciences students in the experimental sample is bigger than the proportion of Movement Sciences
+students in the full cohort, whereas the reverse holds for the bachelor programme Health and Living. In conclusion, the statistics presented in Table 2 indicate that the experimental sample was not representative for the full
+first-year cohort of participating bachelor programmes, thereby restricting the generalisability of the results.
+Hence, the experimental sample consisted of 758 students, of whom all descriptive statistics are presented in
+Table 2. Most student characteristics presented do not require an explanation, but it is relevant to note that the
+33.6 per cent of students that did not graduate in 2016 included students who returned from a so-called gap year,
+transferred into the programme from a bachelor programme at an applied university, or switched university bachelor programmes after not passing the academic dismissal threshold the previous year (see Cornelisz et al., 2019).
+Moreover, regarding high school GPA, it is relevant to mention that students pass a subject in secondary education
+when surpassing a threshold of 5.5. Finally, a power analysis based on the number of observations in our sample
+indicated that the experimental design had a statistical power of 78.5 per cent, assuming an effect size of .2 SD
+and a significance level of 5 per cent.
+Table 3, then, disaggregates the descriptive statistics of the experimental sample by the intervention and control group, and includes the p-values to show whether observed between group differences are significant. These
+results confirm that randomisation was successful. The differences in means between these two experimental
+groups are small, with only one of the differences statistically significant. Students assigned to the intervention group on average applied almost nine days earlier than students assigned to the control group. There is no
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+140
+
+TA B L E 2
+
+Experimental sample and full first-year student cohort
+Experimental Sample
+Range
+
+Mean
+
+Full Cohort
+SD
+
+Range
+
+Mean
+
+SD
+
+p-value
+
+Female
+
+[0,1]
+
+0.573
+
+0.495
+
+[0,1]
+
+0.560
+
+0.497
+
+.565
+
+Age
+
+[16,52]
+
+19.170
+
+2.213
+
+[16,52]
+
+19.367
+
+2.234
+
+.046*
+
+Immigrant background
+
+[0,1]
+
+0.223
+
+0.417
+
+[0,1]
+
+0.287
+
+0.453
+
+.001***
+
+Application date
+
+[−92,242]
+
+87.029
+
+58.001
+
+[−91,258]
+
+94.055
+
+60.273
+
+.008**
+
+Language test score
+
+[34,95]
+
+78.452
+
+7.155
+
+[34,96]
+
+77.927
+
+7.375
+
+.107
+
+Pre-university education
+
+[0,1]
+
+0.881
+
+0.324
+
+[0,1]
+
+0.885
+
+0.320
+
+.815
+
+Graduation year 2016
+
+[0,1]
+
+0.664
+
+0.473
+
+[0,1]
+
+0.586
+
+0.493
+
+<.001***
+
+High school GPA
+
+[5.78,9.00]
+
+6.680
+
+0.454
+
+[5.60,8.79]
+
+6.644
+
+0.433
+
+.067
+
+Dropout
+
+[0,1]
+
+0.244
+
+0.430
+
+[0,1]
+
+0.309
+
+0.462
+
+.001**
+
+Obtained credits
+
+[0,84]
+
+43.686
+
+21.294
+
+[0,93]
+
+40.499
+
+23.050
+
+.001**
+
+Biology
+
+[0,1]
+
+0.012
+
+0.108
+
+[0,1]
+
+0.016
+
+0.125
+
+.453
+
+Biomedical sciences
+
+[0,1]
+
+0.063
+
+0.244
+
+[0,1]
+
+0.055
+
+0.227
+
+.393
+
+Business
+
+[0,1]
+
+0.137
+
+0.344
+
+[0,1]
+
+0.145
+
+0.352
+
+.605
+
+Earth and Economics
+
+[0,1]
+
+0.053
+
+0.224
+
+[0,1]
+
+0.044
+
+0.206
+
+.371
+
+Earth sciences
+
+[0,1]
+
+0.058
+
+0.234
+
+[0,1]
+
+0.046
+
+0.210
+
+.223
+
+Econometrics
+
+[0,1]
+
+0.059
+
+0.236
+
+[0,1]
+
+0.047
+
+0.212
+
+.201
+
+Economics and Business
+
+[0,1]
+
+0.091
+
+0.288
+
+[0,1]
+
+0.110
+
+0.313
+
+.153
+
+Health and Living
+
+[0,1]
+
+0.115
+
+0.319
+
+[0,1]
+
+0.155
+
+0.362
+
+.010**
+
+Health sciences
+
+[0,1]
+
+0.062
+
+0.241
+
+[0,1]
+
+0.080
+
+0.271
+
+.122
+
+Movement sciences
+
+[0,1]
+
+0.148
+
+0.355
+
+[0,1]
+
+0.085
+
+0.279
+
+<.001***
+
+Education and Family
+Studies
+
+[0,1]
+
+0.058
+
+0.234
+
+[0,1]
+
+0.063
+
+0.245
+
+.656
+
+Psychology
+
+[0,1]
+
+0.144
+
+0.351
+
+[0,1]
+
+0.154
+
+0.361
+
+.515
+
+N
+
+758
+
+1,577
+
+*Significance at a 5-per-cent confidence level (two-sided).
+**significance at a 1-per-cent confidence level (two-sided).
+***significance at a 0.1-per-cent confidence level (two-sided).
+
+apparent reason for bias concerns regarding this small difference and—in addition—application date is included in
+the treatment effect estimation model as one of the covariates.
+
+6 | FI N D I N G S
+6.1 | Effects of EWS-assisted counselling
+The effect of EWS-assisted counselling—relative to counselling as usual—is estimated by fitting the following
+model using ordinary least squares:
+yki = 𝛼 0 + 𝛼 1 EWSi + X i� 𝛽 + 𝜀i ,
+
+(1)
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+| 141
+
+PLAK et al.
+
+TA B L E 3
+
+PLAK et al.
+
+Balancing table experimental sample
+Intervention group
+
+Control group
+
+Range
+
+Mean
+
+SD
+
+Range
+
+Mean
+
+SD
+
+p-value
+
+Female
+
+[0,1]
+
+0.579
+
+0.494
+
+[0,1]
+
+0.566
+
+0.496
+
+.706
+
+Age
+
+[16,52]
+
+19.225
+
+2.701
+
+[17,28]
+
+19.116
+
+1.587
+
+.498
+
+Immigrant background
+
+[0,1]
+
+0.217
+
+0.413
+
+[0,1]
+
+0.229
+
+0.420
+
+.692
+
+Application date
+
+[−92,229]
+
+82.579
+
+57.870
+
+[−88,242]
+
+91.455
+
+57.868
+
+.035*
+
+Language test score
+
+[34,95]
+
+78.701
+
+7.591
+
+[49,95]
+
+78.206
+
+6.698
+
+.343
+
+Pre-university education
+
+[0,1]
+
+0.889
+
+0.315
+
+[0,1]
+
+0.874
+
+0.333
+
+.518
+
+Graduation year 2016
+
+[0,1]
+
+0.672
+
+0.470
+
+[0,1]
+
+0.655
+
+0.476
+
+.627
+
+High school GPA
+
+[5.88,9.00]
+
+6.687
+
+0.469
+
+[5.78,8.54]
+
+6.674
+
+0.438
+
+.692
+
+Biology
+
+[0,1]
+
+0.013
+
+0.114
+
+[0,1]
+
+0.011
+
+0.102
+
+.732
+
+biomedical sciences
+
+[0,1]
+
+0.063
+
+0.244
+
+[0,1]
+
+0.063
+
+0.244
+
+.985
+
+Business
+
+[0,1]
+
+0.140
+
+0.348
+
+[0,1]
+
+0.134
+
+0.341
+
+.811
+
+Earth and economics
+
+[0,1]
+
+0.056
+
+0.229
+
+[0,1]
+
+0.050
+
+0.218
+
+.733
+
+Earth sciences
+
+[0,1]
+
+0.058
+
+0.234
+
+[0,1]
+
+0.058
+
+0.234
+
+.986
+
+Econometrics
+
+[0,1]
+
+0.058
+
+0.234
+
+[0,1]
+
+0.061
+
+0.239
+
+.892
+
+Economics and business
+
+[0,1]
+
+0.090
+
+0.286
+
+[0,1]
+
+0.092
+
+0.290
+
+.918
+
+Health and living
+
+[0,1]
+
+0.116
+
+0.321
+
+[0,1]
+
+0.113
+
+0.317
+
+.889
+
+Health sciences
+
+[0,1]
+
+0.056
+
+0.229
+
+[0,1]
+
+0.068
+
+0.253
+
+.463
+
+Movement sciences
+
+[0,1]
+
+0.148
+
+0.356
+
+[0,1]
+
+0.147
+
+0.355
+
+.976
+
+Education and family studies
+
+[0,1]
+
+0.056
+
+0.229
+
+[0,1]
+
+0.061
+
+0.239
+
+.770
+
+Psychology
+
+[0,1]
+
+0.146
+
+0.353
+
+[0,1]
+
+0.142
+
+0.350
+
+.894
+
+N
+
+378
+
+380
+
+*Significance at a 5-per-cent confidence level (two-sided).
+**significance at a 1-per-cent confidence level (two-sided).
+***significance at a 0.1-per-cent confidence level (two-sided).
+
+where yki represents outcome k for student i. The k outcomes considered in this study are dropout and achieved
+ECs. Students were considered dropouts when they did not re-enrol the following academic year, which means
+they either did not obtain enough course credits (the minimum credits required to re-enroll differs per educational programme, but is typically set around 40 ECs) or switched study programmes. EWS indicates whether the
+student was assigned to EWS-assisted counselling (EWS = 1) or counselling as usual (EWS = 0), and X represents
+a vector of student and bachelor programme controls. All student and bachelor programme controls are listed in
+(
+)
+Table A1 in Appendix A. Finally, the error term 𝜀i is assumed to be a random error term (i.e., Cov 𝜀i , 𝜀−i = 0) with
+mean zero and standard deviation 𝜎 𝜀, and standard errors were clustered at the bachelor programme level in the
+OLS estimation results.
+Tables 4 and 5 show the estimated treatment effects of EWS-assisted counselling on observed dropout and
+obtained ECs, respectively. The first column presents the results of the model including only the intervention effect and the constant (Model 1), the second column shows the results additionally including the student controls
+(Model 2), followed by the results of the model specified in the equation above including both student and bachelor programme controls (Model 3). The estimation results in Table 4 suggest that EWS-assisted counselling did
+not affect first-year dropout. When additional covariates are added, the model fit improves in terms of explained
+variance in dropout, but this does not yield a more precise EWS treatment estimator.
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+|
+
+142
+
+TA B L E 4
+
+Treatment effects on dropout
+(1)
+
+EWS-assisted counselling
+Constant
+
+(2)
+
+(3)
+
+0.041 (0.033)
+
+0.047 (0.035)
+
+0.048 (0.036)
+
+***
+
+***
+
+0.249*** (0.035)
+
+0.224
+
+(0.019)
+
+0.322
+
+Student controls
+
+(0.044)
+
+√
+
+√
+√
+
+Study programme controls
+2
+
+R
+
+.002
+
+.145
+
+.160
+
+N
+
+758
+
+758
+
+758
+
+Note: Standard errors are in parentheses.
+***significance at a 0.1-per-cent confidence level (two-sided).
+
+TA B L E 5
+
+Treatment effects on obtained credits (ECTS)
+(1)
+
+(2)
+
+(3)
+
+EWS-assisted counselling
+
+−1.970 (1.401)
+
+−2.420 (1.471)
+
+−2.431 (1.495)
+
+Constant
+
+44.668*** (1.337)
+
+40.452*** (2.349)
+
+45.383*** (1.553)
+
+√
+
+√
+
+Student controls
+
+√
+
+Study programme controls
+2
+
+R
+
+.002
+
+.228
+
+.274
+
+N
+
+758
+
+758
+
+758
+
+Note: Standard errors are in parentheses.
+*Significance at a 5-per-cent confidence level (two-sided).
+**significance at a 1-per-cent confidence level (two-sided).
+***significance at a 0.1-per-cent confidence level (two-sided).
+
+Table 5 reports the estimated EWS treatment effects on obtained credits in the first year. Again, all models
+indicate that EWS-assisted counselling did not impact the observed credits obtained. None of the statistically
+insignificant treatment coefficients reported in both Tables 4 and 5 are in the hypothesised direction of dropout
+reduction and increased obtained credits. In sum, the results do not provide evidence that EWS-assisted counselling reduced dropout or improved academic performance.
+
+6.2 | Follow-up survey on EWS-assisted counselling
+A follow-up survey was distributed to students towards the end of the academic year to gain more insights in the
+potential effective mechanisms of (EWS-assisted) counselling. Of the 758 students who participated in the experiment, 125 students (16.5%) filled out this follow-up questionnaire. These questionnaire respondents were not
+representative for the experimental sample.3 They dropped out substantially less often than other participants,
+which is partly due to the fact that some dropouts had already left the programme before this questionnaire was
+administered. However, the survey outcomes can still be informative for comparing both experimental groups,
+given that the proportions of respondents who received EWS-assisted counselling (17.5%) or counselling as usual
+(15.5%) are roughly similar. The survey outcomes are presented in Table 6.
+The questionnaire asked students (1) about the number of meetings they had with counsellors, (2) whether
+they were proactively invited by the counsellor for the first meeting, (3) whether the meeting led them to take
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+| 143
+
+PLAK et al.
+
+[0,3]
+
+[0,1]
+
+[0,1]
+
+[1,5]
+
+[2,100]
+
+[0,1]
+
+66
+
+Proactive invite
+
+Steps taken?
+
+Term 1st meeting
+
+Quality
+
+Dropout
+
+N
+
+0.02 (0.12)
+
+66.32 (20.61)
+
+2.59 (1.54)
+
+0.47 (0.52)
+
+0.06 (0.24)
+
+0.38 (0.72)
+
+[1,3]
+
+[0,1]
+
+[0,1]
+
+[0,4]
+
+1.67 (0.74)
+
+0.21 (0.41)
+
+0.95 (0.22)
+
+1.52 (1.46)
+
+59
+
+[0,1]
+
+[25,97]
+
+[1,5]
+
+[0,1]
+
+[0,1]
+
+[0,3]
+
+Range
+
+0.05 (0.22)
+
+65.36 (13.32)
+
+2.76 (1.44)
+
+0.43 (0.51)
+
+0.06 (0.24)
+
+0.41 (0.77)
+
+Mean (SD)
+
+Range
+
+Range
+
+Mean (SD)
+
+Student advisor
+
+Tutor
+
+Student advisor
+
+Mean (SD)
+
+Counselling as usual
+
+EWS-assisted counselling
+
+Results from follow-up questionnaire
+
+[1,3]
+
+[0,1]
+
+[0,1]
+
+[0,4]
+
+Range
+
+Tutor
+
+1.45 (0.68)
+
+0.14 (0.36)
+
+0.97 (0.18)
+
+1.24 (1.39)
+
+Mean (SD)
+
+|
+PLAK et al.
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+No. meetings
+
+TA B L E 6
+
+144
+
+| 145
+
+steps towards improving their study results, and (4) in which term (term 1 to term 6) the first meeting took
+place. Students answered these four questions for both types of counsellors (i.e., tutors and student advisors).
+Additionally, students were asked to assess the overall quality of student counselling at VU Amsterdam on a scale
+from 0 to 100.
+Table 6 reveals no significant differences between students who received EWS-assisted counselling and those
+who received counselling as usual in the follow-up survey outcomes. The results indicate that the number of
+meetings is limited (compared to, for example, an average of two meetings in the first year as found by Fosnacht
+et al., 2017), which may partly be explained by the fact that respondents of the follow-up survey had lower dropout risks. Yet, irrespective of the type of counselling, respondents indicated that they were proactively invited
+by the tutor (as expected given the mandatory 15-min individual meetings), but were not proactively invited by
+the student advisor. The results suggest that student advisors did not use the EWS to proactively invite at-risk
+students at an early stage. Almost 50 per cent of the respondents indicated that meeting with a student advisor
+resulted in actions to improve their study results, but there appears to be no relationship with the counselling programme they were assigned to. Given the small number of observations, the risk of a type II error is relatively high,
+such that it is particularly relevant to examine mean differences in absolute terms. Although not significant, the
+direction of the results in Table 6 seem to suggest that respondents who received EWS-assisted counselling had
+somewhat more meetings and felt that these meetings more often led to actions towards improving their study
+results. Lastly, counselling quality was, on average, assessed as satisfactory by respondents from both experimental groups, but with a large dispersion among students, particularly for the respondents assigned to EWS-assisted
+counselling.
+
+6.3 | Student counsellor interviews
+Semi-structured interviews were held with 15 student counselors—nine tutors and six student advisors—to better
+understand how they integrated the EWS dashboard into their counselling practices (van den Essenburg, 2017).
+Student counsellors were interviewed about their expectations, initial use, and use over time of the EWS dashboard. All interviews were conducted face to face from 13 March to 2 May 2017, with a duration ranging from 37
+to 86 min.
+The interviewees conveyed positive expectations of the dashboard: tutors believed that using it could increase
+the efficiency of their mandatory 15-min meetings, and student advisors believed that it would help them identify
+students in need, and invite these students for individual meetings. Additionally, both tutors and student advisors
+clearly understood the role of the dashboard and that of their own: they expected to have an intermediary role
+between the EWS dashboard and the student, and believed they should use their discretion in using it in their
+meetings.
+Regarding their initial use of the EWS dashboard, tutors indicated that the dashboard provided important
+insights into which themes were relevant to discuss with their students. For instance, the dashboard indicates
+the hours that the student spends on work and extracurricular activities, which is information that tutors directly used and discussed with the student. Additionally, tutors indicated that they shared the displayed risk information on the dashboard with high-performing students as they believed it would increase student motivation.
+Nevertheless, tutors indicated not to proactively invite at-risk students for a meeting due to time constraints,
+given their full-time teaching responsibility.
+Whereas tutors felt the dashboard increased the efficiency of their meetings because it allowed them to ask
+more focused questions, student advisors indicated that this additional information displayed (e.g., extracurricular
+activities) was not necessary, as their 30-min meetings provided enough room to ask these questions themselves.
+Additionally, student advisors indicated that they experienced difficulties implementing the EWS dashboard into
+their daily work practices, because some advisors believed the EWS did not have much additional value over
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+PLAK et al.
+
+|
+
+PLAK et al.
+
+the university's administrative system, and because the dashboard did not provide actionable feedback or recommended counselling practices. Moreover, some advisors indicated they did not proactively invite students
+indicated as at risk of dropping out, because they expected those students not to show up. This reveals that in
+addition to selective participation of students in student counselling, the selective nature of inviting students in
+student counselling should be considered.
+Although tutors indicated to understand that a dropout prediction model includes some error, over time, some
+expressed to feel irritated when they believed the dropout prediction was incorrectly low, which discouraged their
+dashboard use with low-performing students. Student advisors on the other hand, who mainly met with low-performing students with a dropout prediction over 80 per cent, indicated that over time they felt that this dropout
+prediction conflicted with their goals to motivate students, consider their personal context and build a personal
+relation with their students. This yielded frustration and made them not use the EWS dashboard.
+
+7 | CO N C LU S I O N S A N D D I S CU S S I O N
+This study described the results of a randomised field experiment that was conducted to evaluate the effectiveness of a Dutch counselling programme in higher education in which student counsellors were assisted by an Early
+Warning System (EWS). Machine learning techniques were used to predict student-specific dropout risks and
+these risks, together with student-specific background and performance information, was delivered to counsellors on a weekly basis by means of a dashboard. In doing so, the programme was intended to increase proactive
+and timely invitations by student counsellors of students at risk for individual meetings to perform coaching
+interventions, and by providing student-specific information it was intended to foster a more effective dialogue
+between student and counsellor on the potential underlying causes of high dropout risk and on how to improve
+academic performance. The experiment took place at the Vrije Universiteit (VU) Amsterdam, involved 12 bachelor
+programmes, and persisted throughout the academic year 2016–2017. In total, 758 students of a cohort of 1,577
+first-year students provided informed consent to participate in the experiment, and were randomly assigned to
+EWS-assisted counselling or counselling as usual.
+The results in this paper reiterate the potential of innovative machine learning techniques to outperform more
+traditional prediction techniques (Lykourentzou et al., 2009) in identifying students at risk of dropping out. Yet,
+the empirical findings of this research suggest that EWS-assisted counselling did not reduce dropout or increase
+the credits obtained by the end of the academic year. The reported coefficients are relatively precisely estimated,
+but do not have the hypothesised sign of improved academic performance. These results are not in line with the
+non-experimental positive results observed for similar large-scale initiatives evaluated in other higher education
+contexts (i.e., ECoach and Course Signals). One explanation for this lies in the fact that the students in the intervention group were exposed to counselling that was largely similar in nature to counselling as usual, as indicated
+by the follow-up questionnaire results. However, in line with other dashboards developed to support student
+counsellors in higher education (i.e., LISSA and LADA), counsellors indicated the EWS dashboard supported their
+dialogues with students as it provided them insights into relevant conversation topics.
+The follow-up questionnaire confirms that tutors organise their mandatory 15-min individual meetings with
+students of both experimental groups, as 96 per cent of all students indicate that they were actively invited by the
+tutor. Questionnaire respondents assigned to EWS-assisted counselling had somewhat more meetings and indicated that these meetings more often led to actions towards improving their academic results than respondents
+assigned to counselling as usual, although none of these differences were found to be statistically significant. One
+explanation for this—and a limitation of this study—could be the relatively low response rate on this follow-up
+survey (16.5%).
+Another limitation of this study concerns the external validity. Students who gave informed consent had lower
+dropout rates than students who didn't. As such, the experimental sample was not representative for the full
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+146
+
+| 147
+
+student population and it may be the case that EWS-assisted counselling was not found to be effective since these
+consenting students already required less or no counselling. The latter is also addressed by the finding of a recent
+study at eight Chilean universities where a student success programme was found to be most effective in lowering
+dropout risk at the university that was most successful in including higher-risk students into this programme (Von
+Hippel & Hofflinger, 2020).
+The follow-up questionnaire and interviews yield additional insights as to why EWS-assisted counselling was
+not more effective than counselling as usual in this specific research context. The first result was that student
+counsellors' dashboard usage differed from their usage intentions expressed during the development of the dashboard and from their expectations expressed in the interviews regarding their own usage. The EWS dashboard
+was jointly developed with student counsellors, and during the development counsellors indicated that course
+grades are frequently observed at a stage in the academic year where it might already be too late to effectively
+intervene through additional counselling. However, after the experiment, several counsellors indicated they did
+not more proactively invite students in the intervention group, because they could access student grades and obtained credits on the administrative system, and because they believed that students who are at risk of dropping
+out would not show up. This indicates an important discrepancy between the initial intensions expressed during
+development and the actual behaviour once the EWS-assisted counselling was implemented. This infrequent use
+of the EWS dashboard reiterates the findings of Krumm et al. (2014), who found that advisors used the Student
+Explorer dashboard infrequently during the first semester it was implemented, because advisors had not found
+a way to integrate it into their regular work practices. They also mention counsellors initially did not know what
+value Student Explorer adds over other already available information.
+Secondly, student counsellors were aware that the EWS does not provide them with an effective counselling
+solution to address the underlying causes of low performance and dropout, which was extensively discussed
+during the development phase of the dashboard and the prediction model. However, during the EWS-assisted
+counselling intervention, this absence of recommended counselling practices was experienced as frustrating, as
+the EWS accurately signals the problem without offering counsellors actionable information on how to resolve it.
+The results presented in this paper thus call for several future research avenues. First of all, in terms of internal
+validity, it seems clear that more experimental evidence on EWS combined with counselling or recommendations
+should be generated, to establish whether or not the existing body of promising non-experimental findings in
+higher education can be explained by selective participation. In addition, this study revealed that the selective
+nature of inviting students into student counselling should also be considered. Regarding external validity, evaluations should include students at (high) risk of dropping out, such that the most relevant target population of
+EWS-assisted counselling is included. The selective nature of obtaining informed consent from students is highly
+relevant in this respect. Lastly, to maximise the impact of EWS, risk predictions should–to the extent possible–be
+presented to counsellors in such a way that it also provides them with actionable feedback and recommendations
+on how to incorporate digital data-driven findings into the analogue human practice of student counselling.
+AC K N OW L E D G E M E N T S
+We thank Theo Bakker of Student Affairs at the Vrije Universiteit Amsterdam for capacitating the research design,
+for facilitating access to the EWS dashboard and university register data, and for overall support throughout the
+research process. We thank Sytze van den Essenburg for sharing the results of the follow-up interviews held with
+student counsellors.
+C O N FL I C T O F I N T E R E S T
+We report no potential conflict of interest.
+DATA AVA I L A B I L I T Y S TAT E M E N T
+The field experimental data of this study are available upon request.
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+PLAK et al.
+
+|
+
+PLAK et al.
+
+ORCID
+Simone Plak
+
+https://orcid.org/0000-0002-0265-832X
+
+Ilja Cornelisz
+
+https://orcid.org/0000-0002-9948-7861
+
+Martijn Meeter
+Chris van Klaveren
+
+https://orcid.org/0000-0002-5112-6717
+https://orcid.org/0000-0001-5975-4454
+
+E N D N OT E S
+1
+
+The out-of-sample results for 2013 also indicate that the ALM performs best, and the results are available on request.
+
+2
+
+The average MAE of Panel B is slightly lower than the 17.6 per cent indicated in Panel A, because the summer predictions are included in this former average and not in Panel A.
+
+3
+
+We note that the respondents of the follow-up questionnaire were a bit younger, were more often female, scored
+slightly higher on the language proficiency test and had slightly higher GPA scores than the complete experimental
+sample.
+
+REFERENCES
+Agasisti, T., & Bowers, A. J. (2017). Data analytics and decision making in education: Towards the educational data scientist as a key actor in schools and higher education institutions. In G. Johnes, J. Johnes, T. Agasisti, & L. López-Torres
+(Eds.), Handbook of contemporary education economics (pp. 184–210). Edward Elgar Publishing.
+Altbach, P. G., Reisberg, L., & Rumbley, L. E. (2009). Trends in global higher education: Tracking an academic revolution. A
+Report Prepared for the UNESCO 2009 World Conference on Higher Education, 1–278.
+Amit, Y., & Geman, D. (1997). Shape quantization and recognition with randomized trees. Neural Computation, 9(7), 1545–
+1588. https://doi.org/10.1162/neco.1997.9.7.1545
+Angrist, J., Lang, D., & Oreopoulos, P. (2009). Incentives and services for college achievement: Evidence from a randomized trial. American Economic Journal: Applied Economics, 1(1), 136–163. https://doi.org/10.1257/app.1.1.136
+Arnold, K. E., & Pistilli, M. D. (2012). Course signals at Purdue: Using learning analytics to increase student success. In
+Proceedings of the 2nd international conference on learning analytics and knowledge (pp. 267–270). ACM International
+Conference Proceedings Series.
+Aulck, L., Velagapudi, N., Blumenstock, J., & West, J. (2016). Predicting student dropout in higher education. Presented
+at 2016 ICML Workshop on #Data4Good: Machine Learning in Social Good Applications, New York, NY. ArXiv preprint
+arXiv:1606.06364.
+Baepler, P., & Murdoch, C. J. (2010). Academic analytics and data mining in higher education. International Journal for the
+Scholarship of Teaching and Learning, 4(2). https://doi.org/10.20429/​ijsotl.2010.040217
+Bahr, P. R. (2008). Cooling out in the community college: What is the effect of academic advising on students' chances of
+success? Research in Higher Education, 49(8), 704–732. https://doi.org/10.1007/s1116​2-008-9100-0
+Balfanz, R., Bridgeland, J. M., Fox, J. H., DePaoli, J. L., Ingram, E. S., & Maushard, M. (2014). Building a grad nation:
+Progress and challenge in ending the high school dropout epidemic. Annual update 2014. Civic Enterprises. https://eric.
+ed.gov/?id=ED556759
+Beck, H. P., & Davidson, W. D. (2001). Establishing an early warning system: Predicting low grades in college students
+from survey of academic orientations scores. Research in Higher Education, 42, 709–723.
+Belloni A., Chernozhukov V., Hansen C. (2014). High-Dimensional Methods and Inference on Structural and Treatment
+Effects. Journal of Economic Perspectives, 28(2), 29–50. http://dx.doi.org/10.1257/jep.28.2.29
+Bettinger, E. P., & Baker, R. B. (2014). The effects of student coaching: An evaluation of a randomized experiment in
+student advising. Educational Evaluation and Policy Analysis, 36(1), 3–19. https://doi.org/10.3102/01623​73713​500523
+Calcagno, J. C., & Long, B. T. (2008). The impact of postsecondary remediation using a regression discontinuity approach:
+Addressing endogenous sorting and noncompliance. NBER Working Paper 14194. National Bureau of Economic
+Research.
+Cerdeira, J. M., Nunes, L. C., Reis, A. B., & Seabra, C. (2018). Predictors of student success in Higher Education: Secondary
+school internal scores versus national exams. Higher Education Quarterly, 72(4), 304–313. https://doi.org/10.1111/
+hequ.12158
+Chalfin A., Danieli O., Hillis A., Jelveh Z., Luca M., Ludwig J., Mullainathan S. (2016). Productivity and Selection of Human
+Capital with Machine Learning. American Economic Review, 106(5), 124–127. http://dx.doi.org/10.1257/aer.p2016​
+1029
+Charleer, S., Vande Moere, A., Klerkx, J., Verbert, K., & De Laet, T. (2017). Learning analytics dashboards to support adviser-student dialogue. IEEE Transactions on Learning Technologies, 11(3), 389–399.
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+148
+
+| 149
+
+Cornelisz, I., van der Velden, R., de Wolf, I., & van Klaveren, C. (2019). The consequences of academic dismissal for academic success. Studies in Higher Education, 45(11), 2175–2189. https://doi.org/10.1080/03075​079.2019.1596076
+Ekowo, M., & Palmer, I. (2016). The promise and peril of predictive analytics in higher education: A landscape analysis. New
+America.
+Fosnacht, K., McCormick, A. C., Nailos, J. N., & Ribera, A. K. (2017). Frequency of first-year student interactions with
+advisors. NACADA Journal, 37(1), 74–86. https://doi.org/10.12930/​NACAD​A-15-048
+Gašević, D., Dawson, S., & Siemens, G. (2015). Let's not forget: Learning analytics are about learning. TechTrends, 59(1),
+64–71. https://doi.org/10.1007/s1152​8-014-0822-x
+Graziosi, G., Sneyers, E., Agasisti, T., & de Witte, K. (2020). Can grants affect student performance? Evidence from
+five Italian universities. Journal of Higher Education Policy and Management. 42, 25. https://doi.org/10.1080/13600​
+80X.2020.1737343
+Guenther, N., & Schonlau, M. (2016). Support vector machines. The Stata Journal: Promoting communications on statistics
+and Stata, 16(4), 917–937. https://doi.org/10.1177/15368​67X16​01600407
+Gutiérrez, F., Seipp, K., Ochoa, X., Chiluiza, K., De Laet, T., & Verbert, K. (2020). LADA: A learning analytics dashboard for
+academic advising. Computers in Human Behavior, 107, 105826. https://doi.org/10.1016/j.chb.2018.12.004
+Habley, W. R., & McClanahan, R. (2004). What works in student retention: All survey colleges. ACT.
+Hattie, J., & Timperley, H. (2007). The power of feedback. Review of Educational Research, 77(1), 81–112. https://doi.
+org/10.3102/00346​54302​98487
+Huberth, M., Chen, P., Tritz, J., & McKay, T. A. (2015). Computer-tailored student support in introductory physics. PLoS
+ONE, 10(9), e0137001. https://doi.org/10.1371/journ​al.pone.0137001
+Hughes, K. L., & Scott-Clayton, J. (2011). Assessing developmental assessment in community colleges. Community College
+Review, 39, 327–351. https://doi.org/10.1177/00915​52111​426898
+Jayaprakash, S. M., Moody, E. W., Lauría, E. J. M., Regan, J. R., & Baron, J. D. (2014). Early alert of academically atrisk students: An open source analytics initiative. Journal of Learning Analytics, 1(1), 6–47. https://doi.org/10.18608/​
+jla.2014.11.3
+Jivet, I., Scheffel, M., Specht, M., & Drachsler, H. (2018). License to evaluate: Preparing learning analytics dashboards
+for educational practice. In Proceedings of the 8th International Conference on Learning Analytics and Knowledge (pp.
+31–40). ACM International Conference Proceedings Series.
+Kleinberg J., Ludwig J., Mullainathan S., Obermeyer Z. (2015). Prediction Policy Problems. American Economic Review,
+105(5), 491–495. http://dx.doi.org/10.1257/aer.p2015​1023
+Kot, F. C. (2014). The impact of centralized advising on first-year academic performance and second-year enrollment
+behavior. Research in Higher Education, 55(6), 527–563. https://doi.org/10.1007/s1116​2-013-9325-4
+Kotsiantis, S. B., Pierrakeas, C. J., & Pintelas, P. E. (2003). Preventing student dropout in distance learning using machine
+learning techniques. In V. Palade, R. J. Howlett, & L. Jain (Eds.), Knowledge-based and intelligent information and engineering systems (pp. 267–274). Springer.
+Krumm, A. E., Waddington, R. J., Teasley, S. D., & Lonn, S. (2014). A learning management system-based early warning
+system for academic advising in undergraduate engineering. In J. A. Larusson & B. White (Eds.), Learning analytics:
+From research to practice (pp. 103–119). Springer.
+Luca, M., Kleinberg, J., & Mullainathan, S. (2016). Algorithms need managers, too. Harvard Business Review, 104, 96–101.
+Lykourentzou, I., Giannoukos, I., Mpardis, G., Nikolopoulos, V., & Loumos, V. (2009). Early and dynamic student achievement prediction in e-learning courses using neural networks. Journal of the American Society for Information Science
+and Technology, 60(2), 372–380. https://doi.org/10.1002/asi.20970
+Macfadyen, L. P., & Dawson, S. (2010). Mining LMS data to develop an ‘early warning system’ for educators: A proof of
+concept. Computers & Education, 54(2), 588–599. https://doi.org/10.1016/j.compe​du.2009.09.008
+McKay, T., Miller, K., & Tritz, J. (2012). What to do with actionable intelligence: E2Coach as an intervention engine. In
+Proceedings of the 2nd International Conference on Learning Analytics and Knowledge (pp. 88–91). ACM International
+Conference Proceedings Series.
+Millecamp, M., Gutiérrez, F., Charleer, S., Verbert, K., & De Laet, T. (2018). A qualitative evaluation of a learning dashboard
+to support advisor-student dialogues. In Proceedings of the 8th international conference on learning analytics and knowledge (pp. 56–60). ACM International Conference Proceedings Series.
+Mullainathan S., Spiess J. (2017). Machine Learning: An Applied Econometric Approach. Journal of Economic Perspectives,
+31(2), 87–106. http://dx.doi.org/10.1257/jep.31.2.87
+Murtaugh, P. A., Burns, L. D., & Schuster, J. (1999). Predicting the retention of university students. Research in Higher
+Education, 40, 355–371.
+OECD. (2003). Education at a glance 2003: OECD indicators. OECD Publishing. https://www.oecd-ilibr​ary.org/educa​tion/
+educa​tion-at-a-glanc​e-2003_eag-2003-en
+OECD. (2014). Education at a glance 2014: OECD indicators. OECD Publishing. https://www.oecd-ilibr​ary.org/educa​tion/
+educa​tion-at-a-glanc​e-2014_eag-2014-en
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+PLAK et al.
+
+|
+
+PLAK et al.
+
+Oreopoulos, P., & Petronijevic, U. (2013). Making college worth it: A review of the returns to higher education. The Future
+of Children, 23(1), 41–66. https://doi.org/10.1353/foc.2013.0001
+Page, L. C., & Scott-Clayton, J. (2016). Improving college access in the United States: Barriers and policy responses.
+Economics of Education Review, 51, 4–22. https://doi.org/10.1016/j.econe​durev.2016.02.009
+Picciano, A. G. (2012). The evolution of big data and learning analytics in American higher education. Journal of
+Asynchronous Learning Networks, 16, 9–20. https://doi.org/10.24059/​olj.v16i3.267
+Sansone, D. (2018). Beyond early warning indicators: High school dropout and machine learning. Oxford Bullettin of
+Economics and Statistics, 81(2), 456–485.
+Sclater, N. (2016). Learning analytics in higher education: A review of UK and international practice. Jisc.
+Scott-Clayton, J., Crosta, P. M., & Belfield, C. R. (2014). Improving the targeting of treatment: Evidence from college
+remediation. Educational Evaluation and Policy Analysis, 36(3), 371–393. https://doi.org/10.3102/01623​73713​517935
+Scott-Clayton, J., & Rodriguez, O. (2015). Development, discouragement, or diversion? New evidence on the effects of
+college remediation policy. Education Finance and Policy, 10(1), 4–45. https://doi.org/10.1162/EDFP_a_00150
+Scott-Clayton, J., & Sacerdote, B. (2016). Access to higher education: Introduction to the special issue. Economics of
+Education Review, 51, 1–3. https://doi.org/10.1016/j.econe​durev.2015.12.001
+Swecker, H. K., Fifolt, M., & Searby, L. (2013). Academic advising and first-generation college students: A quantitative
+study on student retention. NACADA Journal, 33(1), 46–53. https://doi.org/10.12930/​NACAD​A-13-192
+Thomas, L. (2011). Do pre-entry interventions such as ‘Aimhigher’ impact on student retention and success? A review of
+the literature. Higher Education Quarterly, 65(3), 230–250. https://doi.org/10.1111/j.1468-2273.2010.00481.x
+Tinto, V. (1975). Dropout from higher education: A theoretical synthesis of recent research. Review of Educational Research,
+45(1), 89–125. https://doi.org/10.3102/00346​54304​5001089
+Tinto, V. (2012). Completing college: Rethinking institutional action. The University of Chicago Press.
+Trippa, L., Waldron, L., Huttenhower, C., & Parmigiani, G. (2015). Bayesian nonparametric cross-study validation of prediction methods. The Annals of Applied Statistics, 9(1), 402–428. https://doi.org/10.1214/14-AOAS798
+Varian H. R. (2014). Big Data: New Tricks for Econometrics. Journal of Economic Perspectives, 28(2), 3–28. http://dx.doi.
+org/10.1257/jep.28.2.3
+Van den Essenburg, S. (2017). The difficult dance with data analytics: Studying the implementation of learning analytics in an
+educational organization. Unpublished master's thesis.
+Van Klaveren, C., Kooiman, K., Cornelisz, I., & Meeter, M. (2019). The higher education enrollment decision: Feedback on
+expected study success and updating behavior. Journal of Research on Educational Effectiveness, 12(1), 67–89. https://
+doi.org/10.1080/19345​747.2018.1496501
+Verbert, K., Duval, E., Klerkx, J., Govaerts, S., & Santos, J. L. (2013). Learning analytics dashboard applications. American
+Behavioral Scientist, 57(10), 1500–1509. https://doi.org/10.1177/00027​6 4213​479363
+Verbert, K., Ochoa, X., De Croon, R., Dourado, R. A., & De Laet, T. (2020). Learning analytics dashboards: The past, the
+present and the future. In Proceedings of the 10th International Conference on Learning Analytics and Knowledge (pp.
+35–40). ACM International Conference Proceedings Series.
+Von Hippel, P. T., & Hofflinger, A. (2020). The data revolution comes to higher education: Identifying students at risk of dropout in Chile. Journal of Higher Education Policy and Management. https://doi.org/10.1080/13600​8 0X.2020.1739800
+Wood, S. N. (2003). Thin plate regression splines. Journal of the Royal Statistical Society: Series B (Statistical Methodology),
+65(1), 95–114. https://doi.org/10.1111/1467-9868.00374
+Young-Jones, A. D., Burt, T. D., Dixon, S., & Hawthorne, M. J. (2013). Academic advising: Does it really impact student
+success? Quality Assurance in Education, 21(1), 7–19. https://doi.org/10.1108/09684​88131​1293034
+
+How to cite this article: Plak S, Cornelisz I, Meeter M, van Klaveren C. Early warning systems for more
+effective student counselling in higher education: Evidence from a Dutch field experiment. Higher Educ Q.
+2022;76:131–152. https://doi.org/10.1111/hequ.12298
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+150
+
+APPENDIX A
+Figure A1 shows the input variables of the prediction model. The prediction model predicts dropout probabilities
+in eight periods, thus the input variables are included if they are observed in a certain period. Attained European
+credits are, for example, not observed in period 0 (the start of the academic year), but the credits achieved in
+period 1 are observed in period 2. Therefore, obtained course credits can be included in the prediction model for
+period 2, but not for period 1.
+
+FIGURE A1
+
+Input variables used in prediction model [Colour figure can be viewed at wileyonlinelibrary.com]
+
+Table A1 lists all control variables included in our fitted regression models. The upper panel lists the student characteristics, whereas the lower panel lists the bachelor programme controls. All categorical variables were dummy
+coded.
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+| 151
+
+PLAK et al.
+
+|
+
+TA B L E A 1
+
+PLAK et al.
+
+Student and bachelor programme controls
+
+Student controls
+
+Categories/Explanation
+
+Gender
+
+Male,
+Female
+
+Age
+
+In years
+
+Ethnicity
+
+No immigration background,
+Western immigration background,
+Non-Western immigration background
+
+Highest previous education
+
+Pre-university education (Dutch: VWO),
+Secondary education other (Dutch: VO overig),
+University of applied sciences propaedeutic exam (Dutch: HBO propedeuse),
+University of applied sciences bachelor (Dutch: HBO bachelor),
+University bachelor (Dutch: WO bachelor),
+University other (Dutch: WO overig),
+Foreign education,
+Unknown
+
+Graduation year (from highest
+previous education)
+
+2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009, before 2009.
+
+Average high school grade
+
+Grade range: 0,10; pass >= 5.5
+
+Application date
+
+The number of days since 1 January 2016 that students applied for their study
+programme.
+
+Dutch proficiency test score
+
+Score range: 1,100
+
+Bachelor programme controls
+Categories/Explanation
+Faculty
+
+Faculty of Science,
+School of Business and Economics,
+Faculty of Behavioural and Movement Sciences
+
+Bachelor programme
+
+Programmes within the Faculty of Science:
+Biology
+Biomedical sciences
+Earth and Economics
+Earth sciences
+Health and Living
+Health sciences
+Programmes within the School of Business and Economics:
+Business
+Econometrics
+Economics and Business
+Programmes within the Faculty of Behavioural and Movement Sciences:
+Movement sciences
+Education and Family Studies
+Psychology
+
+14682273, 2022, 1, Downloaded from https://onlinelibrary.wiley.com/doi/10.1111/hequ.12298 by Nat Prov Indonesia, Wiley Online Library on [04/04/2026]. See the Terms and Conditions (https://onlinelibrary.wiley.com/terms-and-conditions) on Wiley Online Library for rules of use; OA articles are governed by the applicable Creative Commons License
+
+152
+
+
