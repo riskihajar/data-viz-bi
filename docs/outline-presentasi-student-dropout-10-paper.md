@@ -29,7 +29,15 @@
 
 --------------------------------------------
 
-## Slide 4 — Dataset Review
+## Slide 4 — Metodologi Review
+- Review disusun dari 10 paper yang relevan dengan student performance dan student dropout
+- Fokus seleksi pada paper tahun 2020–2025 agar tetap aktual
+- Aspek yang dibandingkan: tujuan studi, variabel, metode, temuan, dan keterbatasan
+- Hasil review diarahkan untuk menemukan gap yang relevan bagi Data Visualization and Business Intelligence
+
+--------------------------------------------
+
+## Slide 5 — Dataset Review
 - Total paper yang direview: 10 paper
 - Rentang tahun publikasi: 2020–2025
 - Topik utama: dropout prediction, academic performance, early warning system, educational analytics
@@ -38,7 +46,7 @@
 
 --------------------------------------------
 
-## Slide 5 — Variabel yang Paling Sering Muncul
+## Slide 6 — Variabel yang Paling Sering Muncul
 - Performa akademik awal
 - Data sosiodemografis
 - Pre-enrollment data
@@ -49,7 +57,7 @@
 
 --------------------------------------------
 
-## Slide 6 — Metode yang Digunakan
+## Slide 7 — Metode yang Digunakan
 - Machine Learning umum untuk prediksi dropout/performance
 - Random Forest
 - XGBoost
@@ -61,7 +69,7 @@
 
 --------------------------------------------
 
-## Slide 7 — Ringkasan Temuan Utama
+## Slide 8 — Ringkasan Temuan Utama
 - Banyak paper menunjukkan bahwa prediksi mahasiswa berisiko bisa dilakukan sejak awal studi
 - Data akademik dan data perilaku digital sama-sama berkontribusi pada performa model
 - LMS activity dan engagement sering menjadi indikator kuat untuk mendeteksi risiko
@@ -70,7 +78,7 @@
 
 --------------------------------------------
 
-## Slide 8 — Perbandingan 10 Paper secara Umum
+## Slide 9 — Perbandingan 10 Paper secara Umum
 - Mayoritas paper berfokus pada prediksi risiko dropout atau performa akademik
 - Sebagian paper menitikberatkan pada data pra-kuliah, sebagian lain pada data aktivitas selama kuliah
 - Ada paper yang fokus pada interpretasi pola perilaku mahasiswa melalui clustering
@@ -79,7 +87,7 @@
 
 --------------------------------------------
 
-## Slide 9 — Research Gap
+## Slide 10 — Research Gap
 - Sebagian besar paper berhenti pada level prediksi, belum pada pemanfaatan hasil untuk dashboard BI
 - Visual analytics untuk pengambil keputusan akademik belum dibahas secara operasional
 - Banyak dataset bersifat tertutup dan berasal dari satu institusi sehingga generalisasi terbatas
@@ -88,7 +96,15 @@
 
 --------------------------------------------
 
-## Slide 10 — Kesimpulan dan Arah Lanjutan
+## Slide 11 — Implikasi untuk Dashboard BI
+- Hasil prediksi dropout perlu diterjemahkan menjadi indikator yang mudah dipantau oleh pihak akademik
+- Dashboard dapat menampilkan tren risiko, faktor dominan, dan segmentasi mahasiswa berisiko
+- Visualisasi interaktif membantu pimpinan program studi melihat prioritas intervensi lebih cepat
+- Integrasi analytics dan dashboard menjadi nilai tambah yang belum banyak dibahas paper sebelumnya
+
+--------------------------------------------
+
+## Slide 12 — Kesimpulan dan Arah Lanjutan
 - Literature review menunjukkan student dropout analytics adalah area yang kuat untuk predictive analytics di pendidikan tinggi
 - Variabel penting mencakup performa akademik, demografi, engagement, dan digital traces
 - Metode yang dominan adalah Random Forest, XGBoost, clustering, deep learning, dan AutoML
