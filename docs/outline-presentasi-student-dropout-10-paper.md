@@ -4,7 +4,10 @@
 - Student Performance / Dropout Analytics
 - Literature Review 10 Paper
 - Mata Kuliah Data Visualization and Business Intelligence
-- Muhammad Rizky Hajar
+- Tugas Kelompok 5
+- Muhammad Rizky Hajar — 24.55.2714
+- Alwie Muflich — 24.55.2667
+- Heri Santosa — 24.55.2676
 - S2 PJJ Informatika — Konsentrasi Big Data & Predictive Analytics
 - Universitas Amikom Yogyakarta
 
