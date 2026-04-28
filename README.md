@@ -174,8 +174,33 @@ Tahap berikutnya yang dapat dikembangkan dari repository ini meliputi:
 - seleksi **6 paper final** untuk literature review utama,
 - penyusunan narasi LR berdasarkan paper terpilih,
 - penarikan **research gap** secara lebih formal,
-- pencarian dataset publik pendukung,
-- pengembangan ide dashboard / visual analytics.
+- audit dan pemilihan dataset publik pendukung,
+- pengembangan preprocessing, baseline dataset, dan ide dashboard / visual analytics.
+
+## Update terbaru — OULAD sebagai dataset kerja utama
+
+Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Analytics Dataset (OULAD)** karena lebih aman terhadap syarat capstone dibanding dataset UCI sebelumnya.
+
+### Dokumen baru
+- `docs/audit-dataset-oulad.md` — audit ukuran, struktur tabel, distribusi label, dan kelayakan capstone.
+- `docs/preprocessing-plan-oulad-binary-risk.md` — rencana preprocessing baseline dengan framing binary risk.
+
+### Kode preprocessing baseline
+- `src/oulad_preprocessing.py` — builder dataset baseline OULAD.
+- `scripts/build_oulad_binary_dataset.py` — runner untuk menghasilkan dataset turunan.
+- `tests/test_oulad_preprocessing.py` — test otomatis untuk memverifikasi logika preprocessing baseline.
+
+### Framing awal yang dipakai
+Framing baseline saat ini adalah:
+- **binary risk classification**
+- `AtRisk` = `Withdrawn` + `Fail`
+- `Successful` = `Pass` + `Distinction`
+
+### Output turunan
+Script preprocessing menghasilkan file:
+- `data/processed/oulad_binary_risk_dataset.csv`
+
+File data mentah dan file hasil proses saat ini **di-ignore dari Git** agar repository tetap ringan; dokumentasi, script, dan test tetap dilacak dalam repository.
 
 ---
 
