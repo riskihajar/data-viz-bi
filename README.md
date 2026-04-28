@@ -181,9 +181,16 @@ Tahap berikutnya yang dapat dikembangkan dari repository ini meliputi:
 
 Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Analytics Dataset (OULAD)** karena lebih aman terhadap syarat capstone dibanding dataset UCI sebelumnya.
 
-### Dokumen baru
-- `docs/audit-dataset-oulad.md` — audit ukuran, struktur tabel, distribusi label, dan kelayakan capstone.
-- `docs/preprocessing-plan-oulad-binary-risk.md` — rencana preprocessing baseline dengan framing binary risk.
+### Index dokumen `docs/`
+
+| Judul dokumen | Deskripsi |
+|---|---|
+| [Audit Dataset OULAD](docs/audit-dataset-oulad.md) | Audit sumber unduh, struktur tabel, distribusi label, missing values penting, dan verifikasi kelayakan OULAD terhadap syarat capstone. |
+| [Preprocessing Plan OULAD — Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing baseline OULAD, termasuk framing label `AtRisk` vs `Successful`, tabel sumber, fitur baseline, aturan preprocessing, dan command eksekusi. |
+| [Kandidat Dataset untuk Capstone DVBI](docs/kandidat-dataset-capstone-dvbi.md) | Shortlist kandidat dataset yang dievaluasi untuk capstone, beserta alasan mengapa OULAD menjadi kandidat utama dibanding opsi lain. |
+| [Catatan Arah Capstone DVBI](docs/catatan-arah-capstone-dvbi.md) | Catatan keputusan arah project, syarat capstone dari dosen, evaluasi dataset awal, dan implikasi metodologis sebelum masuk preprocessing. |
+| [Ringkasan Dataset — Predict Students' Dropout and Academic Success](docs/ringkasan-dataset-uci-student-dropout.md) | Ringkasan dataset UCI yang sempat dipakai sebagai baseline pembanding, termasuk ukuran data, distribusi kelas, karakteristik fitur, dan keterbatasannya. |
+| [Outline Slide — Student Performance / Dropout Analytics](docs/outline-presentasi-student-dropout-10-paper.md) | Outline presentasi literature review untuk topik student performance / dropout analytics dalam konteks DVBI. |
 
 ### Kode preprocessing baseline
 - `src/oulad_preprocessing.py` — builder dataset baseline OULAD.
@@ -201,6 +208,11 @@ Script preprocessing menghasilkan file:
 - `data/processed/oulad_binary_risk_dataset.csv`
 
 File data mentah dan file hasil proses saat ini **di-ignore dari Git** agar repository tetap ringan; dokumentasi, script, dan test tetap dilacak dalam repository.
+
+### Catatan download dataset
+- Link sumber OULAD sudah dicatat di [Audit Dataset OULAD](docs/audit-dataset-oulad.md).
+- Untuk saat ini, **script download otomatis OULAD belum ada di repo**; yang sudah ada baru script build dataset turunannya.
+- Kalau kamu mau, berikutnya saya bisa tambahkan `scripts/download_oulad.py` + dokumentasi command download/extract di README.
 
 ---
 
