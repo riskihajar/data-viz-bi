@@ -187,6 +187,7 @@ Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Anal
 |---|---|
 | [Audit Dataset OULAD](docs/audit-dataset-oulad.md) | Audit sumber unduh, struktur tabel, distribusi label, missing values penting, dan verifikasi kelayakan OULAD terhadap syarat capstone. |
 | [Preprocessing Plan OULAD — Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing baseline OULAD, termasuk framing label `AtRisk` vs `Successful`, tabel sumber, fitur baseline, aturan preprocessing, dan command eksekusi. |
+| [EDA Ringkas OULAD — Binary Risk Dataset](docs/eda-oulad-binary-risk.md) | Ringkasan EDA dari dataset turunan OULAD hasil preprocessing, mencakup ukuran data, distribusi label, distribusi `final_result`, dan statistik numerik utama. |
 | [Kandidat Dataset untuk Capstone DVBI](docs/kandidat-dataset-capstone-dvbi.md) | Shortlist kandidat dataset yang dievaluasi untuk capstone, beserta alasan mengapa OULAD menjadi kandidat utama dibanding opsi lain. |
 | [Catatan Arah Capstone DVBI](docs/catatan-arah-capstone-dvbi.md) | Catatan keputusan arah project, syarat capstone dari dosen, evaluasi dataset awal, dan implikasi metodologis sebelum masuk preprocessing. |
 | [Ringkasan Dataset — Predict Students' Dropout and Academic Success](docs/ringkasan-dataset-uci-student-dropout.md) | Ringkasan dataset UCI yang sempat dipakai sebagai baseline pembanding, termasuk ukuran data, distribusi kelas, karakteristik fitur, dan keterbatasannya. |
@@ -196,7 +197,10 @@ Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Anal
 - `scripts/download_oulad.py` — download dan extract dataset OULAD ke `data/oulad/`.
 - `src/oulad_preprocessing.py` — builder dataset baseline OULAD.
 - `scripts/build_oulad_binary_dataset.py` — runner untuk menghasilkan dataset turunan.
+- `src/oulad_eda.py` — helper untuk merangkum dataset turunan OULAD dan menghasilkan laporan markdown EDA.
+- `scripts/run_oulad_eda.py` — runner untuk membuat `docs/eda-oulad-binary-risk.md`.
 - `tests/test_oulad_preprocessing.py` — test otomatis untuk memverifikasi logika preprocessing baseline.
+- `tests/test_oulad_eda.py` — test otomatis untuk memverifikasi ringkasan EDA dan generator laporan markdown.
 
 ### Framing awal yang dipakai
 Framing baseline saat ini adalah:
