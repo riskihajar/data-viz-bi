@@ -85,6 +85,7 @@ Secara konseptual, repository ini menempatkan literature review bukan sebagai re
 | File / Folder | Deskripsi | Isi utama | Kegunaan |
 |---|---|---|---|
 | `student-dropout-analytics-10-paper.xlsx` | Daftar 10 paper kandidat | NO, Publisher, Topics, Tahun, Penulis, Judul, DOI, LINK | Basis awal seleksi paper |
+| `matriks-paper-student-dropout-10.xlsx` | Matriks ringkas 10 paper untuk presentasi/tinjauan cepat | No, Penulis, Q, Metode, Dataset, Hasil, Masalah, Kelemahan, Link DOI | Ringkasan cepat kontribusi paper, kualitas jurnal, dan DOI |
 | `matriks-literature-review-student-dropout-10-paper.xlsx` | Matriks sintesis 10 paper | Paper, Fokus, Variabel, Metode, Temuan, Gap/Keterbatasan | Membantu analisis perbandingan dan penarikan gap |
 | `papers-pdf/` | Arsip PDF paper yang sudah divalidasi | 10 PDF + file ekstraksi teks pendukung | Referensi utama untuk membaca paper secara langsung |
 
