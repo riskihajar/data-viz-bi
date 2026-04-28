@@ -9,6 +9,21 @@
 - File berhasil diunduh ke: `data/oulad/anonymisedData.zip`
 - Dataset berhasil diekstrak di: `data/oulad/`
 
+## Cara download ulang via script
+```bash
+PYTHONPATH=. python3 scripts/download_oulad.py
+```
+
+Opsi tambahan:
+- download saja tanpa extract:
+```bash
+PYTHONPATH=. python3 scripts/download_oulad.py --no-extract
+```
+- paksa download ulang dan extract ulang:
+```bash
+PYTHONPATH=. python3 scripts/download_oulad.py --force
+```
+
 ## File hasil ekstraksi
 - `assessments.csv` — 206 rows, 6 cols
 - `courses.csv` — 22 rows, 3 cols

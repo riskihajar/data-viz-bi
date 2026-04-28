@@ -192,7 +192,8 @@ Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Anal
 | [Ringkasan Dataset — Predict Students' Dropout and Academic Success](docs/ringkasan-dataset-uci-student-dropout.md) | Ringkasan dataset UCI yang sempat dipakai sebagai baseline pembanding, termasuk ukuran data, distribusi kelas, karakteristik fitur, dan keterbatasannya. |
 | [Outline Slide — Student Performance / Dropout Analytics](docs/outline-presentasi-student-dropout-10-paper.md) | Outline presentasi literature review untuk topik student performance / dropout analytics dalam konteks DVBI. |
 
-### Kode preprocessing baseline
+### Script data & preprocessing
+- `scripts/download_oulad.py` — download dan extract dataset OULAD ke `data/oulad/`.
 - `src/oulad_preprocessing.py` — builder dataset baseline OULAD.
 - `scripts/build_oulad_binary_dataset.py` — runner untuk menghasilkan dataset turunan.
 - `tests/test_oulad_preprocessing.py` — test otomatis untuk memverifikasi logika preprocessing baseline.
