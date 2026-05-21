@@ -186,6 +186,31 @@ Tahap berikutnya yang dapat dikembangkan dari repository ini meliputi:
 
 Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Analytics Dataset (OULAD)** karena lebih aman terhadap syarat capstone dibanding dataset UCI sebelumnya.
 
+## Output Eksperimen dan Dashboard
+
+Pipeline OULAD saat ini sudah mencakup preprocessing dataset, eksperimen supervised binary classification, knowledge-based risk layer, dan dashboard DVBI untuk stakeholder akademik.
+
+Output dashboard tersedia di:
+
+- [`assets/dashboard/oulad-risk-dashboard.html`](assets/dashboard/oulad-risk-dashboard.html)
+
+Dashboard ini ditujukan untuk pimpinan akademik, program studi, dosen wali/tutor, dan tim counselling. Fokusnya bukan evaluasi teknis model, tetapi monitoring risiko, intervention queue, prioritas module-presentation, alasan risiko, dan daftar mahasiswa yang perlu ditindaklanjuti.
+
+Untuk menjalankan ulang pipeline:
+
+```bash
+PYTHONPATH=. python3 scripts/build_oulad_binary_dataset.py
+PYTHONPATH=. python3 scripts/run_oulad_experiment.py
+PYTHONPATH=. python3 scripts/build_oulad_dashboard.py
+python3 -m http.server 8765
+```
+
+Lalu buka dashboard di:
+
+```text
+http://localhost:8765/assets/dashboard/oulad-risk-dashboard.html
+```
+
 ## Draft Artikel UTS IEEE
 
 Draft artikel UTS berada di folder [`docs/artikel-uts-ieee/`](docs/artikel-uts-ieee/). Draft ini disusun sebagai artikel ilmiah berbahasa Indonesia dengan format section yang mendekati IEEE Conference, tetapi masih dalam bentuk Markdown agar mudah diedit.
@@ -258,6 +283,9 @@ Ringkasan aturan dari [`WRITING_RULES.md`](docs/artikel-uts-ieee/WRITING_RULES.m
 - `scripts/download_oulad.py`: download dan extract dataset OULAD ke `data/oulad/`.
 - `src/oulad_preprocessing.py`: builder dataset baseline OULAD.
 - `scripts/build_oulad_binary_dataset.py`: runner untuk menghasilkan dataset turunan.
+- `src/oulad_experiment.py`: pipeline eksperimen model dan knowledge-based risk layer.
+- `scripts/run_oulad_experiment.py`: runner eksperimen Logistic Regression, Random Forest, dan XGBoost.
+- `scripts/build_oulad_dashboard.py`: generator dashboard DVBI stakeholder.
 - `src/oulad_eda.py`: helper untuk merangkum dataset turunan OULAD dan menghasilkan laporan markdown EDA.
 - `scripts/run_oulad_eda.py`: runner untuk membuat `docs/eda-oulad-binary-risk.md`.
 - `tests/test_oulad_preprocessing.py`: test otomatis untuk memverifikasi logika preprocessing baseline.
