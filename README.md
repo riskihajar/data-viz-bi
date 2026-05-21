@@ -1,4 +1,4 @@
-# Data Visualization and Business Intelligence — Student Performance / Dropout Analytics
+# Data Visualization and Business Intelligence: Student Performance / Dropout Analytics
 
 Repository ini berisi bahan kerja untuk tugas mata kuliah **Data Visualization and Business Intelligence (DVBI)** dengan tema:
 
@@ -56,6 +56,7 @@ Secara konseptual, repository ini menempatkan literature review bukan sebagai re
 ├── assets/
 ├── data/
 ├── docs/
+│   └── artikel-uts-ieee/
 └── literature-review/
     ├── student-dropout-analytics-10-paper.xlsx
     ├── matriks-literature-review-student-dropout-10-paper.xlsx
@@ -72,6 +73,9 @@ Secara konseptual, repository ini menempatkan literature review bukan sebagai re
 
 - **docs/**  
   Folder untuk draft penulisan, catatan, outline, atau dokumen turunan dari tugas utama.
+
+- **docs/artikel-uts-ieee/**  
+  Folder draft artikel UTS IEEE berbahasa Indonesia. Draft dibuat modular per section agar mudah diedit dan dijaga konsisten dengan arah penelitian akhir.
 
 - **literature-review/**  
   Folder utama yang berisi hasil pencarian paper, matriks literature review, dan arsip PDF referensi.
@@ -168,40 +172,96 @@ Saat ini repository telah mencakup:
 - daftar awal **10 paper kandidat**,
 - matriks literature review berbasis 10 paper,
 - arsip PDF referensi yang telah divalidasi,
-- struktur awal untuk pengembangan draft tugas.
+- struktur awal untuk pengembangan draft tugas,
+- draft artikel UTS IEEE sampai bagian **Methodology**.
 
 Tahap berikutnya yang dapat dikembangkan dari repository ini meliputi:
 
-- seleksi **6 paper final** untuk literature review utama,
-- penyusunan narasi LR berdasarkan paper terpilih,
-- penarikan **research gap** secara lebih formal,
-- audit dan pemilihan dataset publik pendukung,
-- pengembangan preprocessing, baseline dataset, dan ide dashboard / visual analytics.
+- eksperimen modeling supervised learning dengan minimal tiga algoritma,
+- implementasi knowledge-based risk layer,
+- penyusunan Results, Discussion, dan Conclusion untuk artikel akhir,
+- pengembangan visualisasi atau dashboard early warning sebagai implikasi BI jika waktu memungkinkan.
 
-## Update terbaru — OULAD sebagai dataset kerja utama
+## Update terbaru: OULAD sebagai dataset kerja utama
 
 Dataset kerja utama yang saat ini dipilih adalah **Open University Learning Analytics Dataset (OULAD)** karena lebih aman terhadap syarat capstone dibanding dataset UCI sebelumnya.
+
+## Draft Artikel UTS IEEE
+
+Draft artikel UTS berada di folder [`docs/artikel-uts-ieee/`](docs/artikel-uts-ieee/). Draft ini disusun sebagai artikel ilmiah berbahasa Indonesia dengan format section yang mendekati IEEE Conference, tetapi masih dalam bentuk Markdown agar mudah diedit.
+
+### File draft artikel
+
+| File | Fungsi |
+|---|---|
+| [00-title-author.md](docs/artikel-uts-ieee/00-title-author.md) | Judul, author, afiliasi, email author, serta catatan dosen supervisi dan dosen kelas. |
+| [01-abstract-keywords.md](docs/artikel-uts-ieee/01-abstract-keywords.md) | Abstract dan keywords. |
+| [02-introduction.md](docs/artikel-uts-ieee/02-introduction.md) | Latar belakang, permasalahan, tujuan, dan kontribusi awal penelitian. |
+| [03-related-works.md](docs/artikel-uts-ieee/03-related-works.md) | Sintesis penelitian terkait dengan sitasi IEEE. |
+| [04-methodology.md](docs/artikel-uts-ieee/04-methodology.md) | Rancangan metodologi, dataset, target label, fitur, skenario model, dan knowledge-based risk layer. |
+| [05-references.md](docs/artikel-uts-ieee/05-references.md) | Daftar referensi dalam gaya IEEE numerik. |
+| [WRITING_RULES.md](docs/artikel-uts-ieee/WRITING_RULES.md) | Aturan penulisan yang wajib diikuti manusia maupun AI agent saat mengedit naskah. |
+| [RESEARCH_DIRECTION.md](docs/artikel-uts-ieee/RESEARCH_DIRECTION.md) | Guardrail arah penelitian agar draft UTS, eksperimen lanjutan, dan artikel akhir tidak melenceng. |
+
+### Arah penelitian yang dikunci
+
+Artikel diarahkan sebagai **supervised binary classification** untuk deteksi risiko mahasiswa pada OULAD. Target utama tetap:
+
+- `AtRisk` = `Withdrawn` + `Fail`
+- `Successful` = `Pass` + `Distinction`
+
+Model baseline untuk eksperimen lanjutan:
+
+- Logistic Regression
+- Random Forest
+- XGBoost atau Gradient Boosting
+
+Komponen knowledge-based yang disepakati adalah **rule-based risk layer** berbasis assessment, aktivitas VLE, dan sinyal unregistration. Dashboard dan clustering hanya diposisikan sebagai pengembangan lanjutan, bukan kontribusi utama artikel.
+
+### Posisi DVBI dalam artikel
+
+Karena mata kuliah berfokus pada **Data Visualization and Business Intelligence**, hasil model tidak boleh berhenti pada angka performa. Output penelitian harus diarahkan menjadi indikator monitoring dan decision support, misalnya:
+
+- jumlah mahasiswa `AtRisk`;
+- distribusi `High Risk`, `Medium Risk`, dan `Low Risk`;
+- risiko per module-presentation;
+- ringkasan aktivitas VLE rendah;
+- ringkasan skor assessment rendah;
+- daftar prioritas mahasiswa yang perlu monitoring akademik.
+
+Dashboard penuh belum menjadi scope utama draft UTS. Untuk tahap akhir, dashboard dapat ditulis sebagai rancangan visual analytics atau implikasi BI, kecuali implementasinya benar-benar dibuat.
+
+### Aturan penulisan yang wajib dijaga
+
+Ringkasan aturan dari [`WRITING_RULES.md`](docs/artikel-uts-ieee/WRITING_RULES.md):
+
+- level penomoran tidak boleh lebih dari 3 tingkat;
+- paragraf harus mengalir naratif;
+- sitasi memakai format IEEE dan urut sesuai kemunculan;
+- struktur argumentasi mengikuti alur masalah, gap riset, solusi, kontribusi;
+- jangan menggunakan tanda strip panjang pada naskah proposal, bahan seminar, atau hasil edit AI.
 
 ### Index dokumen `docs/`
 
 | Judul dokumen | Deskripsi |
 |---|---|
+| [Draft Artikel UTS IEEE](docs/artikel-uts-ieee/) | Folder draft artikel UTS modular per section, termasuk writing rules dan research direction guardrail. |
 | [Audit Dataset OULAD](docs/audit-dataset-oulad.md) | Audit sumber unduh, struktur tabel, distribusi label, missing values penting, dan verifikasi kelayakan OULAD terhadap syarat capstone. |
-| [Preprocessing Plan OULAD — Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing baseline OULAD, termasuk framing label `AtRisk` vs `Successful`, tabel sumber, fitur baseline, aturan preprocessing, dan command eksekusi. |
-| [EDA Ringkas OULAD — Binary Risk Dataset](docs/eda-oulad-binary-risk.md) | Ringkasan EDA dari dataset turunan OULAD hasil preprocessing, mencakup ukuran data, distribusi label, distribusi `final_result`, dan statistik numerik utama. |
+| [Preprocessing Plan OULAD: Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing baseline OULAD, termasuk framing label `AtRisk` vs `Successful`, tabel sumber, fitur baseline, aturan preprocessing, dan command eksekusi. |
+| [EDA Ringkas OULAD: Binary Risk Dataset](docs/eda-oulad-binary-risk.md) | Ringkasan EDA dari dataset turunan OULAD hasil preprocessing, mencakup ukuran data, distribusi label, distribusi `final_result`, dan statistik numerik utama. |
 | [Kandidat Dataset untuk Capstone DVBI](docs/kandidat-dataset-capstone-dvbi.md) | Shortlist kandidat dataset yang dievaluasi untuk capstone, beserta alasan mengapa OULAD menjadi kandidat utama dibanding opsi lain. |
 | [Catatan Arah Capstone DVBI](docs/catatan-arah-capstone-dvbi.md) | Catatan keputusan arah project, syarat capstone dari dosen, evaluasi dataset awal, dan implikasi metodologis sebelum masuk preprocessing. |
-| [Ringkasan Dataset — Predict Students' Dropout and Academic Success](docs/ringkasan-dataset-uci-student-dropout.md) | Ringkasan dataset UCI yang sempat dipakai sebagai baseline pembanding, termasuk ukuran data, distribusi kelas, karakteristik fitur, dan keterbatasannya. |
-| [Outline Slide — Student Performance / Dropout Analytics](docs/outline-presentasi-student-dropout-10-paper.md) | Outline presentasi literature review untuk topik student performance / dropout analytics dalam konteks DVBI. |
+| [Ringkasan Dataset: Predict Students' Dropout and Academic Success](docs/ringkasan-dataset-uci-student-dropout.md) | Ringkasan dataset UCI yang sempat dipakai sebagai baseline pembanding, termasuk ukuran data, distribusi kelas, karakteristik fitur, dan keterbatasannya. |
+| [Outline Slide: Student Performance / Dropout Analytics](docs/outline-presentasi-student-dropout-10-paper.md) | Outline presentasi literature review untuk topik student performance / dropout analytics dalam konteks DVBI. |
 
 ### Script data & preprocessing
-- `scripts/download_oulad.py` — download dan extract dataset OULAD ke `data/oulad/`.
-- `src/oulad_preprocessing.py` — builder dataset baseline OULAD.
-- `scripts/build_oulad_binary_dataset.py` — runner untuk menghasilkan dataset turunan.
-- `src/oulad_eda.py` — helper untuk merangkum dataset turunan OULAD dan menghasilkan laporan markdown EDA.
-- `scripts/run_oulad_eda.py` — runner untuk membuat `docs/eda-oulad-binary-risk.md`.
-- `tests/test_oulad_preprocessing.py` — test otomatis untuk memverifikasi logika preprocessing baseline.
-- `tests/test_oulad_eda.py` — test otomatis untuk memverifikasi ringkasan EDA dan generator laporan markdown.
+- `scripts/download_oulad.py`: download dan extract dataset OULAD ke `data/oulad/`.
+- `src/oulad_preprocessing.py`: builder dataset baseline OULAD.
+- `scripts/build_oulad_binary_dataset.py`: runner untuk menghasilkan dataset turunan.
+- `src/oulad_eda.py`: helper untuk merangkum dataset turunan OULAD dan menghasilkan laporan markdown EDA.
+- `scripts/run_oulad_eda.py`: runner untuk membuat `docs/eda-oulad-binary-risk.md`.
+- `tests/test_oulad_preprocessing.py`: test otomatis untuk memverifikasi logika preprocessing baseline.
+- `tests/test_oulad_eda.py`: test otomatis untuk memverifikasi ringkasan EDA dan generator laporan markdown.
 
 ### Framing awal yang dipakai
 Framing baseline saat ini adalah:
@@ -217,8 +277,12 @@ File data mentah dan file hasil proses saat ini **di-ignore dari Git** agar repo
 
 ### Catatan download dataset
 - Link sumber OULAD sudah dicatat di [Audit Dataset OULAD](docs/audit-dataset-oulad.md).
-- Untuk saat ini, **script download otomatis OULAD belum ada di repo**; yang sudah ada baru script build dataset turunannya.
-- Kalau kamu mau, berikutnya saya bisa tambahkan `scripts/download_oulad.py` + dokumentasi command download/extract di README.
+- Script download otomatis OULAD sudah tersedia di [`scripts/download_oulad.py`](scripts/download_oulad.py).
+- Jalankan command berikut untuk download dan extract ulang dataset:
+
+```bash
+PYTHONPATH=. python3 scripts/download_oulad.py
+```
 
 ---
 
