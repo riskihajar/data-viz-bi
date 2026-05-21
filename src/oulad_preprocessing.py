@@ -70,11 +70,17 @@ def build_binary_risk_dataset(data_dir: str | Path, output_path: str | Path | No
     for row in _read_csv(data_dir / "studentRegistration.csv"):
         registrations[_student_key(row)] = row
 
-    assessment_scores: Dict[str, List[float]] = defaultdict(list)
+    assessment_context: Dict[str, tuple[str, str]] = {}
+    for row in _read_csv(data_dir / "assessments.csv"):
+        assessment_context[row["id_assessment"]] = (row["code_module"], row["code_presentation"])
+
+    assessment_scores: Dict[tuple[str, str, str], List[float]] = defaultdict(list)
     for row in _read_csv(data_dir / "studentAssessment.csv"):
         score = _safe_float(row.get("score", ""))
-        if score is not None:
-            assessment_scores[row["id_student"]].append(score)
+        context = assessment_context.get(row["id_assessment"])
+        if score is not None and context is not None:
+            code_module, code_presentation = context
+            assessment_scores[(code_module, code_presentation, row["id_student"])].append(score)
 
     vle_stats: Dict[tuple[str, str, str], Dict[str, object]] = defaultdict(
         lambda: {"total_clicks": 0, "days": set(), "sites": set(), "last_day": None}
@@ -94,7 +100,7 @@ def build_binary_risk_dataset(data_dir: str | Path, output_path: str | Path | No
     for row in _read_csv(data_dir / "studentInfo.csv"):
         key = _student_key(row)
         registration = registrations.get(key, {})
-        scores = assessment_scores.get(row["id_student"], [])
+        scores = assessment_scores.get(key, [])
         vle = vle_stats.get(key, {"total_clicks": 0, "days": set(), "sites": set(), "last_day": None})
 
         imd_band = row["imd_band"] if row["imd_band"] else "Unknown"

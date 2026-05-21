@@ -60,7 +60,7 @@ Ini konsisten dengan struktur `studentInfo` OULAD dan paling aman untuk join lin
 1. `studentInfo` dijadikan **base table**.
 2. `imd_band` kosong diisi `Unknown`.
 3. `date_unregistration` diubah menjadi flag `has_unregistration`.
-4. `studentAssessment` diagregasi per `id_student` untuk baseline awal.
+4. `studentAssessment` dihubungkan ke `assessments.csv`, lalu diagregasi per `(code_module, code_presentation, id_student)`.
 5. `studentVle` diagregasi per `(code_module, code_presentation, id_student)`.
 6. Output disimpan ke:
    - `data/processed/oulad_binary_risk_dataset.csv`
@@ -82,7 +82,7 @@ PYTHONPATH=. pytest tests/test_oulad_preprocessing.py -q
 
 ## Catatan metodologis
 Preprocessing ini adalah **baseline teragregasi awal**, belum versi final untuk seluruh eksperimen. Pengembangan berikutnya bisa mencakup:
-- agregasi assessment berbasis waktu,
+- agregasi assessment berbasis waktu dan bobot assessment,
 - agregasi VLE per minggu atau per activity type,
 - feature engineering untuk early prediction,
 - encoding kategorikal dan dataset split untuk modeling.

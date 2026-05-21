@@ -77,6 +77,36 @@ def test_build_binary_risk_dataset_merges_info_registration_assessment_and_vle(t
     )
 
     write_csv(
+        data_dir / "assessments.csv",
+        [
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_assessment": "100",
+                "assessment_type": "TMA",
+                "date": "10",
+                "weight": "10",
+            },
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_assessment": "101",
+                "assessment_type": "TMA",
+                "date": "20",
+                "weight": "10",
+            },
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_assessment": "102",
+                "assessment_type": "TMA",
+                "date": "20",
+                "weight": "10",
+            },
+        ],
+    )
+
+    write_csv(
         data_dir / "studentAssessment.csv",
         [
             {
@@ -192,6 +222,19 @@ def test_build_binary_risk_dataset_writes_output_csv(tmp_path):
         ],
     )
     write_csv(
+        data_dir / "assessments.csv",
+        [
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_assessment": "100",
+                "assessment_type": "TMA",
+                "date": "10",
+                "weight": "10",
+            }
+        ],
+    )
+    write_csv(
         data_dir / "studentAssessment.csv",
         [
             {
@@ -227,3 +270,129 @@ def test_build_binary_risk_dataset_writes_output_csv(tmp_path):
 
     assert written[0]["id_student"] == "7"
     assert written[0]["risk_label"] == "AtRisk"
+
+
+def test_build_binary_risk_dataset_keeps_assessment_scores_per_module_presentation(tmp_path):
+    data_dir = tmp_path / "oulad"
+
+    write_csv(
+        data_dir / "studentInfo.csv",
+        [
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_student": "1",
+                "gender": "M",
+                "region": "East Anglian Region",
+                "highest_education": "A Level or Equivalent",
+                "imd_band": "",
+                "age_band": "0-35",
+                "num_of_prev_attempts": "0",
+                "studied_credits": "60",
+                "disability": "N",
+                "final_result": "Pass",
+            },
+            {
+                "code_module": "AAA",
+                "code_presentation": "2014J",
+                "id_student": "1",
+                "gender": "M",
+                "region": "East Anglian Region",
+                "highest_education": "A Level or Equivalent",
+                "imd_band": "",
+                "age_band": "0-35",
+                "num_of_prev_attempts": "0",
+                "studied_credits": "60",
+                "disability": "N",
+                "final_result": "Fail",
+            },
+        ],
+    )
+    write_csv(
+        data_dir / "studentRegistration.csv",
+        [
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_student": "1",
+                "date_registration": "-10",
+                "date_unregistration": "",
+            },
+            {
+                "code_module": "AAA",
+                "code_presentation": "2014J",
+                "id_student": "1",
+                "date_registration": "-10",
+                "date_unregistration": "",
+            },
+        ],
+    )
+    write_csv(
+        data_dir / "assessments.csv",
+        [
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_assessment": "100",
+                "assessment_type": "TMA",
+                "date": "10",
+                "weight": "10",
+            },
+            {
+                "code_module": "AAA",
+                "code_presentation": "2014J",
+                "id_assessment": "200",
+                "assessment_type": "TMA",
+                "date": "10",
+                "weight": "10",
+            },
+        ],
+    )
+    write_csv(
+        data_dir / "studentAssessment.csv",
+        [
+            {
+                "id_assessment": "100",
+                "id_student": "1",
+                "date_submitted": "1",
+                "is_banked": "0",
+                "score": "90",
+            },
+            {
+                "id_assessment": "200",
+                "id_student": "1",
+                "date_submitted": "1",
+                "is_banked": "0",
+                "score": "40",
+            },
+        ],
+    )
+    write_csv(
+        data_dir / "studentVle.csv",
+        [
+            {
+                "code_module": "AAA",
+                "code_presentation": "2013J",
+                "id_student": "1",
+                "id_site": "9",
+                "date": "1",
+                "sum_click": "3",
+            },
+            {
+                "code_module": "AAA",
+                "code_presentation": "2014J",
+                "id_student": "1",
+                "id_site": "10",
+                "date": "1",
+                "sum_click": "7",
+            },
+        ],
+    )
+
+    rows = build_binary_risk_dataset(data_dir)
+    by_presentation = {row["code_presentation"]: row for row in rows}
+
+    assert by_presentation["2013J"]["assessment_count"] == "1"
+    assert by_presentation["2013J"]["assessment_score_mean"] == "90.00"
+    assert by_presentation["2014J"]["assessment_count"] == "1"
+    assert by_presentation["2014J"]["assessment_score_mean"] == "40.00"

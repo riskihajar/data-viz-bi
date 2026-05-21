@@ -17,7 +17,7 @@
 - `Distinction`: **3024**
 
 ## Statistik numerik utama
-- `assessment_count` → min: **0.00**, max: **28.00**, mean: **6.35**
-- `assessment_score_mean` → min: **0.00**, max: **100.00**, mean: **59.72**
+- `assessment_count` → min: **0.00**, max: **14.00**, mean: **5.33**
+- `assessment_score_mean` → min: **0.00**, max: **100.00**, mean: **57.65**
 - `vle_total_clicks` → min: **0.00**, max: **24139.00**, mean: **1215.14**
 - `vle_active_days` → min: **0.00**, max: **286.00**, mean: **55.48**
