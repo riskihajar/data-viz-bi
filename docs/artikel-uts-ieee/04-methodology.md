@@ -4,7 +4,7 @@
 
 Penelitian ini dirancang sebagai penelitian supervised learning untuk klasifikasi risiko mahasiswa. Fokus metodologi mencakup pemilihan dataset, preprocessing, pembentukan fitur, rancangan model, knowledge-based risk layer, dan pemetaan keluaran model ke indikator Business Intelligence. Dengan alur tersebut, penelitian tidak hanya menyiapkan prediksi risiko, tetapi juga menyiapkan cara membaca hasil prediksi sebagai dasar monitoring akademik.
 
-Alur penelitian yang direncanakan terdiri dari lima tahap utama. Tahap pertama adalah pemilihan dan audit dataset. Tahap kedua adalah preprocessing dan pembentukan dataset tabular. Tahap ketiga adalah pemodelan supervised learning menggunakan beberapa algoritma baseline. Tahap keempat adalah penambahan knowledge-based risk layer. Tahap kelima adalah evaluasi dan interpretasi hasil untuk mendukung kebutuhan early warning dan Business Intelligence. Agar arah penelitian tidak bergeser, metode utama tetap ditempatkan sebagai supervised binary classification, sedangkan dashboard dan clustering hanya diposisikan sebagai pengembangan lanjutan apabila dibutuhkan.
+Alur penelitian yang direncanakan terdiri dari lima tahap utama. Tahap pertama adalah pemilihan dan audit dataset. Tahap kedua adalah preprocessing dan pembentukan dataset tabular. Tahap ketiga adalah pemodelan supervised learning menggunakan beberapa algoritma baseline. Tahap keempat adalah penambahan knowledge-based risk layer. Tahap kelima adalah evaluasi dan interpretasi hasil untuk mendukung kebutuhan early warning dan Business Intelligence. Dengan pembatasan tersebut, metode utama penelitian ditempatkan sebagai supervised binary classification, sedangkan dashboard dan clustering diperlakukan sebagai pengembangan lanjutan.
 
 ## B. Dataset
 
@@ -44,9 +44,9 @@ Kelebihan pendekatan knowledge-based adalah hasilnya mudah dijelaskan kepada pih
 
 ## G. Visual Analytics and BI Scenario
 
-Dalam konteks Data Visualization and Business Intelligence, keluaran model dirancang agar dapat diterjemahkan menjadi indikator monitoring, bukan hanya metrik klasifikasi. Rancangan visual analytics memuat jumlah mahasiswa `AtRisk`, distribusi `High Risk`, `Medium Risk`, dan `Low Risk`, perbandingan risiko antar module-presentation, ringkasan aktivitas VLE, serta ringkasan performa assessment. Indikator tersebut dapat digunakan untuk membantu pihak akademik melihat prioritas intervensi tanpa harus membaca seluruh detail teknis model.
+Keluaran model dirancang sebagai dasar indikator monitoring akademik, sehingga hasil klasifikasi tidak hanya dipahami sebagai metrik teknis, tetapi juga sebagai informasi pendukung keputusan. Rancangan visual analytics memuat jumlah mahasiswa `AtRisk`, distribusi `High Risk`, `Medium Risk`, dan `Low Risk`, perbandingan risiko antar module-presentation, ringkasan aktivitas VLE, serta ringkasan performa assessment. Indikator tersebut dapat digunakan untuk membantu pihak akademik melihat prioritas intervensi tanpa harus membaca seluruh detail teknis model.
 
-Dashboard diposisikan sebagai arah implementasi decision support, sedangkan kontribusi metodologis tetap berfokus pada supervised binary classification dan knowledge-based risk layer. Dengan posisi tersebut, visual analytics berperan sebagai bentuk pemanfaatan hasil analitik. Evaluasi tidak hanya melihat accuracy, precision, recall, dan F1-score, tetapi juga apakah keluaran risiko dapat dipetakan menjadi indikator yang actionable untuk monitoring akademik.
+Dashboard berperan sebagai media penyajian indikator decision support, sedangkan kontribusi metodologis tetap berfokus pada supervised binary classification dan knowledge-based risk layer. Dengan posisi tersebut, visual analytics menjadi bentuk pemanfaatan hasil analitik. Evaluasi tidak hanya melihat accuracy, precision, recall, dan F1-score, tetapi juga apakah keluaran risiko dapat dipetakan menjadi indikator yang actionable untuk monitoring akademik.
 
 ## H. Research Scenario
 
