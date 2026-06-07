@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -74,9 +75,22 @@ def _risk_signals(row: pd.Series) -> str:
 
 
 def _priority_score(row: pd.Series) -> float:
-    base_score = {"High Risk": 0.85, "Medium Risk": 0.55, "Low Risk": 0.2}[row["knowledge_risk_level"]]
-    signal_count = 0 if row["knowledge_risk_signals"] == "none" else len(row["knowledge_risk_signals"].split("|"))
-    return min(base_score + (signal_count * 0.03), 0.99)
+    """Score that differentiates within risk levels using actual feature values."""
+    base = {"High Risk": 0.60, "Medium Risk": 0.30, "Low Risk": 0.05}[row["knowledge_risk_level"]]
+    # Use actual values to differentiate (lower values = higher risk score)
+    assess_mean = float(row.get("assessment_score_mean", 0) or 0)
+    assess_count = float(row.get("assessment_count", 0) or 0)
+    vle_clicks = float(row.get("vle_total_clicks", 0) or 0)
+    vle_days = float(row.get("vle_active_days", 0) or 0)
+    has_unreg = int(float(row.get("has_unregistration", 0) or 0))
+
+    # Each factor adds up to a portion, with diminishing scale
+    score_pen = max(0, (60 - assess_mean) / 60) * 0.10
+    count_pen = max(0, (5 - assess_count) / 5) * 0.08
+    click_pen = max(0, (500 - vle_clicks) / 500) * 0.08
+    days_pen = max(0, (30 - vle_days) / 30) * 0.07
+    unreg_pen = 0.07 if has_unreg else 0
+    return round(min(base + score_pen + count_pen + click_pen + days_pen + unreg_pen, 0.99), 2)
 
 
 def _priority_students(df: pd.DataFrame) -> list[dict[str, object]]:
@@ -85,6 +99,21 @@ def _priority_students(df: pd.DataFrame) -> list[dict[str, object]]:
     risk_order = {"High Risk": 0, "Medium Risk": 1, "Low Risk": 2}
     priority["risk_order"] = priority["knowledge_risk_level"].map(risk_order)
     priority = priority.sort_values(["risk_order", "priority_score"], ascending=[True, False])
+    # Sample diversity: mix modules, include varied signal patterns
+    sampled = []
+    high = priority[priority["knowledge_risk_level"] == "High Risk"]
+    medium = priority[priority["knowledge_risk_level"] == "Medium Risk"]
+    # High Risk: top 2 per module (highest priority)
+    for _, group in high.groupby("code_module"):
+        sampled.append(group.head(2))
+    # Medium Risk: pick varied scores — top 1, middle 1 per module
+    for _, group in medium.groupby("code_module"):
+        if len(group) >= 2:
+            mid_idx = len(group) // 2
+            sampled.append(group.iloc[[0, mid_idx]])
+        else:
+            sampled.append(group.head(1))
+    result = pd.concat(sampled).sort_values(["risk_order", "priority_score"], ascending=[True, False]).head(30)
     columns = [
         "code_module",
         "code_presentation",
@@ -93,7 +122,7 @@ def _priority_students(df: pd.DataFrame) -> list[dict[str, object]]:
         "knowledge_risk_level",
         "knowledge_risk_signals",
     ]
-    return priority[columns].head(30).to_dict(orient="records")
+    return result[columns].to_dict(orient="records")
 
 
 def build_dashboard_data() -> dict[str, object]:
@@ -101,8 +130,12 @@ def build_dashboard_data() -> dict[str, object]:
     for col in [
         "assessment_count",
         "assessment_score_mean",
+        "assessment_score_max",
+        "assessment_score_min",
         "vle_total_clicks",
         "vle_active_days",
+        "vle_site_count",
+        "vle_last_activity_day",
         "has_unregistration",
     ]:
         df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
@@ -112,6 +145,8 @@ def build_dashboard_data() -> dict[str, object]:
     experiment_summary = run_experiment(DATASET_PATH)
     high_risk = int((df["knowledge_risk_level"] == "High Risk").sum())
     medium_risk = int((df["knowledge_risk_level"] == "Medium Risk").sum())
+    low_risk = int((df["knowledge_risk_level"] == "Low Risk").sum())
+    unreg_rate = round(df["has_unregistration"].mean() * 100, 1)
 
     signal_counts: defaultdict[str, int] = defaultdict(int)
     for signals in df["knowledge_risk_signals"]:
@@ -120,6 +155,7 @@ def build_dashboard_data() -> dict[str, object]:
                 signal_counts[signal] += 1
 
     return {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "kpis": {
             "rows": len(df),
             "modules": int(df["code_module"].nunique()),
@@ -127,15 +163,20 @@ def build_dashboard_data() -> dict[str, object]:
             "atrisk": int((df["risk_label"] == "AtRisk").sum()),
             "atrisk_rate": round((df["risk_label"] == "AtRisk").mean() * 100, 2),
             "high_risk": high_risk,
-            "intervention_queue": high_risk + medium_risk,
             "medium_risk": medium_risk,
+            "low_risk": low_risk,
+            "unreg_rate": unreg_rate,
         },
         "labelDistribution": _counter_to_items(Counter(df["risk_label"])),
         "finalResultDistribution": _counter_to_items(Counter(df["final_result"])),
         "knowledgeDistribution": _counter_to_items(Counter(df["knowledge_risk_level"])),
         "moduleSummary": _module_summary(df),
         "presentationSummary": _presentation_summary(df),
-        "signalCounts": _counter_to_items(Counter(signal_counts)),
+        "signalCounts": sorted(
+            [{"label": k, "value": v} for k, v in signal_counts.items()],
+            key=lambda x: x["value"],
+            reverse=True,
+        ),
         "modelResults": experiment_summary["model_results"],
         "bestModel": experiment_summary["best_model"],
         "priorityStudents": _priority_students(df),
@@ -147,7 +188,7 @@ HTML_TEMPLATE = r"""<!doctype html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Academic Risk Intervention Dashboard</title>
+  <title>Dashboard Monitoring Risiko Akademik</title>
   <style>
     :root {
       color-scheme: light;
@@ -162,6 +203,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       --red: #dc2626;
       --green: #16a34a;
       --ink: #263548;
+      --active-filter: #dbeafe;
     }
     * { box-sizing: border-box; }
     body {
@@ -169,7 +211,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg);
       color: var(--text);
-      letter-spacing: 0;
     }
     header {
       background: #102033;
@@ -177,119 +218,71 @@ HTML_TEMPLATE = r"""<!doctype html>
       padding: 22px 28px 18px;
       border-bottom: 4px solid var(--teal);
     }
-    header h1 {
-      margin: 0 0 6px;
-      font-size: clamp(24px, 3vw, 36px);
-      font-weight: 750;
-      letter-spacing: 0;
-    }
-    header p { margin: 0; color: #c8d3df; max-width: 960px; line-height: 1.45; }
+    header h1 { margin: 0 0 4px; font-size: clamp(22px, 3vw, 32px); font-weight: 750; }
+    header p { margin: 0; color: #c8d3df; max-width: 960px; line-height: 1.45; font-size: 14px; }
+    .header-meta { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; color: #94a3b8; }
     main { padding: 22px 28px 32px; max-width: 1440px; margin: 0 auto; }
+
     .toolbar {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-    .toolbar select, .toolbar input {
-      border: 1px solid var(--line);
-      background: white;
-      min-height: 38px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      font: inherit;
-      color: var(--text);
-    }
-    .toolbar label { color: var(--muted); font-size: 13px; display: grid; gap: 4px; }
-    .kpis {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(130px, 1fr));
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    .kpi, .panel {
-      background: var(--panel);
-      border: 1px solid var(--line);
+      display: flex; gap: 12px; align-items: center; justify-content: space-between;
+      margin-bottom: 18px; flex-wrap: wrap;
+      padding: 12px 16px; background: var(--panel); border: 1px solid var(--line);
       border-radius: 8px;
-      box-shadow: 0 1px 2px rgba(16, 32, 51, .04);
     }
+    .toolbar select {
+      border: 1px solid var(--line); background: white; min-height: 38px;
+      padding: 8px 12px; border-radius: 6px; font: inherit; color: var(--text);
+      cursor: pointer; min-width: 160px;
+    }
+    .toolbar select:focus { outline: 2px solid var(--blue); border-color: var(--blue); }
+    .toolbar label { color: var(--muted); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .filter-status { font-size: 13px; color: var(--blue); font-weight: 600; display: none; padding: 4px 10px; background: var(--active-filter); border-radius: 4px; }
+    .filter-status.active { display: inline-block; }
+
+    .kpis { display: grid; grid-template-columns: repeat(5, minmax(130px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .kpi, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 1px 2px rgba(16,32,51,.04); }
     .kpi { padding: 14px; min-height: 96px; }
-    .kpi .label { color: var(--muted); font-size: 12px; text-transform: uppercase; font-weight: 700; }
-    .kpi .value { font-size: clamp(22px, 2.8vw, 34px); font-weight: 780; margin-top: 8px; color: var(--ink); }
-    .kpi .note { color: var(--muted); font-size: 12px; margin-top: 2px; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 14px;
-      margin-bottom: 14px;
-    }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 14px;
-    }
+    .kpi .label { color: var(--muted); font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 0.02em; }
+    .kpi .value { font-size: clamp(22px, 2.8vw, 32px); font-weight: 780; margin-top: 6px; color: var(--ink); }
+    .kpi .note { color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+    .grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; margin-bottom: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
     .panel { padding: 16px; overflow: hidden; }
-    .panel h2 {
-      margin: 0 0 12px;
-      font-size: 16px;
-      line-height: 1.25;
-    }
-    .bar-row { display: grid; grid-template-columns: 130px 1fr 70px; gap: 10px; align-items: center; margin: 10px 0; }
+    .panel h2 { margin: 0 0 12px; font-size: 15px; line-height: 1.25; font-weight: 700; }
+
+    .bar-row { display: grid; grid-template-columns: 150px 1fr 70px; gap: 10px; align-items: center; margin: 10px 0; }
     .bar-label { color: var(--ink); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .bar-track { height: 18px; background: #e8edf3; border-radius: 5px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 5px; }
+    .bar-fill { height: 100%; border-radius: 5px; transition: width 0.3s ease; }
     .bar-value { color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; font-size: 12px; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    th, td {
-      border-bottom: 1px solid var(--line);
-      padding: 9px 8px;
-      text-align: left;
-      vertical-align: top;
-    }
-    th { color: var(--muted); font-size: 12px; font-weight: 750; background: #f9fafb; position: sticky; top: 0; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 9px 8px; text-align: left; vertical-align: top; }
+    th { color: var(--muted); font-size: 11px; font-weight: 750; background: #f9fafb; position: sticky; top: 0; text-transform: uppercase; letter-spacing: 0.02em; }
     .scroll { max-height: 390px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; }
-    .pill {
-      display: inline-block;
-      padding: 3px 7px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
+
+    .pill { display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap; }
     .pill-high { background: #fee2e2; color: #991b1b; }
     .pill-medium { background: #fef3c7; color: #92400e; }
     .pill-low { background: #dcfce7; color: #166534; }
-    .pill-atrisk { background: #e0e7ff; color: #3730a3; }
-    .stack { display: flex; width: 100%; height: 18px; overflow: hidden; border-radius: 5px; background: #e8edf3; }
-    .stack span { height: 100%; display: block; }
+
     .legend { display: flex; gap: 12px; flex-wrap: wrap; color: var(--muted); font-size: 12px; margin-top: 10px; }
-    .legend i { width: 10px; height: 10px; display: inline-block; border-radius: 2px; margin-right: 4px; }
+    .legend i { width: 10px; height: 10px; display: inline-block; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
     .muted { color: var(--muted); }
+
     .decision-note {
-      border-left: 4px solid var(--teal);
-      background: #eef7f5;
-      padding: 12px 14px;
-      border-radius: 6px;
-      color: #164e45;
-      line-height: 1.45;
-      margin-bottom: 12px;
+      border-left: 4px solid var(--teal); background: #eef7f5;
+      padding: 12px 14px; border-radius: 6px; color: #164e45; line-height: 1.45; margin-bottom: 12px; font-size: 13px;
     }
     .action-list { display: grid; gap: 9px; }
-    .action-item {
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 10px 12px;
-      background: #fbfcfd;
-      line-height: 1.4;
-    }
-    .action-item b { display: block; color: var(--ink); margin-bottom: 3px; }
+    .action-item { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: #fbfcfd; line-height: 1.4; }
+    .action-item b { display: block; color: var(--ink); margin-bottom: 3px; font-size: 13px; }
+    .action-item span { font-size: 12px; color: var(--muted); }
+
+    footer { padding: 16px 28px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); margin-top: 12px; }
+    footer .note-box { background: #f9fafb; border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; line-height: 1.5; }
+
     @media (max-width: 1100px) {
       .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .grid, .grid-3 { grid-template-columns: 1fr; }
@@ -297,21 +290,31 @@ HTML_TEMPLATE = r"""<!doctype html>
     @media (max-width: 680px) {
       header, main { padding-left: 16px; padding-right: 16px; }
       .kpis { grid-template-columns: 1fr 1fr; }
-      .bar-row { grid-template-columns: 96px 1fr 52px; }
+      .bar-row { grid-template-columns: 110px 1fr 52px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Academic Risk Intervention Dashboard</h1>
-    <p>Dashboard DVBI untuk membantu pengelola akademik memantau mahasiswa berisiko, menentukan prioritas intervensi, dan membaca alasan risiko dari aktivitas belajar.</p>
+    <h1>Dashboard Monitoring Risiko Akademik</h1>
+    <p>Membantu pengelola akademik memantau mahasiswa berisiko, menentukan prioritas intervensi, dan membaca alasan risiko berdasarkan aktivitas belajar.</p>
+    <div class="header-meta">
+      <span>Dataset: Open University Learning Analytics Dataset (OULAD) 2013–2014</span>
+      <span>|</span>
+      <span id="generatedAt"></span>
+    </div>
   </header>
   <main>
     <section class="toolbar">
-      <div class="muted">Audience: pimpinan akademik, program studi, dan tim counselling</div>
-      <label>Module
-        <select id="moduleFilter"><option value="all">All modules</option></select>
-      </label>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <label>Filter Module
+          <select id="moduleFilter">
+            <option value="all">Semua Module</option>
+          </select>
+        </label>
+        <span class="filter-status" id="filterStatus"></span>
+      </div>
+      <div class="muted" style="font-size:12px;">Kode module telah dianonimisasi oleh penyedia dataset</div>
     </section>
 
     <section class="kpis" id="kpis"></section>
@@ -319,12 +322,12 @@ HTML_TEMPLATE = r"""<!doctype html>
     <section class="grid">
       <div class="panel">
         <h2>Segmentasi Risiko Mahasiswa</h2>
-        <div class="decision-note">Gunakan kelompok High Risk sebagai prioritas kontak akademik, Medium Risk sebagai observasi berkala, dan Low Risk sebagai monitoring reguler.</div>
+        <div class="decision-note">Kelompok <b>High Risk</b> = prioritas kontak akademik. <b>Medium Risk</b> = observasi berkala. <b>Low Risk</b> = monitoring reguler.</div>
         <div id="knowledgeBars"></div>
         <div class="legend">
-          <span><i style="background: var(--red)"></i>High Risk</span>
-          <span><i style="background: var(--amber)"></i>Medium Risk</span>
-          <span><i style="background: var(--green)"></i>Low Risk</span>
+          <span><i style="background:var(--red)"></i>High Risk</span>
+          <span><i style="background:var(--amber)"></i>Medium Risk</span>
+          <span><i style="background:var(--green)"></i>Low Risk</span>
         </div>
       </div>
       <div class="panel">
@@ -353,7 +356,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         <h2>Area Akademik Prioritas</h2>
         <div class="scroll">
           <table>
-            <thead><tr><th>Module</th><th>Presentation</th><th>Mahasiswa</th><th>AtRisk Rate</th><th>Intervention Rate</th><th>High</th><th>Medium</th></tr></thead>
+            <thead><tr><th>Module</th><th>Presentation</th><th>Jumlah Mahasiswa</th><th>AtRisk Rate</th><th>High</th><th>Medium</th></tr></thead>
             <tbody id="presentationRows"></tbody>
           </table>
         </div>
@@ -362,50 +365,74 @@ HTML_TEMPLATE = r"""<!doctype html>
         <h2>Daftar Prioritas Intervensi</h2>
         <div class="scroll">
           <table>
-            <thead><tr><th>Student</th><th>Module</th><th>Status</th><th>Risk Score</th><th>Alasan Utama</th><th>Aksi</th></tr></thead>
+            <thead><tr><th>ID Mahasiswa (anonim)</th><th>Module</th><th>Level Risiko</th><th>Skor Prioritas</th><th>Alasan Utama</th><th>Rekomendasi</th></tr></thead>
             <tbody id="priorityRows"></tbody>
           </table>
         </div>
       </div>
     </section>
-    <section class="panel">
-      <h2>Catatan Metodologis</h2>
-      <p class="muted">Dashboard ini memakai model <b id="bestModel"></b> sebagai scoring engine dan rule-based risk layer sebagai penjelas risiko. Metrik model tidak ditampilkan sebagai panel utama karena dashboard ini ditujukan untuk keputusan monitoring akademik, bukan evaluasi teknis eksperimen.</p>
-    </section>
   </main>
+
+  <footer>
+    <div class="note-box">
+      <b>Catatan Metodologis:</b> Dashboard ini menggunakan model <b id="bestModel"></b> sebagai scoring engine dan knowledge-based risk layer sebagai penjelas risiko.
+      Metrik teknis model tidak ditampilkan di sini karena dashboard ditujukan untuk keputusan monitoring akademik.
+      Kode module (AAA–GGG) merupakan anonimisasi dari penyedia dataset OULAD dan tidak merepresentasikan nama mata kuliah sebenarnya.
+    </div>
+  </footer>
 
   <script>
     const DATA = __DASHBOARD_DATA__;
-    const colors = {
-      "High Risk": "#dc2626",
-      "Medium Risk": "#d97706",
-      "Low Risk": "#16a34a",
-      "AtRisk": "#2563eb",
-      "Successful": "#0f766e",
-      "Fail": "#dc2626",
-      "Withdrawn": "#d97706",
-      "Pass": "#0f766e",
-      "Distinction": "#16a34a"
-    };
-
+    const colors = {"High Risk":"#dc2626","Medium Risk":"#d97706","Low Risk":"#16a34a"};
     const fmt = new Intl.NumberFormat("id-ID");
-    const pct = value => `${Number(value).toFixed(2)}%`;
+    const pct = v => `${Number(v).toFixed(1)}%`;
     const signalLabels = {
       low_assessment_score: "Skor assessment rendah",
       low_assessment_count: "Partisipasi assessment rendah",
       low_vle_clicks: "Aktivitas VLE rendah",
       low_vle_active_days: "Hari aktif VLE rendah",
-      has_unregistration: "Ada sinyal unregistration"
+      has_unregistration: "Sinyal unregistration"
     };
 
+    let currentModule = "all";
+
+    function getFilteredData() {
+      if (currentModule === "all") return DATA;
+      const mod = currentModule;
+      const modSummary = DATA.moduleSummary.filter(r => r.module === mod);
+      const ms = modSummary[0] || {};
+      return {
+        ...DATA,
+        kpis: {
+          rows: ms.total || 0,
+          modules: 1,
+          presentations: DATA.presentationSummary.filter(r => r.module === mod).length,
+          atrisk: ms.atrisk || 0,
+          atrisk_rate: ms.atrisk_rate || 0,
+          high_risk: ms.high || 0,
+          medium_risk: ms.medium || 0,
+          low_risk: ms.low || 0,
+          unreg_rate: DATA.kpis.unreg_rate,
+        },
+        knowledgeDistribution: [
+          {label: "Low Risk", value: ms.low || 0},
+          {label: "High Risk", value: ms.high || 0},
+          {label: "Medium Risk", value: ms.medium || 0},
+        ],
+        moduleSummary: modSummary,
+        presentationSummary: DATA.presentationSummary.filter(r => r.module === mod),
+        priorityStudents: DATA.priorityStudents.filter(r => r.code_module === mod),
+      };
+    }
+
     function renderKpis(data) {
+      const k = data.kpis;
       const items = [
-        ["Mahasiswa Dipantau", fmt.format(data.kpis.rows), "rekaman mahasiswa per module"],
-        ["AtRisk", fmt.format(data.kpis.atrisk), pct(data.kpis.atrisk_rate)],
-        ["High Risk", fmt.format(data.kpis.high_risk), "kontak prioritas"],
-        ["Medium Risk", fmt.format(data.kpis.medium_risk), "observasi berkala"],
-        ["Intervention Queue", fmt.format(data.kpis.intervention_queue), "perlu ditinjau tim akademik"],
-        ["Module", fmt.format(data.kpis.modules), "area pembelajaran"]
+        ["Mahasiswa Dipantau", fmt.format(k.rows), `${k.presentations} presentation`],
+        ["Prediksi AtRisk", fmt.format(k.atrisk), pct(k.atrisk_rate) + " dari total"],
+        ["High Risk", fmt.format(k.high_risk), "prioritas kontak"],
+        ["Medium Risk", fmt.format(k.medium_risk), "observasi berkala"],
+        ["Unregistration Rate", pct(k.unreg_rate), "sinyal early dropout"],
       ];
       document.getElementById("kpis").innerHTML = items.map(([label, value, note]) => `
         <article class="kpi"><div class="label">${label}</div><div class="value">${value}</div><div class="note">${note}</div></article>
@@ -413,52 +440,50 @@ HTML_TEMPLATE = r"""<!doctype html>
     }
 
     function renderBars(target, items, valueKey = "value") {
-      const max = Math.max(...items.map(item => Number(item[valueKey])), 1);
+      const max = Math.max(...items.map(i => Number(i[valueKey])), 1);
       document.getElementById(target).innerHTML = items.map(item => {
         const value = Number(item[valueKey]);
         const width = value / max * 100;
-        const label = item.label ?? item.module ?? item.signal;
+        const label = item.label ?? item.module;
         const displayLabel = signalLabels[label] || label;
         const color = colors[label] || "#2563eb";
         return `<div class="bar-row">
           <div class="bar-label" title="${displayLabel}">${displayLabel}</div>
           <div class="bar-track"><div class="bar-fill" style="width:${width}%;background:${color}"></div></div>
-          <div class="bar-value">${fmt.format(value)}</div>
+          <div class="bar-value">${typeof value === "number" && value < 100 ? pct(value) : fmt.format(value)}</div>
         </div>`;
       }).join("");
     }
 
-    function renderDecisionPanels() {
-      const high = DATA.kpis.high_risk;
-      const medium = DATA.kpis.medium_risk;
-      const queue = DATA.kpis.intervention_queue;
-      const topModule = DATA.moduleSummary[0];
-      document.getElementById("decisionSummary").innerHTML = [
-        [`${fmt.format(high)} mahasiswa High Risk`, "Prioritaskan kontak akademik dan counselling pada kelompok ini."],
-        [`${fmt.format(medium)} mahasiswa Medium Risk`, "Masukkan ke daftar observasi berkala dan cek perkembangan engagement."],
-        [`${topModule.module} memiliki AtRisk rate tertinggi`, `${pct(topModule.atrisk_rate)} dari ${fmt.format(topModule.total)} mahasiswa pada module ini masuk label AtRisk.`]
-      ].map(([title, body]) => `<div class="action-item"><b>${title}</b>${body}</div>`).join("");
+    function renderDecisionPanels(data) {
+      const k = data.kpis;
+      const topMod = data.moduleSummary[0];
+      const summaryItems = [
+        [`${fmt.format(k.high_risk)} mahasiswa High Risk`, "Perlu kontak akademik dan counselling segera."],
+        [`${fmt.format(k.medium_risk)} mahasiswa Medium Risk`, "Masukkan ke daftar observasi berkala, cek engagement."],
+      ];
+      if (topMod) {
+        summaryItems.push([`Module ${topMod.module}: AtRisk rate ${pct(topMod.atrisk_rate)}`, `${fmt.format(topMod.atrisk)} dari ${fmt.format(topMod.total)} mahasiswa berisiko.`]);
+      }
+      document.getElementById("decisionSummary").innerHTML = summaryItems
+        .map(([t, b]) => `<div class="action-item"><b>${t}</b><span>${b}</span></div>`).join("");
 
       document.getElementById("actionPlan").innerHTML = [
-        ["Hubungi High Risk", "Prioritaskan mahasiswa dengan unregistration, aktivitas VLE rendah, dan assessment lemah."],
-        ["Cek module-presentation merah", "Lihat area akademik dengan intervention rate tertinggi untuk menentukan fokus dosen wali atau tutor."],
-        ["Pantau engagement mingguan", "Gunakan sinyal VLE dan assessment sebagai indikator awal sebelum hasil akhir diketahui."]
-      ].map(([title, body]) => `<div class="action-item"><b>${title}</b>${body}</div>`).join("");
+        ["Hubungi High Risk", "Mahasiswa dengan unregistration + aktivitas rendah + assessment lemah."],
+        ["Periksa module merah", "Lihat area dengan AtRisk rate tertinggi untuk fokus tutor."],
+        ["Pantau engagement", "Gunakan sinyal VLE dan assessment sebagai indikator awal."]
+      ].map(([t, b]) => `<div class="action-item"><b>${t}</b><span>${b}</span></div>`).join("");
     }
 
     function riskPill(level) {
-      const klass = level === "High Risk" ? "pill-high" : level === "Medium Risk" ? "pill-medium" : "pill-low";
-      return `<span class="pill ${klass}">${level}</span>`;
-    }
-
-    function labelPill(label) {
-      return `<span class="pill pill-atrisk">${label}</span>`;
+      const cls = level === "High Risk" ? "pill-high" : level === "Medium Risk" ? "pill-medium" : "pill-low";
+      return `<span class="pill ${cls}">${level}</span>`;
     }
 
     function explainSignals(signals) {
-      const parts = String(signals || "none").split("|").filter(part => part && part !== "none");
-      if (!parts.length) return "Tidak ada sinyal dominan";
-      return parts.map(part => signalLabels[part] || part).join(", ");
+      const parts = String(signals || "none").split("|").filter(p => p && p !== "none");
+      if (!parts.length) return "<span class='muted'>—</span>";
+      return parts.map(p => signalLabels[p] || p).join(", ");
     }
 
     function suggestAction(row) {
@@ -468,48 +493,66 @@ HTML_TEMPLATE = r"""<!doctype html>
       return "Observasi berkala";
     }
 
-    function renderTables(module = "all") {
-      const presentations = DATA.presentationSummary.filter(row => module === "all" || row.module === module);
-      document.getElementById("presentationRows").innerHTML = presentations.map(row => `
+    function renderTables(data) {
+      document.getElementById("presentationRows").innerHTML = data.presentationSummary.map(row => `
         <tr>
           <td>${row.module}</td><td>${row.presentation}</td><td>${fmt.format(row.total)}</td>
-          <td>${pct(row.atrisk_rate)}</td><td>${pct(row.priority_rate)}</td>
+          <td>${pct(row.atrisk_rate)}</td>
           <td>${fmt.format(row.high)}</td><td>${fmt.format(row.medium)}</td>
         </tr>
       `).join("");
 
-      const priorities = DATA.priorityStudents.filter(row => module === "all" || row.code_module === module);
-      document.getElementById("priorityRows").innerHTML = priorities.map(row => `
-        <tr>
-          <td>${row.id_student}</td><td>${row.code_module}-${row.code_presentation}</td>
-          <td>${riskPill(row.knowledge_risk_level)}</td>
-          <td>${Number(row.priority_score).toFixed(2)}</td>
-          <td>${explainSignals(row.knowledge_risk_signals)}</td>
-          <td>${suggestAction(row)}</td>
-        </tr>
-      `).join("");
+      const priorities = data.priorityStudents;
+      document.getElementById("priorityRows").innerHTML = priorities.length
+        ? priorities.map(row => `
+          <tr>
+            <td>${row.id_student}</td><td>${row.code_module}-${row.code_presentation}</td>
+            <td>${riskPill(row.knowledge_risk_level)}</td>
+            <td>${Number(row.priority_score).toFixed(2)}</td>
+            <td>${explainSignals(row.knowledge_risk_signals)}</td>
+            <td>${suggestAction(row)}</td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="6" class="muted" style="text-align:center;padding:20px">Tidak ada data untuk filter ini</td></tr>`;
     }
 
-    function renderModuleFilter() {
+    function renderAll() {
+      const data = getFilteredData();
+      renderKpis(data);
+      renderBars("knowledgeBars", data.knowledgeDistribution);
+      renderBars("moduleBars", data.moduleSummary.map(r => ({label: r.module, value: r.atrisk_rate})));
+      renderDecisionPanels(data);
+      renderTables(data);
+      // Signal bars always show global data for context
+      renderBars("signalBars", DATA.signalCounts);
+    }
+
+    function initFilter() {
       const select = document.getElementById("moduleFilter");
       DATA.moduleSummary.forEach(row => {
-        const option = document.createElement("option");
-        option.value = row.module;
-        option.textContent = row.module;
-        select.appendChild(option);
+        const opt = document.createElement("option");
+        opt.value = row.module;
+        opt.textContent = `${row.module} (${fmt.format(row.total)} mhs)`;
+        select.appendChild(opt);
       });
-      select.addEventListener("change", event => renderTables(event.target.value));
+      select.addEventListener("change", e => {
+        currentModule = e.target.value;
+        const status = document.getElementById("filterStatus");
+        if (currentModule === "all") {
+          status.classList.remove("active");
+        } else {
+          status.textContent = `Menampilkan: Module ${currentModule}`;
+          status.classList.add("active");
+        }
+        renderAll();
+      });
     }
 
     function init() {
       document.getElementById("bestModel").textContent = DATA.bestModel;
-      renderKpis(DATA);
-      renderBars("knowledgeBars", DATA.knowledgeDistribution);
-      renderBars("signalBars", DATA.signalCounts);
-      renderBars("moduleBars", DATA.moduleSummary.map(row => ({ label: row.module, value: row.atrisk_rate })));
-      renderDecisionPanels();
-      renderModuleFilter();
-      renderTables();
+      document.getElementById("generatedAt").textContent = "Dashboard dibuat: " + DATA.generated_at;
+      initFilter();
+      renderAll();
     }
     init();
   </script>

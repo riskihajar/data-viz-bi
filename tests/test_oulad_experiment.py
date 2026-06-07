@@ -104,4 +104,4 @@ def test_run_experiment_writes_report_and_predictions(tmp_path):
     assert set(row["knowledge_risk_level"] for row in predictions).issubset(
         {"Low Risk", "Medium Risk", "High Risk"}
     )
-    assert "## Performa Model" in report_path.read_text(encoding="utf-8")
+    assert "## Performa pada Hold-Out Test Set" in report_path.read_text(encoding="utf-8")

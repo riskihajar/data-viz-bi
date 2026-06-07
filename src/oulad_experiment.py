@@ -4,13 +4,14 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict, Iterable, List
 
+import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, precision_recall_fscore_support
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GroupKFold, GroupShuffleSplit
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from xgboost import XGBClassifier
@@ -121,7 +122,7 @@ def _build_preprocessor() -> ColumnTransformer:
     )
 
 
-def _build_models() -> Dict[str, Pipeline]:
+def _build_models(scale_pos_weight: float = 1.0) -> Dict[str, Pipeline]:
     return {
         "Logistic Regression": Pipeline(
             steps=[
@@ -157,6 +158,7 @@ def _build_models() -> Dict[str, Pipeline]:
                         learning_rate=0.08,
                         subsample=0.9,
                         colsample_bytree=0.9,
+                        scale_pos_weight=scale_pos_weight,
                         eval_metric="logloss",
                         random_state=42,
                         n_jobs=-1,
@@ -195,20 +197,58 @@ def run_experiment(
     feature_columns = CATEGORICAL_COLUMNS + NUMERIC_COLUMNS
     X = df[feature_columns]
     y = df[TARGET_COLUMN].map(LABEL_TO_NUMERIC)
+    groups = df["id_student"]
 
-    X_train, X_test, y_train, y_test, train_index, test_index = train_test_split(
-        X,
-        y,
-        df.index,
-        test_size=0.2,
-        random_state=42,
-        stratify=y,
-    )
+    # Step 1: Hold-out test set (20%) split by student group
+    gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=42)
+    trainval_idx, test_idx = next(gss.split(X, y, groups))
 
+    X_trainval, X_test = X.iloc[trainval_idx], X.iloc[test_idx]
+    y_trainval, y_test = y.iloc[trainval_idx], y.iloc[test_idx]
+    groups_trainval = groups.iloc[trainval_idx]
+    test_index = df.index[test_idx]
+
+    # Compute scale_pos_weight from trainval data
+    n_positive = int((y_trainval == POSITIVE_LABEL).sum())
+    n_negative = int((y_trainval == 0).sum())
+    scale_pos_weight = n_negative / n_positive if n_positive > 0 else 1.0
+
+    # Split statistics
+    trainval_students = int(groups_trainval.nunique())
+    test_students = int(groups.iloc[test_idx].nunique())
+    trainval_label_dist = dict(Counter(y_trainval.map(NUMERIC_TO_LABEL)))
+    test_label_dist = dict(Counter(y_test.map(NUMERIC_TO_LABEL)))
+
+    # Step 2: 5-fold GroupKFold cross-validation on trainval set
+    n_folds = 5
+    gkf = GroupKFold(n_splits=n_folds)
+    cv_scores: Dict[str, List[Dict[str, float]]] = {name: [] for name in _build_models(scale_pos_weight).keys()}
+
+    for fold_train_idx, fold_val_idx in gkf.split(X_trainval, y_trainval, groups_trainval):
+        X_fold_train = X_trainval.iloc[fold_train_idx]
+        y_fold_train = y_trainval.iloc[fold_train_idx]
+        X_fold_val = X_trainval.iloc[fold_val_idx]
+        y_fold_val = y_trainval.iloc[fold_val_idx]
+
+        for name, model in _build_models(scale_pos_weight).items():
+            model.fit(X_fold_train, y_fold_train)
+            y_fold_pred = model.predict(X_fold_val)
+            cv_scores[name].append(_model_metrics(y_fold_val, y_fold_pred))
+
+    # Aggregate CV results (mean ± std)
+    cv_results: Dict[str, Dict[str, object]] = {}
+    for name, fold_metrics in cv_scores.items():
+        cv_results[name] = {}
+        for metric in ["accuracy", "precision_atrisk", "recall_atrisk", "f1_atrisk"]:
+            values = [fold[metric] for fold in fold_metrics]
+            cv_results[name][f"{metric}_mean"] = round(float(np.mean(values)), 4)
+            cv_results[name][f"{metric}_std"] = round(float(np.std(values)), 4)
+
+    # Step 3: Final evaluation on hold-out test set (train on full trainval)
     model_results: Dict[str, Dict[str, object]] = {}
     trained_models: Dict[str, Pipeline] = {}
-    for name, model in _build_models().items():
-        model.fit(X_train, y_train)
+    for name, model in _build_models(scale_pos_weight=scale_pos_weight).items():
+        model.fit(X_trainval, y_trainval)
         y_pred = model.predict(X_test)
         model_results[name] = _model_metrics(y_test, y_pred)
         trained_models[name] = model
@@ -251,8 +291,20 @@ def run_experiment(
         "numeric_features": NUMERIC_COLUMNS,
         "label_distribution": dict(Counter(df[TARGET_COLUMN])),
         "knowledge_risk_distribution": dict(Counter(df["knowledge_risk_level"])),
+        "cv_results": cv_results,
+        "cv_folds": n_folds,
         "model_results": model_results,
         "best_model": best_model_name,
+        "split_strategy": "GroupShuffleSplit (holdout) + GroupKFold (CV), grouped by id_student",
+        "split_ratio": "80/20 holdout; 5-fold CV on train set",
+        "trainval_rows": len(X_trainval),
+        "test_rows": len(X_test),
+        "trainval_students": trainval_students,
+        "test_students": test_students,
+        "trainval_label_distribution": trainval_label_dist,
+        "test_label_distribution": test_label_dist,
+        "scale_pos_weight": round(scale_pos_weight, 4),
+        "imbalance_handling": "class_weight='balanced' (LR, RF); scale_pos_weight (XGBoost)",
     }
 
     if report_output_path is not None:
@@ -280,12 +332,45 @@ def write_experiment_report(summary: Dict[str, object], output_path: str | Path)
     lines.extend(
         [
             "",
+            "## Data Split",
+            f"- Strategi: **{summary['split_strategy']}**",
+            f"- Rasio: **{summary['split_ratio']}**",
+            f"- Train+Validation: **{summary['trainval_rows']}** baris ({summary['trainval_students']} mahasiswa unik)",
+            f"- Test (hold-out): **{summary['test_rows']}** baris ({summary['test_students']} mahasiswa unik)",
+            f"- Distribusi label train+val: {summary['trainval_label_distribution']}",
+            f"- Distribusi label test: {summary['test_label_distribution']}",
+            "",
+            "**Leakage prevention:** Split dilakukan berdasarkan `id_student` (GroupShuffleSplit untuk hold-out, GroupKFold untuk CV). Tidak ada mahasiswa yang muncul di training dan test/validation secara bersamaan.",
+            "",
+            "## Penanganan Imbalance",
+            f"- Metode: **{summary['imbalance_handling']}**",
+            f"- `scale_pos_weight` (XGBoost): **{summary['scale_pos_weight']}**",
+            f"- Rasio kelas: AtRisk {summary['label_distribution'].get('AtRisk', 0)} vs Successful {summary['label_distribution'].get('Successful', 0)} (rasio ~1.12:1, near-balanced)",
+            "",
             "## Ringkasan Fitur",
             "- Fitur kategorikal: "
             + ", ".join(f"`{col}`" for col in summary["categorical_features"]),
             "- Fitur numerik: " + ", ".join(f"`{col}`" for col in summary["numeric_features"]),
             "",
-            "## Performa Model",
+            f"## Cross-Validation ({summary['cv_folds']}-Fold GroupKFold)",
+            "| Model | Accuracy | Precision AtRisk | Recall AtRisk | F1 AtRisk |",
+            "|---|---:|---:|---:|---:|",
+        ]
+    )
+
+    for model_name, metrics in summary["cv_results"].items():
+        lines.append(
+            f"| {model_name} | "
+            f"{metrics['accuracy_mean']:.4f} ± {metrics['accuracy_std']:.4f} | "
+            f"{metrics['precision_atrisk_mean']:.4f} ± {metrics['precision_atrisk_std']:.4f} | "
+            f"{metrics['recall_atrisk_mean']:.4f} ± {metrics['recall_atrisk_std']:.4f} | "
+            f"{metrics['f1_atrisk_mean']:.4f} ± {metrics['f1_atrisk_std']:.4f} |"
+        )
+
+    lines.extend(
+        [
+            "",
+            "## Performa pada Hold-Out Test Set",
             "| Model | Accuracy | Precision AtRisk | Recall AtRisk | F1 AtRisk | Confusion Matrix [[TN, FP], [FN, TP]] |",
             "|---|---:|---:|---:|---:|---|",
         ]
@@ -314,6 +399,11 @@ def write_experiment_report(summary: Dict[str, object], output_path: str | Path)
             "",
             "## Implikasi Visual Analytics",
             "Hasil eksperimen dapat diterjemahkan menjadi indikator monitoring akademik, terutama jumlah mahasiswa `AtRisk`, distribusi `High Risk`, `Medium Risk`, dan `Low Risk`, perbandingan risiko antar module-presentation, serta daftar prioritas mahasiswa yang memiliki sinyal aktivitas VLE rendah, performa assessment rendah, atau unregistration.",
+            "",
+            "## Known Limitations",
+            "- **Fitur `has_unregistration` dan `date_unregistration`** bersifat post-hoc: mahasiswa yang unregister secara definisi sudah dropout. Fitur ini dipertahankan untuk baseline karena memberikan sinyal yang relevan untuk knowledge-based layer, tetapi untuk skenario early prediction murni sebaiknya dieksklusi.",
+            "- **Agregasi assessment dan VLE menggunakan data seluruh semester**, bukan cut-off temporal (misal minggu ke-4). Ini berarti model melihat seluruh trajectory mahasiswa, bukan prediksi dini.",
+            "- **Split dilakukan berdasarkan `id_student`** untuk menghindari group leakage (mahasiswa yang sama muncul di train dan test pada module berbeda).",
         ]
     )
 
