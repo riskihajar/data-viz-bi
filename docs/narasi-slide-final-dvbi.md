@@ -139,17 +139,27 @@ Dan keempat, kombinasi machine learning dan rule-based menghasilkan label predik
 
 Untuk saran pengembangan: pertama, validasi threshold knowledge layer dengan data semester baru. Kedua, tambahkan fitur temporal per minggu untuk mendukung prediksi yang lebih awal. Ketiga, integrasikan keluaran ke LMS institusi sebagai dashboard real-time. Dan keempat, lakukan evaluasi efektivitas intervensi berdasarkan keluaran model.
 
-Demikian presentasi dari kami. Terima kasih atas perhatiannya. Wassalamualaikum warahmatullahi wabarakatuh.
+Demikian presentasi dari kami. Kami berharap pendekatan ini dapat menjadi langkah awal menuju sistem monitoring akademik yang lebih proaktif, sehingga institusi dapat mendampingi mahasiswa berisiko sebelum keputusan dropout terjadi.
+
+Terima kasih atas perhatiannya. Kami terbuka untuk pertanyaan dan masukan. Wassalamualaikum warahmatullahi wabarakatuh.
 
 ---
 
 ## Slide 13 — Dashboard
 
-Ini adalah tampilan dashboard monitoring risiko akademik yang telah kami implementasi. Di bagian atas terdapat ringkasan jumlah mahasiswa yang dipantau, prediksi AtRisk, dan distribusi level risiko.
+Ini adalah tampilan dashboard monitoring risiko akademik yang telah kami implementasi.
 
-Di tengah ada segmentasi risiko beserta ringkasan keputusan dan prioritas tindakan. Di bawahnya terdapat breakdown per module-presentation dan daftar prioritas intervensi yang menampilkan ID mahasiswa, level risiko, skor prioritas, alasan utama, dan rekomendasi tindakan.
+Di bagian atas terdapat lima KPI utama: jumlah mahasiswa yang dipantau, prediksi AtRisk beserta indikator tren dibanding periode sebelumnya, jumlah High Risk, Medium Risk, dan unregistration rate.
 
-Filter module di atas memungkinkan pemangku kepentingan untuk melihat data spesifik per module, dan seluruh panel akan terupdate sesuai filter yang dipilih.
+Baris kedua menampilkan segmentasi risiko mahasiswa dengan panduan tindakan untuk setiap level, serta ringkasan keputusan yang langsung mengarahkan pengelola pada langkah prioritas.
+
+Baris ketiga berisi tiga panel: prioritas tindakan, ko-occurensi sinyal risiko yang menunjukkan berapa mahasiswa memiliki satu, dua, hingga lima sinyal aktif bersamaan, dan perbandingan risiko antar module yang disertai jumlah volume mahasiswa.
+
+Di bawahnya terdapat panel tren risiko per periode yang menunjukkan pergerakan AtRisk rate dari 2013B hingga 2014J beserta referensi benchmark, serta panel profil mahasiswa berhasil yang menampilkan rata-rata aktivitas VLE dan skor assessment sebagai target minimum engagement.
+
+Bagian terakhir berisi dua tabel: area akademik prioritas yang menampilkan breakdown per module-presentation, dan daftar prioritas intervensi yang mencakup ID mahasiswa, level risiko, skor prioritas, hari terakhir aktif di VLE, alasan utama, dan rekomendasi tindakan.
+
+Filter module di toolbar memungkinkan pemangku kepentingan melihat data spesifik per module, dan seluruh panel akan terupdate sesuai filter yang dipilih.
 
 ---
 
