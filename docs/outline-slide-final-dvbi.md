@@ -22,8 +22,8 @@
 - Dropout mahasiswa merupakan permasalahan serius dalam pengelolaan pendidikan tinggi
 - Dampak: capaian akademik mahasiswa, efektivitas layanan, dan evaluasi kinerja institusi
 - Identifikasi dini mahasiswa berisiko memungkinkan intervensi tepat sasaran sebelum terlambat
-- Saat ini tersedia data akademik, registrasi, dan digital traces yang dapat diolah
-- Dalam konteks DVBI: hasil analitik harus diterjemahkan menjadi indikator yang actionable untuk monitoring dan pengambilan keputusan
+- Saat ini tersedia data akademik, registrasi, dan jejak digital yang dapat diolah
+- Dalam konteks DVBI: hasil analitik harus diterjemahkan menjadi indikator yang dapat ditindaklanjuti untuk monitoring dan pengambilan keputusan
 
 ---
 
@@ -32,12 +32,12 @@
 **Rumusan Masalah:**
 1. Bagaimana membangun model klasifikasi risiko dropout mahasiswa menggunakan supervised learning?
 2. Bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi?
-3. Bagaimana keluaran model dapat dipetakan menjadi indikator decision support dalam konteks BI?
+3. Bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks BI?
 
 **Tujuan:**
 1. Membangun model binary classification (AtRisk vs Successful) dengan 3 algoritma
 2. Merancang knowledge-based risk layer untuk menjelaskan faktor risiko
-3. Memetakan keluaran ke indikator monitoring early warning
+3. Memetakan keluaran ke indikator monitoring dan peringatan dini
 
 ---
 
@@ -60,7 +60,7 @@
 |---|---|
 | Multi-table join | 4 tabel berbeda perlu digabung ke satu unit analisis |
 | Volume besar | studentVle memiliki >10 juta baris yang harus diagregasi |
-| Missing value | `imd_band` kosong pada sebagian data → diisi "Unknown" |
+| Missing value | Indeks deprivasi kosong pada sebagian data → diisi "Unknown" |
 | Sinyal unregistration | 30.9% mahasiswa memiliki tanggal unregistration |
 | Skala fitur beragam | Klik VLE (0–24.139) vs assessment count (0–14) |
 
@@ -85,9 +85,9 @@
 ## Slide 7 — Metode Penelitian
 
 **Supervised Binary Classification:**
-- Logistic Regression (baseline interpretable)
+- Logistic Regression (model dasar, mudah diinterpretasi)
 - Random Forest (non-linear, fitur campuran)
-- XGBoost (gradient boosting, state-of-the-art tabular)
+- XGBoost (*gradient boosting*, unggul pada data tabular)
 
 **Evaluasi:** Accuracy, Precision, Recall, F1 — fokus Recall AtRisk (meminimalkan mahasiswa berisiko yang terlewat)
 
@@ -95,11 +95,11 @@
 - Rule-based scoring berdasarkan: assessment score, assessment count, VLE clicks, VLE active days, sinyal unregistration
 - Output: High Risk / Medium Risk / Low Risk + alasan risiko
 
-**Split:** 80% train+validation, 20% hold-out test — grouped by `id_student` (mencegah group leakage)
+**Split:** 80% train+validation, 20% test — dikelompokkan berdasarkan mahasiswa agar tidak ada mahasiswa yang sama di train dan test
 
-**Validasi:** 5-fold GroupKFold cross-validation pada train set → menghasilkan mean ± std untuk membuktikan stabilitas model, sekaligus memastikan setiap data pernah menjadi validation tepat satu kali
+**Validasi:** 5-fold cross-validation pada train set → menghasilkan mean ± std untuk membuktikan stabilitas model, sekaligus memastikan setiap data pernah menjadi validation tepat satu kali
 
-**Imbalance Handling:** `class_weight='balanced'` (LR, RF), `scale_pos_weight` proporsional (XGBoost)
+**Imbalance Handling:** Pembobotan kelas proporsional pada ketiga algoritma
 
 ---
 
@@ -107,18 +107,18 @@
 
 - 10 paper relevan (2020–2025) dianalisis
 - Metode dominan: Random Forest, XGBoost, clustering, deep learning, AutoML
-- Variabel umum: performa akademik, demografi, engagement LMS, digital traces
+- Variabel umum: performa akademik, demografi, *engagement* LMS, jejak digital
 - **Gap utama yang ditemukan:**
-  - Paper berhenti di level prediksi dan metrik model
-  - Visual analytics untuk pengambil keputusan belum dibahas operasional
-  - Kaitan model → monitoring → action plan intervensi masih lemah
-- **Kontribusi penelitian ini:** menjembatani prediksi ML + rule-based → indikator BI
+  - Penelitian sebelumnya fokus pada prediksi dan metrik model
+  - Visual analytics untuk pengambil keputusan belum dikembangkan secara operasional
+  - Kaitan antara model, monitoring, dan action plan intervensi masih terbuka
+- **Kontribusi penelitian ini:** menghubungkan prediksi ML + rule-based langsung ke indikator BI
 
 ---
 
 ## Slide 9 — Hasil Evaluasi Model
 
-**Cross-Validation (5-Fold GroupKFold, grouped by id_student):**
+**Cross-Validation (5-Fold, dikelompokkan per mahasiswa):**
 
 Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa yang sama di train dan validation pada fold yang sama.
 
@@ -130,7 +130,7 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 
 → Standar deviasi rendah (~0.3–0.7%) menunjukkan performa stabil di seluruh fold.
 
-**Hold-Out Test Set (20%, 6.471 baris, 5.757 mahasiswa):**
+**Test Set (20%, 6.471 baris, 5.757 mahasiswa):**
 
 | Model | Accuracy | Precision | Recall | F1 |
 |---|---:|---:|---:|---:|
@@ -139,12 +139,12 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 | XGBoost | 93.94% | 98.02% | 90.29% | 94.00% |
 
 - **Model terpilih:** Random Forest (recall tertinggi pada test set)
-- Miss rate: hanya 329 dari 3.398 mahasiswa AtRisk yang tidak terdeteksi (9.7%)
+- Tingkat kegagalan deteksi: hanya 329 dari 3.398 mahasiswa AtRisk yang tidak terdeteksi (9,7%)
 
 **Data Split:**
 - Train+Validation: 26.122 baris (23.028 mahasiswa unik)
-- Hold-out Test: 6.471 baris (5.757 mahasiswa unik)
-- Imbalance handling: `class_weight='balanced'` (LR, RF), `scale_pos_weight=0.89` (XGBoost)
+- Test: 6.471 baris (5.757 mahasiswa unik)
+- Pembobotan kelas proporsional pada ketiga model
 
 **Knowledge-Based Risk Layer:**
 | Level | Jumlah | Persentase |
@@ -185,35 +185,35 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 | Medium Risk | 750 | 7 | 99.1% → AtRisk |
 | Low Risk | 1.105 | 3.321 | 75.0% → Successful |
 
-→ Knowledge layer dan model sangat konsisten di area High/Medium Risk. Model menangkap 1.105 kasus tambahan yang rule layer saja tidak bisa deteksi (Low Risk tapi diprediksi AtRisk).
+→ Knowledge layer dan model sangat konsisten di area High/Medium Risk. Model menangkap 1.105 kasus tambahan pada kelompok Low Risk yang teridentifikasi AtRisk melalui pola data yang lebih kompleks.
 
 ---
 
 ## Slide 11 — Implikasi Business Intelligence
 
-**Dari prediksi ke decision support:**
+**Dari prediksi ke pendukung keputusan:**
 - Jumlah mahasiswa AtRisk per module → prioritas monitoring prodi
-- Distribusi High/Medium/Low Risk → resource allocation untuk counselling
-- Sinyal risiko (low_assessment_score, low_vle_clicks, has_unregistration) → alasan yang bisa dibaca dosen wali
-- Intervention queue: daftar prioritas mahasiswa yang perlu ditindaklanjuti
+- Distribusi High/Medium/Low Risk → alokasi sumber daya untuk *counselling*
+- Sinyal risiko (skor assessment rendah, aktivitas VLE rendah, sinyal unregistration) → alasan yang bisa dibaca dosen wali
+- Antrean intervensi: daftar prioritas mahasiswa yang berpotensi membutuhkan tindak lanjut, yang efektivitasnya dapat dievaluasi pada implementasi berikutnya
 
 **Stakeholder:**
-- Pimpinan akademik → overview risiko per module
+- Pimpinan akademik → ringkasan risiko per module
 - Program studi → identifikasi modul bermasalah
 - Dosen wali/tutor → daftar mahasiswa prioritas + alasan
-- Tim counselling → sinyal early warning
+- Tim *counselling* → sinyal peringatan dini
 
-**Dashboard telah diimplementasi sebagai prototype monitoring akademik.**
+**Dashboard telah diimplementasi sebagai purwarupa monitoring akademik.**
 
 ---
 
 ## Slide 12 — Kesimpulan & Saran
 
 **Kesimpulan:**
-1. Ketiga model menunjukkan performa stabil melalui 5-fold CV (std < 0.7%), dengan XGBoost terbaik di CV dan Random Forest terpilih berdasarkan recall tertinggi pada hold-out test
-2. Group split berdasarkan `id_student` memastikan tidak ada data leakage; evaluasi valid secara metodologis
+1. Ketiga model menunjukkan performa stabil melalui 5-fold CV (std < 0.7%), dengan XGBoost terbaik di CV dan Random Forest terpilih berdasarkan recall tertinggi pada test set
+2. Split berdasarkan identitas mahasiswa memastikan tidak ada data leakage; evaluasi valid secara metodologis
 3. Knowledge-based risk layer konsisten dengan model (agreement 99–100% untuk High/Medium Risk)
-4. Kombinasi ML + rule-based menghasilkan output yang bukan hanya label prediksi, tetapi juga alasan risiko dan prioritas monitoring
+4. Kombinasi ML + rule-based menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu
 
 **Saran:**
 1. Validasi threshold knowledge layer dengan data semester baru
@@ -225,9 +225,9 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 
 ## Slide 13 — Dashboard
 
-- Tampilan utama: overview risiko seluruh mahasiswa
+- Tampilan utama: ringkasan risiko seluruh mahasiswa
 - Breakdown risiko per module-presentation
-- Intervention queue: daftar mahasiswa prioritas tinggi
+- Antrean intervensi: daftar mahasiswa prioritas tinggi
 - Detail sinyal risiko per mahasiswa individu
 
 ---
