@@ -364,7 +364,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         <div id="actionPlan" class="action-list"></div>
       </div>
       <div class="panel">
-        <h2>Ko-Occurensi Sinyal Risiko</h2>
+        <h2>Akumulasi Sinyal Risiko</h2>
         <p class="muted" style="font-size:12px;margin:0 0 16px;">Jumlah mahasiswa berdasarkan banyaknya sinyal risiko yang aktif bersamaan.</p>
         <div class="cooccurrence" id="cooccurrence"></div>
       </div>
