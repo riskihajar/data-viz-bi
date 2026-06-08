@@ -29,7 +29,7 @@ Dalam konteks Data Visualization dan Business Intelligence, hasil prediksi harus
 
 Dari latar belakang tersebut, kami merumuskan tiga pertanyaan penelitian.
 
-Pertama, bagaimana membangun model klasifikasi risiko dropout mahasiswa menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks BI.
+Pertama, bagaimana membangun model klasifikasi risiko dropout mahasiswa menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks Business Intelligence atau BI.
 
 Tujuan penelitian ini ada tiga. Pertama, membangun model binary classification dengan tiga algoritma pembanding. Kedua, merancang knowledge-based risk layer berbasis aturan untuk menjelaskan faktor risiko. Dan ketiga, memetakan keluaran model menjadi indikator monitoring dan peringatan dini yang dapat digunakan oleh pihak akademik.
 
@@ -39,7 +39,7 @@ Tujuan penelitian ini ada tiga. Pertama, membangun model binary classification d
 
 Dataset yang kami gunakan adalah Open University Learning Analytics Dataset, atau OULAD. Dataset ini dipilih karena menyediakan data akademik dan aktivitas pembelajaran digital yang relevan untuk analisis risiko mahasiswa.
 
-OULAD terdiri dari empat tabel utama: studentInfo, studentRegistration, studentAssessment, dan studentVle. Total data setelah preprocessing adalah 32.593 baris, di mana setiap baris merepresentasikan satu mahasiswa pada satu modul dan satu periode.
+OULAD terdiri dari empat tabel utama: studentInfo, studentRegistration, studentAssessment, dan studentVle. VLE adalah singkatan dari Virtual Learning Environment, yaitu platform pembelajaran daring tempat mahasiswa mengakses materi, forum, dan aktivitas akademik. Total data setelah preprocessing adalah 32.593 baris, di mana setiap baris merepresentasikan satu mahasiswa pada satu modul dan satu periode.
 
 Dataset mencakup 7 modul dan 4 periode pembelajaran dari tahun 2013 sampai 2014. Distribusi labelnya cukup seimbang: 52,8 persen masuk kelas AtRisk, yaitu mahasiswa yang Withdrawn atau Fail, dan 47,2 persen masuk kelas Successful, yaitu mahasiswa yang Pass atau Distinction.
 
@@ -83,7 +83,7 @@ Untuk penanganan imbalance, ketiga algoritma menggunakan pembobotan kelas propor
 
 Kami menganalisis 10 paper relevan dari tahun 2020 sampai 2025 yang membahas prediksi dropout dan performa akademik mahasiswa.
 
-Metode yang dominan digunakan adalah Random Forest, XGBoost, clustering, deep learning, dan AutoML. Variabel yang umum mencakup performa akademik, demografi, engagement LMS, dan jejak digital.
+Metode yang dominan digunakan adalah Random Forest, XGBoost, clustering, deep learning, dan AutoML. Variabel yang umum mencakup performa akademik, demografi, engagement Learning Management System (LMS), dan jejak digital.
 
 Dari review tersebut, kami menemukan gap utama. Pertama, penelitian sebelumnya fokus pada prediksi dan metrik model. Kedua, visual analytics untuk pengambil keputusan belum dikembangkan secara operasional. Dan ketiga, kaitan antara model prediksi, monitoring berkala, dan rencana intervensi masih terbuka.
 
@@ -129,7 +129,7 @@ Dashboard monitoring akademik telah kami implementasi sebagai purwarupa yang men
 
 ## Slide 12 — Kesimpulan & Saran
 
-Sebagai kesimpulan, pertama, ketiga model menunjukkan performa yang stabil melalui 5-fold cross-validation dengan standar deviasi di bawah 0,7 persen. XGBoost terbaik pada tahap CV, sedangkan Random Forest terpilih berdasarkan recall tertinggi pada test set.
+Sebagai kesimpulan, pertama, ketiga model menunjukkan performa yang stabil melalui 5-fold cross-validation dengan standar deviasi di bawah 0,7 persen. XGBoost terbaik pada tahap cross-validation, sedangkan Random Forest terpilih berdasarkan recall tertinggi pada test set.
 
 Kedua, seluruh split dikelompokkan berdasarkan identitas mahasiswa sehingga tidak ada data leakage. Evaluasi yang kami lakukan valid secara metodologis.
 
