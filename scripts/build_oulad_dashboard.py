@@ -336,7 +336,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         </label>
         <span class="filter-status" id="filterStatus"></span>
       </div>
-      <div class="muted" style="font-size:12px;">Kode module telah dianonimisasi oleh penyedia dataset</div>
+      <div class="muted" style="font-size:12px;">Module = mata kuliah. Kode module telah dianonimisasi oleh penyedia dataset.</div>
     </section>
 
     <section class="kpis" id="kpis"></section>
