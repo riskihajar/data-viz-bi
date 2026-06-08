@@ -513,7 +513,7 @@ HTML_TEMPLATE = r"""<!doctype html>
           return `<div style="display:flex;flex-direction:column;align-items:center;flex:1;"><span style="font-size:12px;font-weight:700;color:var(--ink);">${pct(item.atrisk_rate)}</span><div style="width:100%;max-width:48px;height:${h}px;background:${item.atrisk_rate>55?'var(--red)':item.atrisk_rate>45?'var(--amber)':'var(--blue)'};border-radius:4px 4px 0 0;margin:4px 0;"></div><span style="font-size:11px;color:var(--muted);">${item.presentation}</span><span style="font-size:10px;color:var(--muted);">${fmt.format(item.total)} mhs</span></div>`;
         }).join("") + `</div>`;
       // Benchmark
-      document.getElementById("benchmark").innerHTML = `<span>⚠️</span><span>Referensi: rata-rata dropout rate pendidikan tinggi UK ~25–30% (HESA). AtRisk rate OULAD lebih tinggi karena mencakup Fail + Withdrawn.</span>`;
+      document.getElementById("benchmark").innerHTML = `<span>⚠️</span><span>Referensi: rata-rata dropout rate pendidikan tinggi United Kingdom ~25–30% (HESA — Higher Education Statistics Agency). AtRisk rate OULAD lebih tinggi karena mencakup Fail + Withdrawn.</span>`;
     }
 
     function renderSuccess() {
