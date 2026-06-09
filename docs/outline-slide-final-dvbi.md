@@ -87,7 +87,7 @@
 **Supervised Binary Classification:**
 - Logistic Regression (model dasar, mudah diinterpretasi)
 - Random Forest (non-linear, fitur campuran)
-- XGBoost (*gradient boosting*, unggul pada data tabular)
+- XGBoost (*gradient boosting*, banyak digunakan pada data tabular)
 
 **Evaluasi:** Accuracy, Precision, Recall, F1 — fokus Recall AtRisk (meminimalkan mahasiswa berisiko yang terlewat)
 
@@ -97,7 +97,7 @@
 
 **Split:** 80% train+validation, 20% test — dikelompokkan berdasarkan mahasiswa agar tidak ada mahasiswa yang sama di train dan test
 
-**Validasi:** 5-fold cross-validation pada train set → menghasilkan mean ± std untuk membuktikan stabilitas model, sekaligus memastikan setiap data pernah menjadi validation tepat satu kali
+**Validasi:** 5-fold cross-validation pada train set → menghasilkan mean ± std untuk menilai konsistensi performa model, sekaligus mengatur agar setiap data pernah menjadi validation tepat satu kali
 
 **Imbalance Handling:** Pembobotan kelas proporsional pada ketiga algoritma
 
@@ -112,7 +112,7 @@
   - Penelitian sebelumnya fokus pada prediksi dan metrik model
   - Visual analytics untuk pengambil keputusan belum dikembangkan secara operasional
   - Kaitan antara model, monitoring, dan action plan intervensi masih terbuka
-- **Kontribusi penelitian ini:** menghubungkan prediksi ML + rule-based langsung ke indikator BI
+- **Fokus penelitian ini:** menghubungkan prediksi ML + rule-based ke indikator BI
 
 ---
 
@@ -139,7 +139,7 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 | XGBoost | 93.94% | 98.02% | 90.29% | 94.00% |
 
 - **Model terpilih:** Random Forest (recall tertinggi pada test set)
-- Tingkat kegagalan deteksi: hanya 329 dari 3.398 mahasiswa AtRisk yang tidak terdeteksi (9,7%)
+- False negative kelas AtRisk: 329 dari 3.398 mahasiswa AtRisk tidak terdeteksi (9,7%)
 
 **Data Split:**
 - Train+Validation: 26.122 baris (23.028 mahasiswa unik)
@@ -167,7 +167,7 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 | 4 | date_unregistration | 0.060 |
 | 5 | assessment_score_mean | 0.052 |
 
-→ Partisipasi assessment dan aktivitas terakhir di VLE adalah prediktor terkuat.
+→ Partisipasi assessment dan aktivitas terakhir di VLE menjadi fitur paling dominan dalam model.
 
 **Modul dengan Risiko Tertinggi:**
 
@@ -211,14 +211,14 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 
 **Kesimpulan:**
 1. Ketiga model menunjukkan performa stabil melalui 5-fold CV (std < 0.7%), dengan XGBoost terbaik di CV dan Random Forest terpilih berdasarkan recall tertinggi pada test set
-2. Split berdasarkan identitas mahasiswa memastikan tidak ada data leakage; evaluasi valid secara metodologis
+2. Split berdasarkan identitas mahasiswa mengurangi risiko data leakage antar split
 3. Knowledge-based risk layer konsisten dengan model (agreement 99–100% untuk High/Medium Risk)
 4. Kombinasi ML + rule-based menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu
 
 **Saran:**
 1. Validasi threshold knowledge layer dengan data semester baru
 2. Tambahkan temporal features (per-minggu) untuk early prediction lebih awal
-3. Integrasikan output ke LMS institusi sebagai dashboard real-time
+3. Integrasikan output ke LMS institusi jika ingin dikembangkan sebagai dashboard operasional
 4. Lakukan evaluasi efektivitas intervensi berbasis output model
 
 ---
@@ -244,5 +244,4 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 - [8] Sarker et al., "Multi-class phased prediction of academic performance and dropout," 2023
 - [9] Iatrellis et al., "Study regarding the influence of personality and LMS usage profile on learning performance," 2024
 - [10] Berens et al., "Crossing individual university boundaries: a comprehensive approach to predicting dropouts," 2025
-
 

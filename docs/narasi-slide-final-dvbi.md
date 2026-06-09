@@ -31,7 +31,7 @@ Dari latar belakang tersebut, kami merumuskan tiga pertanyaan penelitian.
 
 Pertama, bagaimana membangun model klasifikasi risiko dropout mahasiswa menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks Business Intelligence atau BI.
 
-Tujuan penelitian ini ada tiga. Pertama, membangun model binary classification dengan tiga algoritma pembanding. Kedua, merancang knowledge-based risk layer berbasis aturan untuk menjelaskan faktor risiko. Dan ketiga, memetakan keluaran model menjadi indikator monitoring dan peringatan dini yang dapat digunakan oleh pihak akademik.
+Tujuan penelitian ini ada tiga. Pertama, membangun model binary classification dengan tiga algoritma pembanding. Kedua, merancang knowledge-based risk layer berbasis aturan untuk menjelaskan faktor risiko. Dan ketiga, memetakan keluaran model menjadi indikator monitoring dan peringatan dini yang dapat menjadi bahan pertimbangan pihak akademik.
 
 ---
 
@@ -65,7 +65,7 @@ Total fitur yang terbentuk adalah 21, terdiri dari 8 fitur kategorikal dan 13 fi
 
 ## Slide 7 — Metode Penelitian
 
-Metode utama yang kami gunakan adalah supervised binary classification dengan tiga algoritma. Logistic Regression sebagai model dasar yang mudah diinterpretasi. Random Forest untuk menangani hubungan non-linear dan fitur campuran. Dan XGBoost sebagai algoritma gradient boosting yang unggul pada data tabular.
+Metode utama yang kami gunakan adalah supervised binary classification dengan tiga algoritma. Logistic Regression sebagai model dasar yang mudah diinterpretasi. Random Forest untuk menangani hubungan non-linear dan fitur campuran. Dan XGBoost sebagai algoritma gradient boosting yang banyak digunakan pada data tabular.
 
 Evaluasi menggunakan Accuracy, Precision, Recall, dan F1-score, dengan fokus pada Recall kelas AtRisk. Alasannya, dalam konteks peringatan dini, kami ingin meminimalkan jumlah mahasiswa berisiko yang terlewat oleh model.
 
@@ -85,19 +85,19 @@ Kami menganalisis 10 paper relevan dari tahun 2020 sampai 2025 yang membahas pre
 
 Metode yang dominan digunakan adalah Random Forest, XGBoost, clustering, deep learning, dan AutoML. Variabel yang umum mencakup performa akademik, demografi, engagement Learning Management System (LMS), dan jejak digital.
 
-Dari review tersebut, kami menemukan gap utama. Pertama, penelitian sebelumnya fokus pada prediksi dan metrik model. Kedua, visual analytics untuk pengambil keputusan belum dikembangkan secara operasional. Dan ketiga, kaitan antara model prediksi, monitoring berkala, dan rencana intervensi masih terbuka.
+Dari review tersebut, kami melihat beberapa ruang pengembangan. Pertama, banyak penelitian masih berfokus pada prediksi dan metrik model. Kedua, visual analytics untuk pengambil keputusan belum selalu dibahas secara operasional. Dan ketiga, kaitan antara model prediksi, monitoring berkala, dan rencana intervensi masih dapat dikembangkan lebih lanjut.
 
-Kontribusi penelitian ini adalah menghubungkan prediksi machine learning dengan rule-based risk layer, lalu memetakan hasilnya langsung ke indikator BI yang dapat digunakan oleh pemangku kepentingan akademik.
+Fokus penelitian ini adalah menghubungkan prediksi machine learning dengan rule-based risk layer, lalu memetakan hasilnya ke indikator BI yang relevan bagi pemangku kepentingan akademik.
 
 ---
 
 ## Slide 9 — Hasil Evaluasi Model
 
-Pertama, hasil cross-validation 5-fold yang dikelompokkan per mahasiswa. Setiap fold menggunakan sekitar 20.900 baris sebagai training dan 5.200 baris sebagai validation, dengan jaminan tidak ada mahasiswa yang sama di train dan validation pada fold yang sama.
+Pertama, hasil cross-validation 5-fold yang dikelompokkan per mahasiswa. Setiap fold menggunakan sekitar 20.900 baris sebagai training dan 5.200 baris sebagai validation, dengan pengaturan agar mahasiswa yang sama tidak muncul di train dan validation pada fold yang sama.
 
-Hasilnya, Logistic Regression mencapai accuracy 93,65 persen dengan standar deviasi 0,29. Random Forest mencapai 94,19 persen plus minus 0,28. Dan XGBoost mencapai 94,41 persen plus minus 0,31. Standar deviasi yang rendah, di bawah 0,7 persen untuk semua metrik, menunjukkan bahwa performa ketiga model stabil.
+Hasilnya, Logistic Regression mencapai accuracy 93,65 persen dengan standar deviasi 0,29. Random Forest mencapai 94,19 persen plus minus 0,28. Dan XGBoost mencapai 94,41 persen plus minus 0,31. Standar deviasi yang rendah, di bawah 0,7 persen untuk semua metrik, mengindikasikan bahwa performa ketiga model relatif konsisten pada skema validasi ini.
 
-Kedua, evaluasi pada test set yang terdiri dari 6.471 baris dan 5.757 mahasiswa yang tidak pernah dilihat model selama training. Pada test set ini, Random Forest memiliki recall tertinggi yaitu 90,32 persen, sehingga dipilih sebagai model utama untuk kebutuhan peringatan dini. Tingkat kegagalan deteksinya hanya 9,7 persen, artinya dari 3.398 mahasiswa AtRisk, hanya 329 yang tidak teridentifikasi.
+Kedua, evaluasi pada test set yang terdiri dari 6.471 baris dan 5.757 mahasiswa yang tidak muncul pada data training. Pada test set ini, Random Forest memiliki recall tertinggi yaitu 90,32 persen, sehingga dipilih sebagai model utama untuk skenario peringatan dini. False negative rate pada kelas AtRisk sebesar 9,7 persen, artinya dari 3.398 mahasiswa AtRisk, terdapat 329 yang tidak teridentifikasi oleh model.
 
 Untuk knowledge-based risk layer, dari 32.593 total data: 22.168 terklasifikasi Low Risk, 6.508 High Risk, dan 3.917 Medium Risk.
 
@@ -105,13 +105,13 @@ Untuk knowledge-based risk layer, dari 32.593 total data: 22.168 terklasifikasi 
 
 ## Slide 10 — Analisis Hasil
 
-Dari feature importance XGBoost, lima fitur paling berpengaruh adalah: assessment count dengan importance 0,37, hari aktivitas terakhir VLE 0,13, sinyal unregistration 0,08, tanggal unregistration 0,06, dan rata-rata skor assessment 0,05. Artinya, partisipasi dalam assessment dan aktivitas terakhir di VLE menjadi prediktor terkuat apakah mahasiswa berisiko atau tidak.
+Dari feature importance XGBoost, lima fitur paling berpengaruh adalah: assessment count dengan importance 0,37, hari aktivitas terakhir VLE 0,13, sinyal unregistration 0,08, tanggal unregistration 0,06, dan rata-rata skor assessment 0,05. Artinya, partisipasi dalam assessment dan aktivitas terakhir di VLE menjadi fitur yang paling dominan dalam model.
 
 Dari sisi modul, CCC pada periode 2014B memiliki risiko tertinggi dengan 65 persen mahasiswa masuk kategori AtRisk, diikuti CCC 2014J sebesar 60,1 persen dan DDD 2014B sebesar 59,8 persen.
 
-Temuan penting dari cross-tabulation antara knowledge layer dan prediksi model: untuk mahasiswa yang dikategorikan High Risk oleh rule layer, model memprediksi 100 persen dari mereka sebagai AtRisk. Untuk Medium Risk, agreement-nya 99,1 persen. Kedua pendekatan saling menguatkan.
+Temuan dari cross-tabulation antara knowledge layer dan prediksi model menunjukkan pola yang konsisten: untuk mahasiswa yang dikategorikan High Risk oleh rule layer, model memprediksi 100 persen dari mereka sebagai AtRisk. Untuk Medium Risk, agreement-nya 99,1 persen.
 
-Selain itu, model menangkap 1.105 kasus pada kelompok Low Risk yang teridentifikasi AtRisk melalui pola data yang lebih kompleks. Ini menunjukkan bahwa kedua pendekatan saling melengkapi.
+Selain itu, model memberi sinyal AtRisk pada 1.105 kasus di kelompok Low Risk. Ini menunjukkan bahwa pendekatan berbasis model dapat memberikan sinyal tambahan di luar aturan yang dirancang secara manual.
 
 ---
 
@@ -119,9 +119,9 @@ Selain itu, model menangkap 1.105 kasus pada kelompok Low Risk yang teridentifik
 
 Hasil prediksi kami petakan menjadi indikator pendukung keputusan.
 
-Jumlah mahasiswa AtRisk per module menjadi dasar prioritas monitoring prodi. Distribusi High, Medium, dan Low Risk membantu alokasi sumber daya untuk tim counselling. Sinyal risiko seperti skor assessment rendah, aktivitas VLE rendah, atau unregistration memberikan alasan spesifik yang dapat langsung dibaca oleh dosen wali. Antrean intervensi menyediakan daftar prioritas mahasiswa yang berpotensi membutuhkan tindak lanjut, yang efektivitasnya dapat dievaluasi pada implementasi berikutnya.
+Jumlah mahasiswa AtRisk per module dapat menjadi dasar prioritas monitoring prodi. Distribusi High, Medium, dan Low Risk dapat membantu pertimbangan alokasi sumber daya untuk tim counselling. Sinyal risiko seperti skor assessment rendah, aktivitas VLE rendah, atau unregistration memberikan alasan spesifik yang dapat ditinjau oleh dosen wali. Antrean intervensi menyediakan daftar prioritas mahasiswa yang berpotensi membutuhkan tindak lanjut, yang efektivitasnya perlu dievaluasi pada implementasi berikutnya.
 
-Dari sisi pemangku kepentingan: pimpinan akademik mendapatkan ringkasan risiko per module, program studi dapat mengidentifikasi modul yang bermasalah, dosen wali atau tutor mendapatkan daftar mahasiswa prioritas beserta alasan risiko, dan tim counselling mendapatkan sinyal peringatan dini untuk ditindaklanjuti.
+Dari sisi pemangku kepentingan: pimpinan akademik mendapatkan ringkasan risiko per module, program studi dapat meninjau modul dengan tingkat risiko tinggi, dosen wali atau tutor mendapatkan daftar mahasiswa prioritas beserta alasan risiko, dan tim counselling mendapatkan sinyal awal untuk dipertimbangkan dalam tindak lanjut.
 
 Dashboard monitoring akademik telah kami implementasi sebagai purwarupa yang menampilkan seluruh indikator tersebut.
 
@@ -129,17 +129,17 @@ Dashboard monitoring akademik telah kami implementasi sebagai purwarupa yang men
 
 ## Slide 12 — Kesimpulan & Saran
 
-Sebagai kesimpulan, pertama, ketiga model menunjukkan performa yang stabil melalui 5-fold cross-validation dengan standar deviasi di bawah 0,7 persen. XGBoost terbaik pada tahap cross-validation, sedangkan Random Forest terpilih berdasarkan recall tertinggi pada test set.
+Sebagai kesimpulan, pertama, ketiga model menunjukkan performa yang relatif konsisten melalui 5-fold cross-validation dengan standar deviasi di bawah 0,7 persen. XGBoost terbaik pada tahap cross-validation, sedangkan Random Forest terpilih berdasarkan recall tertinggi pada test set.
 
-Kedua, seluruh split dikelompokkan berdasarkan identitas mahasiswa sehingga tidak ada data leakage. Evaluasi yang kami lakukan valid secara metodologis.
+Kedua, seluruh split dikelompokkan berdasarkan identitas mahasiswa sehingga mahasiswa yang sama tidak muncul pada train dan test. Skema ini mengurangi risiko data leakage antar split.
 
-Ketiga, knowledge-based risk layer menunjukkan konsistensi tinggi dengan prediksi model, dengan agreement 99 sampai 100 persen pada level High dan Medium Risk.
+Ketiga, knowledge-based risk layer menunjukkan konsistensi tinggi dengan prediksi model pada data yang dianalisis, dengan agreement 99 sampai 100 persen pada level High dan Medium Risk.
 
-Dan keempat, kombinasi machine learning dan rule-based menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu.
+Dan keempat, kombinasi machine learning dan rule-based dapat menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu.
 
-Untuk saran pengembangan: pertama, validasi threshold knowledge layer dengan data semester baru. Kedua, tambahkan fitur temporal per minggu untuk mendukung prediksi yang lebih awal. Ketiga, integrasikan keluaran ke LMS institusi sebagai dashboard real-time. Dan keempat, lakukan evaluasi efektivitas intervensi berdasarkan keluaran model.
+Untuk saran pengembangan: pertama, validasi threshold knowledge layer dengan data semester baru. Kedua, tambahkan fitur temporal per minggu untuk mendukung prediksi yang lebih awal. Ketiga, integrasikan keluaran ke LMS institusi jika ingin dikembangkan sebagai dashboard operasional. Dan keempat, lakukan evaluasi efektivitas intervensi berdasarkan keluaran model.
 
-Demikian presentasi dari kami. Kami berharap pendekatan ini dapat menjadi langkah awal menuju sistem monitoring akademik yang lebih proaktif, sehingga institusi dapat mendampingi mahasiswa berisiko sebelum keputusan dropout terjadi.
+Demikian presentasi dari kami. Kami berharap pendekatan ini dapat menjadi langkah awal untuk mendukung monitoring akademik yang lebih proaktif, sehingga institusi memiliki dasar analitik tambahan dalam mendampingi mahasiswa berisiko.
 
 ---
 
@@ -149,20 +149,20 @@ Ini adalah tampilan dashboard monitoring risiko akademik yang telah kami impleme
 
 Di bagian atas terdapat lima KPI utama: jumlah mahasiswa yang dipantau, prediksi AtRisk beserta indikator tren dibanding periode sebelumnya, jumlah High Risk, Medium Risk, dan unregistration rate.
 
-Baris kedua menampilkan segmentasi risiko mahasiswa dengan panduan tindakan untuk setiap level, serta ringkasan keputusan yang langsung mengarahkan pengelola pada langkah prioritas.
+Baris kedua menampilkan segmentasi risiko mahasiswa dengan panduan tindakan untuk setiap level, serta ringkasan keputusan yang membantu pengelola meninjau langkah prioritas.
 
 Baris ketiga berisi tiga panel: prioritas tindakan, ko-occurensi sinyal risiko yang menunjukkan berapa mahasiswa memiliki satu, dua, hingga lima sinyal aktif bersamaan, dan perbandingan risiko antar module yang disertai jumlah volume mahasiswa.
 
-Di bawahnya terdapat panel tren risiko per periode yang menunjukkan pergerakan AtRisk rate dari 2013B hingga 2014J beserta referensi benchmark, serta panel profil mahasiswa berhasil yang menampilkan rata-rata aktivitas VLE dan skor assessment sebagai target minimum engagement.
+Di bawahnya terdapat panel tren risiko per periode yang menunjukkan pergerakan AtRisk rate dari 2013B hingga 2014J beserta referensi benchmark, serta panel profil mahasiswa berhasil yang menampilkan rata-rata aktivitas VLE dan skor assessment sebagai gambaran pola engagement.
 
 Bagian terakhir berisi dua tabel: area akademik prioritas yang menampilkan breakdown per module-presentation, dan daftar prioritas intervensi yang mencakup ID mahasiswa, level risiko, skor prioritas, hari terakhir aktif di VLE, alasan utama, dan rekomendasi tindakan.
 
-Filter module di toolbar memungkinkan pemangku kepentingan melihat data spesifik per module, dan seluruh panel akan terupdate sesuai filter yang dipilih.
+Filter module di toolbar memungkinkan pemangku kepentingan melihat data spesifik per module, dan seluruh panel akan berubah sesuai filter yang dipilih.
 
 ---
 
 ## Slide 14 — Referensi
 
-Ini adalah daftar referensi utama yang kami gunakan dalam penelitian ini, terdiri dari 10 paper dan dataset OULAD. Seluruh referensi menggunakan format IEEE dan tersedia dalam arsip PDF yang telah divalidasi.
+Ini adalah daftar referensi utama yang kami gunakan dalam penelitian ini, terdiri dari 10 paper dan dataset OULAD. Seluruh referensi disusun menggunakan format IEEE.
 
 Demikian Paparana Kami dari Kelompok 5, Terima kasih atas perhatiannya. Wassalamualaikum warahmatullahi wabarakatuh.
