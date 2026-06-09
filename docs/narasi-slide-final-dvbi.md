@@ -141,8 +141,6 @@ Untuk saran pengembangan: pertama, validasi threshold knowledge layer dengan dat
 
 Demikian presentasi dari kami. Kami berharap pendekatan ini dapat menjadi langkah awal menuju sistem monitoring akademik yang lebih proaktif, sehingga institusi dapat mendampingi mahasiswa berisiko sebelum keputusan dropout terjadi.
 
-Terima kasih atas perhatiannya. Kami terbuka untuk pertanyaan dan masukan. Wassalamualaikum warahmatullahi wabarakatuh.
-
 ---
 
 ## Slide 13 — Dashboard
@@ -166,3 +164,5 @@ Filter module di toolbar memungkinkan pemangku kepentingan melihat data spesifik
 ## Slide 14 — Referensi
 
 Ini adalah daftar referensi utama yang kami gunakan dalam penelitian ini, terdiri dari 10 paper dan dataset OULAD. Seluruh referensi menggunakan format IEEE dan tersedia dalam arsip PDF yang telah divalidasi.
+
+Demikian Paparana Kami dari Kelompok 5, Terima kasih atas perhatiannya. Wassalamualaikum warahmatullahi wabarakatuh.
