@@ -19,7 +19,7 @@ Dokumen ini menjelaskan rangkaian analisis pada notebook `oulad_early_warning_dv
 
 ## 1. Kasus Bisnis
 
-“Kasus yang kami pilih adalah identifikasi dini mahasiswa berisiko gagal atau mengundurkan diri. Tujuannya bukan menggantikan keputusan dosen, tetapi membantu stakeholder akademik menentukan mahasiswa yang perlu diperhatikan lebih dahulu.”
+“Kasus yang kami pilih adalah identifikasi dini mahasiswa berisiko gagal atau mengundurkan diri. Sistem mendukung dosen dan stakeholder akademik dalam menentukan mahasiswa yang perlu diperhatikan lebih dahulu.”
 
 Target dibentuk menjadi dua kelas. `AtRisk` menggabungkan `Withdrawn` dan `Fail`, sedangkan `Successful` menggabungkan `Pass` dan `Distinction`.
 
@@ -33,17 +33,17 @@ Notebook mengunduh dataset otomatis agar eksperimen dapat direproduksi dari runt
 
 “Unit analisis kami adalah satu mahasiswa pada satu module-presentation. Assessment dihubungkan ke konteks modul melalui `id_assessment`, kemudian assessment dan VLE hanya dihitung sampai hari ke-28.”
 
-“Kami tidak menggunakan `date_unregistration`, `has_unregistration`, atau hasil akhir sebagai fitur. Informasi tersebut dapat membocorkan kondisi masa depan dan membuat performa model terlihat tidak realistis.”
+“Fitur prediktor menggunakan informasi yang tersedia sampai hari ke-28. `date_unregistration`, `has_unregistration`, dan hasil akhir dikeluarkan dari daftar prediktor karena merepresentasikan kondisi masa depan.”
 
 ## 4. EDA
 
 “EDA digunakan untuk melihat distribusi kelas, missing values, dan perbedaan pola awal. Fokusnya adalah apakah mahasiswa AtRisk menunjukkan aktivitas assessment atau VLE yang berbeda pada empat minggu pertama.”
 
-Angka pada grafik harus dibaca dari hasil notebook terbaru, bukan dihafalkan dari eksperimen lama yang memakai seluruh semester.
+Angka pada grafik mengacu pada hasil notebook terbaru. Eksperimen lama menggunakan horizon seluruh semester sehingga menghasilkan konteks evaluasi yang berbeda.
 
 ## 5. Pembagian Data
 
-“Data dibagi 80 persen untuk train-validation dan 20 persen untuk hold-out test. Pembagian dilakukan berdasarkan `id_student`, sehingga mahasiswa yang sama tidak muncul pada train dan test walaupun mengambil beberapa modul.”
+“Data dibagi 80 persen untuk train-validation dan 20 persen untuk hold-out test. Pembagian berdasarkan `id_student` menempatkan setiap mahasiswa secara eksklusif pada salah satu bagian walaupun mengambil beberapa modul.”
 
 Lima fold `GroupKFold` digunakan pada data train untuk mengukur kestabilan model.
 
@@ -53,19 +53,19 @@ Lima fold `GroupKFold` digunakan pada data train untuk mengukur kestabilan model
 
 Metrik yang ditampilkan adalah accuracy, precision, recall, F1 kelas `AtRisk`, ROC-AUC, confusion matrix, dan classification report.
 
-“Recall AtRisk menjadi metrik utama karena mahasiswa berisiko yang tidak terdeteksi merupakan kesalahan paling kritis dalam early warning. Jika recall sama, F1 digunakan sebagai pembanding berikutnya.”
+“Recall AtRisk menjadi metrik utama karena early warning memprioritaskan cakupan deteksi mahasiswa berisiko. Jika recall sama, F1 digunakan sebagai pembanding berikutnya.”
 
-Model dan nilai evaluasi diperoleh dari hasil eksperimen. Nilai false negative pada confusion matrix menunjukkan mahasiswa `AtRisk` yang tidak berhasil dideteksi oleh model.
+Model dan nilai evaluasi diperoleh dari hasil eksperimen. Nilai false negative pada confusion matrix menunjukkan jumlah mahasiswa `AtRisk` yang berada di luar cakupan deteksi model.
 
 ## 7. Model Terbaik dan Interpretasi
 
 “Model terbaik dipilih otomatis berdasarkan recall AtRisk dan F1. Feature importance atau coefficient ditampilkan untuk menjelaskan fitur yang paling banyak berkontribusi terhadap prediksi.”
 
-Feature importance bukan bukti hubungan sebab-akibat. Visual tersebut hanya menjelaskan penggunaan fitur oleh model.
+Feature importance menjelaskan kontribusi prediktif setiap fitur dalam model. Analisis kausal memerlukan rancangan penelitian khusus di luar eksperimen prediksi ini.
 
 ## 8. Knowledge-Based System
 
-“Model machine learning menghasilkan probabilitas, tetapi probabilitas saja belum menjelaskan tindakan. Karena itu kami menambahkan knowledge-based risk layer.”
+“Model machine learning menghasilkan probabilitas risiko. Knowledge-based risk layer menerjemahkan probabilitas dan sinyal perilaku menjadi level risiko, alasan, dan rekomendasi tindakan.”
 
 Threshold skor assessment, jumlah assessment, total klik VLE, dan hari aktif VLE dihitung dari kuartil bawah data train. Aturannya adalah:
 
@@ -79,7 +79,7 @@ Threshold skor assessment, jumlah assessment, total klik VLE, dan hari aktif VLE
 
 “High dan Medium Risk dipetakan menjadi AtRisk untuk mengevaluasi knowledge layer. Kami membandingkan precision, recall, dan F1 sistem gabungan dengan model terbaik.”
 
-Jika recall naik tetapi precision turun, jelaskan bahwa sistem menemukan lebih banyak mahasiswa berisiko dengan konsekuensi bertambahnya alarm yang perlu diverifikasi.
+Perubahan recall dan precision menunjukkan keseimbangan antara cakupan deteksi dan ketepatan alarm. Peningkatan recall memperluas cakupan mahasiswa berisiko serta menambah kasus yang memerlukan verifikasi.
 
 ## 10. Dashboard DVBI
 
@@ -96,7 +96,7 @@ Penggunaan dashboard berdasarkan stakeholder:
 
 “Insight BI menjawab tiga pertanyaan: di mana risiko terkonsentrasi, faktor apa yang dominan, dan siapa yang perlu ditindaklanjuti terlebih dahulu.”
 
-Module-presentation dan sinyal dominan dihitung otomatis dari hasil analisis. Korelasi dan feature importance tidak boleh ditafsirkan langsung sebagai hubungan sebab-akibat.
+Module-presentation dan sinyal dominan dihitung otomatis dari hasil analisis. Korelasi dan feature importance ditafsirkan sebagai asosiasi prediktif, sedangkan kesimpulan kausal memerlukan analisis khusus.
 
 ## 12. Rekomendasi
 
@@ -110,4 +110,4 @@ Module-presentation dan sinyal dominan dihitung otomatis dari hasil analisis. Ko
 
 “OULAD berasal dari konteks Open University di Inggris, sehingga model perlu divalidasi ulang sebelum digunakan pada institusi lain. Threshold aturan juga masih berbasis kuartil data dan belum menggantikan pengetahuan pakar.”
 
-“Kesimpulannya, tugas ini tidak berhenti pada evaluasi model. Prediksi diterjemahkan menjadi knowledge-based system, dashboard, insight, dan prioritas tindakan. Seluruh hasil berfungsi sebagai decision support dan keputusan akhir tetap berada pada manusia.”
+“Kesimpulannya, tugas ini mengintegrasikan evaluasi model, knowledge-based system, dashboard, insight, dan prioritas tindakan. Seluruh hasil berfungsi sebagai decision support bagi stakeholder akademik dalam menetapkan keputusan intervensi.”
