@@ -194,6 +194,13 @@ Output dashboard tersedia di:
 
 - [`assets/dashboard/oulad-risk-dashboard.html`](assets/dashboard/oulad-risk-dashboard.html)
 
+Notebook Google Colab untuk skenario **early warning minggu ke-4** tersedia di:
+
+- [`notebooks/oulad_early_warning_dvbi_colab.ipynb`](notebooks/oulad_early_warning_dvbi_colab.ipynb)
+- [`docs/narasi-colab-oulad-early-warning.md`](docs/narasi-colab-oulad-early-warning.md)
+
+Notebook tersebut mengunduh OULAD secara otomatis, membatasi aktivitas sampai hari ke-28, mengevaluasi Logistic Regression, Random Forest, dan XGBoost, membentuk knowledge-based risk layer, serta menampilkan dashboard statis dan insight Business Intelligence. Fitur unregistration tidak digunakan dalam skenario ini untuk mencegah kebocoran informasi masa depan. Hasilnya tidak dapat dibandingkan langsung dengan laporan baseline seluruh semester karena horizon prediksinya berbeda.
+
 Dashboard ini ditujukan untuk pimpinan akademik, program studi, dosen wali/tutor, dan tim counselling. Fokusnya bukan evaluasi teknis model, tetapi monitoring risiko, intervention queue, prioritas module-presentation, alasan risiko, dan daftar mahasiswa yang perlu ditindaklanjuti.
 
 Untuk menjalankan ulang pipeline:
