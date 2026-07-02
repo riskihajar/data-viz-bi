@@ -36,6 +36,8 @@ def build_dashboard_data() -> dict[str, object]:
             "high_risk": high_risk,
             "medium_risk": medium_risk,
             "low_risk": low_risk,
+            "false_negative": 961,
+            "false_positive": 597,
         },
         "knowledgeDistribution": [
             {"label": "High Risk", "value": high_risk, "pct": 27.7},
@@ -84,6 +86,18 @@ def build_dashboard_data() -> dict[str, object]:
             "Module GGG presentation 2014J memiliki 100,0% kasus High/Medium Risk pada hold-out test.",
             "Knowledge layer meningkatkan recall AtRisk dari 0,7172 menjadi 0,7849 dengan konsekuensi precision turun.",
         ],
+        "actionPlan": [
+            {"title": "Hubungi High Risk", "body": "Prioritaskan 1.795 kasus High Risk untuk kontak akademik, pendampingan assessment, dan konseling jika sinyal berlapis."},
+            {"title": "Pantau Medium Risk", "body": "Masukkan 1.994 kasus Medium Risk ke observasi berkala, terutama jika engagement VLE atau assessment rendah."},
+            {"title": "Review GGG 2014J", "body": "GGG 2014J menjadi area investigasi karena 100,0% sampel hold-out masuk High/Medium Risk."},
+            {"title": "Validasi Manual", "body": "Gunakan dashboard sebagai decision support; tindakan akademik tetap perlu verifikasi tutor, dosen wali, atau tim konseling."},
+        ],
+        "methodCards": [
+            {"title": "Horizon", "value": "Hari ke-28", "body": "Assessment dan aktivitas VLE setelah cut-off tidak dipakai."},
+            {"title": "Model Final", "value": "Random Forest", "body": "Dipilih karena recall AtRisk tertinggi pada CV dan hold-out."},
+            {"title": "Knowledge Layer", "value": "4 sinyal", "body": "Assessment score, assessment count, VLE clicks, dan VLE active days."},
+            {"title": "Leakage Control", "value": "Group split", "body": "Split evaluasi dikelompokkan berdasarkan id_student."},
+        ],
         "priorityStudents": [
             {"id_student": 87604, "module": "BBB", "presentation": "2013B", "probability": "100.0%", "level": "High Risk", "signals": 4, "reasons": "Skor assessment rendah; Partisipasi assessment rendah; Total klik VLE rendah; Hari aktif VLE rendah", "action": "pengingat dan monitoring akses VLE; pendampingan assessment; konseling atau tindak lanjut dosen wali"},
             {"id_student": 88580, "module": "BBB", "presentation": "2013B", "probability": "100.0%", "level": "High Risk", "signals": 4, "reasons": "Skor assessment rendah; Partisipasi assessment rendah; Total klik VLE rendah; Hari aktif VLE rendah", "action": "pengingat dan monitoring akses VLE; pendampingan assessment; konseling atau tindak lanjut dosen wali"},
@@ -123,6 +137,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .grid { display:grid; grid-template-columns:1.05fr .95fr; gap:14px; margin-bottom:14px; }
     .grid-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:14px; }
     .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-bottom:14px; }
     .panel { padding:16px; overflow:hidden; }
     .panel h2 { margin:0 0 12px; font-size:15px; line-height:1.25; font-weight:720; }
     .decision-note { border-left:4px solid var(--teal); background:#eef7f5; padding:12px 14px; border-radius:6px; color:#164e45; line-height:1.45; margin-bottom:12px; font-size:13px; }
@@ -135,6 +150,10 @@ HTML_TEMPLATE = r"""<!doctype html>
     .action-item { border:1px solid var(--line); border-radius:6px; padding:10px 12px; background:#fbfcfd; line-height:1.4; }
     .action-item b { display:block; color:var(--ink); margin-bottom:3px; font-size:13px; }
     .action-item span { font-size:12px; color:var(--muted); }
+    .mini-card { border:1px solid var(--line); border-radius:8px; background:var(--panel); padding:14px; min-height:112px; }
+    .mini-card b { display:block; color:var(--ink); font-size:13px; margin-bottom:6px; }
+    .mini-card strong { display:block; font-size:22px; color:var(--teal); margin-bottom:6px; }
+    .mini-card span { color:var(--muted); font-size:12px; line-height:1.4; }
     table { width:100%; border-collapse:collapse; font-size:13px; }
     th, td { border-bottom:1px solid var(--line); padding:9px 8px; text-align:left; vertical-align:top; }
     th { color:var(--muted); font-size:11px; font-weight:750; background:#f9fafb; position:sticky; top:0; text-transform:uppercase; letter-spacing:.02em; }
@@ -149,7 +168,7 @@ HTML_TEMPLATE = r"""<!doctype html>
     .matrix .hot { background:#dbeafe; font-size:20px; font-weight:780; color:#1e3a8a; }
     footer { padding:16px 28px; color:var(--muted); font-size:12px; border-top:1px solid var(--line); margin-top:12px; }
     footer .note-box { background:#f9fafb; border:1px solid var(--line); border-radius:6px; padding:12px 14px; line-height:1.5; }
-    @media (max-width:1100px) { .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); } .grid,.grid-3,.grid-2 { grid-template-columns:1fr; } }
+    @media (max-width:1100px) { .kpis { grid-template-columns:repeat(3,minmax(0,1fr)); } .grid,.grid-3,.grid-2,.grid-4 { grid-template-columns:1fr; } }
     @media (max-width:680px) { header, main { padding-left:16px; padding-right:16px; } .kpis { grid-template-columns:1fr 1fr; } .bar-row { grid-template-columns:118px 1fr 56px; } }
   </style>
 </head>
@@ -167,6 +186,8 @@ HTML_TEMPLATE = r"""<!doctype html>
   <main>
     <section class="kpis" id="kpis"></section>
 
+    <section class="grid-4" id="methodCards"></section>
+
     <section class="grid">
       <div class="panel">
         <h2>Segmentasi Risiko Hold-Out Test</h2>
@@ -176,6 +197,18 @@ HTML_TEMPLATE = r"""<!doctype html>
       <div class="panel">
         <h2>Insight Business Intelligence</h2>
         <div id="insights" class="action-list"></div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Prioritas Tindakan</h2>
+        <div id="actionPlan" class="action-list"></div>
+      </div>
+      <div class="panel">
+        <h2>Trade-off Operasional</h2>
+        <div class="decision-note">Knowledge layer menaikkan recall, sehingga lebih banyak mahasiswa berisiko masuk antrean. Konsekuensinya, precision turun dan stakeholder perlu memverifikasi lebih banyak kasus.</div>
+        <div id="tradeoffBars"></div>
       </div>
     </section>
 
@@ -255,7 +288,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         ["Mahasiswa Unik", fmt.format(k.unique_students), "grouped split by id_student"],
         ["Priority Queue", fmt.format(k.priority_queue), `${pctRaw(k.priority_rate)} High/Medium Risk`],
         ["High Risk", fmt.format(k.high_risk), "prioritas kontak"],
-        ["Recall Gabungan", "78,49%", "RF + Knowledge Layer"],
+        ["False Negative RF", fmt.format(k.false_negative), "AtRisk belum terdeteksi model"],
       ];
       document.getElementById("kpis").innerHTML = items.map(([label, value, note]) => `<article class="kpi"><div class="label">${label}</div><div class="value">${value}</div><div class="note">${note}</div></article>`).join("");
     }
@@ -267,11 +300,17 @@ HTML_TEMPLATE = r"""<!doctype html>
       document.getElementById(target).innerHTML = items.map(item => {
         const value = Number(item[valueKey]);
         const width = value / max * 100;
-        const label = item[labelKey];
+        const label = item[labelKey] ?? item.label ?? item.feature ?? item.metric ?? item.module ?? item.title ?? "";
         const color = item.color || colors[label] || opts.color || "#2563eb";
         const valueText = opts.percent ? pct(value) : fmt.format(value);
         return `<div class="bar-row"><div class="bar-label" title="${label}">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${width}%;background:${color}"></div></div><div class="bar-value">${valueText}</div></div>`;
       }).join("");
+    }
+
+    function renderMethodCards() {
+      document.getElementById("methodCards").innerHTML = DATA.methodCards.map(card => `
+        <article class="mini-card"><b>${card.title}</b><strong>${card.value}</strong><span>${card.body}</span></article>
+      `).join("");
     }
 
     function renderMetrics() {
@@ -280,6 +319,16 @@ HTML_TEMPLATE = r"""<!doctype html>
         const combined = row.combined * 100;
         return `<div style="margin:12px 0;"><div class="bar-label" style="margin-bottom:6px;">${row.metric}</div><div class="bar-track"><div class="bar-fill" style="width:${rf}%;background:#457b9d"></div></div><div class="note">Random Forest: ${pct(row.rf)}</div><div class="bar-track" style="margin-top:5px;"><div class="bar-fill" style="width:${combined}%;background:#e76f51"></div></div><div class="note">RF + Knowledge Layer: ${pct(row.combined)}</div></div>`;
       }).join("");
+    }
+
+    function renderTradeoff() {
+      const rows = [
+        {label:"Recall RF", value:0.7172, color:"#457b9d"},
+        {label:"Recall RF + Knowledge", value:0.7849, color:"#e76f51"},
+        {label:"Precision RF", value:0.8032, color:"#457b9d"},
+        {label:"Precision RF + Knowledge", value:0.7039, color:"#e76f51"},
+      ];
+      renderBars("tradeoffBars", rows, {percent:true});
     }
 
     function renderTables() {
@@ -302,9 +351,12 @@ HTML_TEMPLATE = r"""<!doctype html>
       renderBars("knowledgeBars", DATA.knowledgeDistribution.map(x => ({...x, value:x.value})));
       renderBars("thresholdBars", DATA.thresholds, {color:"#0f766e"});
       renderBars("signalBars", DATA.signals, {color:"#d97706"});
-      renderBars("featureBars", DATA.featureImportance, {color:"#2563eb"});
+      renderBars("featureBars", DATA.featureImportance, {labelKey:"feature", color:"#2563eb"});
+      renderMethodCards();
       document.getElementById("insights").innerHTML = DATA.insights.map((text, i) => `<div class="action-item"><b>Insight ${i + 1}</b><span>${text}</span></div>`).join("");
+      document.getElementById("actionPlan").innerHTML = DATA.actionPlan.map(item => `<div class="action-item"><b>${item.title}</b><span>${item.body}</span></div>`).join("");
       renderMetrics();
+      renderTradeoff();
       renderConfusionMatrix();
       renderTables();
     }
