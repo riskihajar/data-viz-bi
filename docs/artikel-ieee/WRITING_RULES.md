@@ -1,6 +1,6 @@
-# Writing Rules Artikel UTS IEEE
+# Writing Rules Artikel IEEE
 
-Dokumen ini menjadi aturan penulisan untuk manusia maupun AI agent saat membuat, merevisi, atau merapikan draft artikel UTS. Ikuti aturan ini secara konsisten agar gaya naskah tetap seragam.
+Dokumen ini menjadi aturan penulisan saat membuat, merevisi, atau merapikan artikel IEEE. Aturan diterapkan secara konsisten agar gaya naskah tetap seragam.
 
 ## Aturan Utama
 

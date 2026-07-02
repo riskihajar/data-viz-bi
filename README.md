@@ -56,7 +56,7 @@ Secara konseptual, repository ini menempatkan literature review bukan sebagai re
 ├── assets/
 ├── data/
 ├── docs/
-│   └── artikel-uts-ieee/
+│   └── artikel-ieee/
 └── literature-review/
     ├── student-dropout-analytics-10-paper.xlsx
     ├── matriks-literature-review-student-dropout-10-paper.xlsx
@@ -74,8 +74,8 @@ Secara konseptual, repository ini menempatkan literature review bukan sebagai re
 - **docs/**  
   Folder untuk draft penulisan, catatan, outline, atau dokumen turunan dari tugas utama.
 
-- **docs/artikel-uts-ieee/**  
-  Folder draft artikel UTS IEEE berbahasa Indonesia. Draft dibuat modular per section agar mudah diedit dan dijaga konsisten dengan arah penelitian akhir.
+- **docs/artikel-ieee/**
+  Folder artikel IEEE final berbahasa Indonesia, termasuk sumber Markdown modular, DOCX, PDF, aturan penulisan, dan research direction guardrail.
 
 - **literature-review/**  
   Folder utama yang berisi hasil pencarian paper, matriks literature review, dan arsip PDF referensi.
@@ -218,22 +218,26 @@ Lalu buka dashboard di:
 http://localhost:8765/assets/dashboard/oulad-risk-dashboard.html
 ```
 
-## Draft Artikel UTS IEEE
+## Artikel IEEE
 
-Draft artikel UTS berada di folder [`docs/artikel-uts-ieee/`](docs/artikel-uts-ieee/). Draft ini disusun sebagai artikel ilmiah berbahasa Indonesia dengan format section yang mendekati IEEE Conference, tetapi masih dalam bentuk Markdown agar mudah diedit.
+Artikel final berada di folder [`docs/artikel-ieee/`](docs/artikel-ieee/). Naskah disusun secara modular dalam Markdown dan dibangun menjadi DOCX/PDF dua kolom bergaya IEEE Conference.
 
-### File draft artikel
+### File artikel
 
 | File | Fungsi |
 |---|---|
-| [00-title-author.md](docs/artikel-uts-ieee/00-title-author.md) | Judul, author, afiliasi, email author, serta catatan dosen supervisi dan dosen kelas. |
-| [01-abstract-keywords.md](docs/artikel-uts-ieee/01-abstract-keywords.md) | Abstract dan keywords. |
-| [02-introduction.md](docs/artikel-uts-ieee/02-introduction.md) | Latar belakang, permasalahan, tujuan, dan kontribusi awal penelitian. |
-| [03-related-works.md](docs/artikel-uts-ieee/03-related-works.md) | Sintesis penelitian terkait dengan sitasi IEEE. |
-| [04-methodology.md](docs/artikel-uts-ieee/04-methodology.md) | Rancangan metodologi, dataset, target label, fitur, skenario model, dan knowledge-based risk layer. |
-| [05-references.md](docs/artikel-uts-ieee/05-references.md) | Daftar referensi dalam gaya IEEE numerik. |
-| [WRITING_RULES.md](docs/artikel-uts-ieee/WRITING_RULES.md) | Aturan penulisan yang wajib diikuti manusia maupun AI agent saat mengedit naskah. |
-| [RESEARCH_DIRECTION.md](docs/artikel-uts-ieee/RESEARCH_DIRECTION.md) | Guardrail arah penelitian agar draft UTS, eksperimen lanjutan, dan artikel akhir tidak melenceng. |
+| [artikel-ieee.md](docs/artikel-ieee/artikel-ieee.md) | Naskah lengkap hasil penggabungan seluruh section. |
+| [00-title-author.md](docs/artikel-ieee/00-title-author.md) | Judul, penulis, afiliasi, dan informasi dosen. |
+| [01-abstract-keywords.md](docs/artikel-ieee/01-abstract-keywords.md) | Abstract, hasil utama, dan keywords. |
+| [02-introduction.md](docs/artikel-ieee/02-introduction.md) | Masalah, research gap, tujuan, dan kontribusi. |
+| [03-related-works.md](docs/artikel-ieee/03-related-works.md) | Sintesis penelitian terkait dengan sitasi IEEE. |
+| [04-methodology.md](docs/artikel-ieee/04-methodology.md) | Metodologi early warning hari ke-28, model, knowledge layer, dan dashboard. |
+| [05-results.md](docs/artikel-ieee/05-results.md) | Hasil cross-validation, hold-out test, knowledge layer, dan BI. |
+| [06-discussion.md](docs/artikel-ieee/06-discussion.md) | Interpretasi hasil, trade-off, implikasi, dan keterbatasan. |
+| [07-conclusion.md](docs/artikel-ieee/07-conclusion.md) | Kesimpulan dan arah pengembangan. |
+| [09-references.md](docs/artikel-ieee/09-references.md) | Daftar referensi dalam gaya IEEE numerik. |
+| [WRITING_RULES.md](docs/artikel-ieee/WRITING_RULES.md) | Aturan penulisan naskah. |
+| [RESEARCH_DIRECTION.md](docs/artikel-ieee/RESEARCH_DIRECTION.md) | Guardrail konsistensi notebook, artikel, dashboard, dan presentasi. |
 
 ### Arah penelitian yang dikunci
 
@@ -242,13 +246,13 @@ Artikel diarahkan sebagai **supervised binary classification** untuk deteksi ris
 - `AtRisk` = `Withdrawn` + `Fail`
 - `Successful` = `Pass` + `Distinction`
 
-Model baseline untuk eksperimen lanjutan:
+Model pembanding:
 
 - Logistic Regression
 - Random Forest
-- XGBoost atau Gradient Boosting
+- XGBoost
 
-Komponen knowledge-based yang disepakati adalah **rule-based risk layer** berbasis assessment, aktivitas VLE, dan sinyal unregistration. Dashboard dan clustering hanya diposisikan sebagai pengembangan lanjutan, bukan kontribusi utama artikel.
+Eksperimen final menggunakan cut-off hari ke-28 dan mengeluarkan sinyal unregistration dari fitur. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation. Knowledge-based risk layer menggunakan assessment dan aktivitas VLE awal untuk menghasilkan level, alasan risiko, dan rekomendasi.
 
 ### Posisi DVBI dalam artikel
 
@@ -261,11 +265,11 @@ Karena mata kuliah berfokus pada **Data Visualization and Business Intelligence*
 - ringkasan skor assessment rendah;
 - daftar prioritas mahasiswa yang perlu monitoring akademik.
 
-Dashboard penuh belum menjadi scope utama draft UTS. Untuk tahap akhir, dashboard dapat ditulis sebagai rancangan visual analytics atau implikasi BI, kecuali implementasinya benar-benar dibuat.
+Dashboard statis telah diimplementasikan di dalam notebook sebagai visual decision support.
 
 ### Aturan penulisan yang wajib dijaga
 
-Ringkasan aturan dari [`WRITING_RULES.md`](docs/artikel-uts-ieee/WRITING_RULES.md):
+Ringkasan aturan dari [`WRITING_RULES.md`](docs/artikel-ieee/WRITING_RULES.md):
 
 - level penomoran tidak boleh lebih dari 3 tingkat;
 - paragraf harus mengalir naratif;
@@ -277,7 +281,7 @@ Ringkasan aturan dari [`WRITING_RULES.md`](docs/artikel-uts-ieee/WRITING_RULES.m
 
 | Judul dokumen | Deskripsi |
 |---|---|
-| [Draft Artikel UTS IEEE](docs/artikel-uts-ieee/) | Folder draft artikel UTS modular per section, termasuk writing rules dan research direction guardrail. |
+| [Artikel IEEE](docs/artikel-ieee/) | Artikel lengkap dalam Markdown, DOCX, dan PDF beserta writing rules dan research direction guardrail. |
 | [Audit Dataset OULAD](docs/audit-dataset-oulad.md) | Audit sumber unduh, struktur tabel, distribusi label, missing values penting, dan verifikasi kelayakan OULAD terhadap syarat capstone. |
 | [Preprocessing Plan OULAD: Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing baseline OULAD, termasuk framing label `AtRisk` vs `Successful`, tabel sumber, fitur baseline, aturan preprocessing, dan command eksekusi. |
 | [EDA Ringkas OULAD: Binary Risk Dataset](docs/eda-oulad-binary-risk.md) | Ringkasan EDA dari dataset turunan OULAD hasil preprocessing, mencakup ukuran data, distribusi label, distribusi `final_result`, dan statistik numerik utama. |
