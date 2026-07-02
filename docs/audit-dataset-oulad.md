@@ -84,6 +84,8 @@ Kesimpulan: **OULAD lolos syarat capstone secara aman untuk klasifikasi.**
 
 Catatan: `date_unregistration` kemungkinan besar missing karena banyak student tidak unregister, jadi ini belum tentu masalah kualitas data.
 
+Catatan final: `date_unregistration` tetap diaudit sebagai kolom sumber, tetapi tidak digunakan sebagai prediktor pada eksperimen final karena merepresentasikan informasi masa depan untuk skenario early warning hari ke-28.
+
 ### studentAssessment.csv
 - `score`: **173** missing
 
@@ -103,7 +105,7 @@ Urutan logis preprocessing nanti:
 1. tentukan **unit analisis final**: paling aman `1 row = 1 student pada 1 module-presentation`;
 2. gunakan `studentInfo` sebagai base table karena label `final_result` sudah tersedia;
 3. join / agregasi dari:
-   - `studentRegistration` untuk sinyal registrasi/unregistration,
+   - `studentRegistration` untuk konteks registrasi,
    - `studentAssessment` untuk performa penilaian,
    - `studentVle` untuk engagement LMS,
    - `vle` untuk tipe aktivitas pembelajaran,
@@ -111,38 +113,21 @@ Urutan logis preprocessing nanti:
 4. handle missing values secara terkontrol, terutama `imd_band`, `date_registration`, `score`, dan `date_unregistration`;
 5. baru lakukan encoding, scaling bila perlu, feature selection/engineering, lalu split data.
 
-## Rekomendasi framing problem sebelum preprocessing
-### Rekomendasi utama
+## Framing problem final
+### Arah utama
 Gunakan problem framing:
-**student outcome classification berbasis engagement dan academic behavior pada OULAD**
+**early warning student risk classification berbasis engagement dan academic behavior pada OULAD**
 
-### Formulasi paling aman
-Ada dua opsi bagus:
+### Formulasi final
+Target binary risk:
+- `AtRisk` = `Withdrawn` + `Fail`
+- `Successful` = `Pass` + `Distinction`
 
-1. **4-class classification**
-   - target: `Pass`, `Withdrawn`, `Fail`, `Distinction`
-   - kelebihan: paling faithful ke dataset asli
-   - kekurangan: sedikit lebih kompleks
+Horizon prediksi dibatasi sampai hari ke-28. Assessment dan aktivitas VLE setelah hari ke-28 tidak dipakai sebagai fitur. `date_unregistration`, `has_unregistration`, dan `final_result` juga tidak dipakai sebagai prediktor.
 
-2. **3-class classification**
-   - target: `Pass`, `Fail`, `Withdrawn`
-   - perlakuan `Distinction`: gabung ke `Pass`
-   - kelebihan: lebih sederhana untuk storytelling BI dan modeling awal
-   - kekurangan: informasi distinction hilang sebagai kelas terpisah
-
-### Saran praktis
-Untuk capstone DVBI, paling aman mulai dari:
-- **baseline utama: 3-class / atau binary risk framing yang mudah dijelaskan**, lalu
-- simpan versi 4-class sebagai perluasan jika dibutuhkan.
-
-Jika tujuan utama presentasi adalah **early warning dropout/risk analytics**, framing paling kuat justru:
-- **binary classification**: `Withdrawn` vs `Non-withdrawn`
-atau
-- **binary classification**: `At-risk (Withdrawn + Fail)` vs `Successful (Pass + Distinction)`
-
-Namun karena dosen meminta minimal 1.000 data per class, kedua framing binary ini juga tetap aman.
+Formulasi ini menjaga evaluasi tetap selaras dengan kondisi intervensi dini: model hanya melihat informasi yang tersedia pada saat prediksi.
 
 ## Kesimpulan singkat
-- **Ya, sekarang kita sudah punya basis kuat untuk masuk ke preprocessing OULAD.**
-- Tetapi preprocessing sebaiknya dimulai **setelah problem framing final dikunci**.
-- Dibanding opsi dataset sebelumnya, **OULAD sekarang adalah kandidat final paling aman dan paling kuat** untuk project ini.
+- **OULAD menjadi dataset final** untuk project ini.
+- Framing final menggunakan binary risk early warning dengan cut-off hari ke-28.
+- Dibanding opsi dataset sebelumnya, **OULAD adalah pilihan paling aman dan paling kuat** untuk capstone DVBI.

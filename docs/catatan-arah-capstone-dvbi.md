@@ -1,66 +1,79 @@
 # Catatan Arah Capstone DVBI
 
-## Konteks project
+## Konteks Project
 Project ini berada pada repo **Data Visualization and Business Intelligence (DVBI)** dengan tema utama:
+
 - **Student Performance / Dropout Analytics**
+- **Early warning risiko dropout mahasiswa**
+- **Visual analytics dan Business Intelligence untuk monitoring akademik**
 
-Tema ini tetap dipertahankan sebagai arah kerja utama. Namun, pemilihan dataset dan formulasi problem harus mengikuti **syarat capstone dari dosen** agar project tidak salah arah.
+## Keputusan Dataset Final
+Dataset final yang digunakan adalah **Open University Learning Analytics Dataset (OULAD)**.
 
-## Syarat capstone dari dosen
-### Data Tabular dan Image
-- **Klasifikasi:** minimal **1.000 data per class**
-- **Forecasting:** minimal **5.000 baris data**
-- **Regresi:** minimal **5.000 baris data**
-- **Clustering:** minimal **5.000 baris data**
+Alasan pemilihan:
+1. OULAD memenuhi kebutuhan data tabular berskala besar untuk klasifikasi.
+2. Dataset menyediakan data akademik, registrasi, assessment, dan aktivitas VLE.
+3. Struktur multi-table mendukung analisis Business Intelligence dan visual analytics.
+4. Distribusi label binary risk cukup besar untuk dua kelas utama.
 
-### Text Mining
-- minimal **10.000 baris data**
+Dataset UCI **Predict Students' Dropout and Academic Success** tetap diperlakukan sebagai referensi pembanding historis, bukan dataset final capstone.
 
-### Ketentuan tambahan
-- minimal menggunakan **tiga algoritma** yang berbeda
-- perlu mempertimbangkan **jumlah fitur**
+## Framing Riset Terkini
+Problem dirumuskan sebagai **supervised binary classification**:
 
-## Implikasi untuk project ini
-Karena tema yang dipilih adalah **student performance / dropout analytics**, jalur yang paling relevan adalah:
-- **tabular classification**
-- dengan dataset yang cukup besar dan distribusi kelas yang memenuhi syarat dosen
+- `AtRisk` = `Withdrawn` + `Fail`
+- `Successful` = `Pass` + `Distinction`
 
-## Evaluasi dataset UCI yang sempat dipilih
-Dataset: **Predict Students' Dropout and Academic Success** (UCI)
+Unit analisis adalah **1 mahasiswa pada 1 module-presentation**.
 
-Ringkasan cepat:
-- total baris: **4.424**
-- total fitur: **36**
-- target: `Dropout`, `Enrolled`, `Graduate`
-- distribusi kelas:
-  - `Dropout`: **1.421**
-  - `Graduate`: **2.209**
-  - `Enrolled`: **794**
+## Horizon Early Warning
+Riset final menggunakan cut-off **hari ke-28** untuk merepresentasikan akhir minggu keempat.
 
-## Kesimpulan evaluasi dataset UCI
-Dataset UCI ini **relevan secara tema**, tetapi **belum aman sebagai dataset final capstone** karena:
-1. pada formulasi **3-class classification**, kelas `Enrolled` hanya **794**, sehingga **tidak memenuhi** syarat minimal **1.000 data per class**;
-2. total baris **4.424**, sehingga **tidak memenuhi** syarat 5.000 baris jika nanti project bergeser ke regresi / clustering / forecasting;
-3. dataset ini tetap berguna sebagai referensi baseline dan bahan eksplorasi awal, tetapi **bukan kandidat final paling aman** untuk capstone.
+Fitur yang digunakan hanya informasi yang tersedia sampai hari ke-28:
+- demografi dan informasi modul,
+- registrasi awal,
+- agregasi assessment sampai hari ke-28,
+- agregasi aktivitas VLE sampai hari ke-28.
 
-## Arah keputusan ke depan
-Agar project tidak kehilangan konteks, keputusan kerja berikut dikunci:
-1. **Tema tetap:** Student Performance / Dropout Analytics
-2. **Prioritas problem type:** tabular classification
-3. **Dataset final harus memenuhi syarat capstone**, terutama:
-   - minimal 1.000 data per class untuk klasifikasi
-   - jumlah fitur cukup memadai untuk analisis dan visualisasi
-4. Dataset UCI yang sudah diunduh diperlakukan sebagai:
-   - referensi pembanding,
-   - baseline eksplorasi,
-   - bukan pilihan final sebelum ada verifikasi kandidat dataset lain.
+Informasi masa depan dikeluarkan dari fitur prediktor:
+- `date_unregistration`,
+- `has_unregistration`,
+- `final_result`,
+- assessment dan aktivitas VLE setelah hari ke-28.
 
-## Konsekuensi metodologis
-Sebelum masuk preprocessing, kita harus menyelesaikan urutan berikut:
-1. shortlist kandidat dataset yang sesuai syarat capstone;
-2. verifikasi jumlah baris, jumlah kelas, distribusi label, dan jumlah fitur;
-3. pilih satu dataset final yang paling aman;
-4. baru setelah itu menyusun preprocessing plan.
+## Evaluasi Model
+Tiga algoritma pembanding:
+- Logistic Regression,
+- Random Forest,
+- XGBoost.
 
-## Catatan kerja
-Jika suatu dataset sangat relevan secara tema tetapi tidak memenuhi syarat jumlah data/class, dataset tersebut tidak langsung dijadikan dataset final capstone tanpa justifikasi atau persetujuan dosen.
+Skema evaluasi:
+- 80% train-validation dan 20% hold-out test,
+- split berbasis `id_student`,
+- 5-fold GroupKFold pada train-validation.
+
+Model final adalah **Random Forest** karena menghasilkan recall `AtRisk` tertinggi:
+- cross-validation recall `AtRisk`: **0,7126**,
+- hold-out recall `AtRisk`: **0,7172**.
+
+## Knowledge-Based Risk Layer
+Knowledge-based risk layer digunakan untuk menerjemahkan prediksi model menjadi:
+- level risiko,
+- alasan risiko,
+- rekomendasi intervensi,
+- antrean prioritas mahasiswa.
+
+Sistem gabungan meningkatkan recall `AtRisk` dari **0,7172** menjadi **0,7849**, dengan konsekuensi precision turun dari **0,8032** menjadi **0,7039**.
+
+## Output Final
+Output utama project:
+1. dataset early warning OULAD,
+2. evaluasi tiga model supervised learning,
+3. model Random Forest terpilih,
+4. knowledge-based risk layer,
+5. dashboard early warning OULAD,
+6. artikel IEEE,
+7. bahan presentasi final DVBI.
+
+## Catatan Interpretasi
+Performa model lebih rendah dibanding eksperimen yang memakai aktivitas seluruh semester atau status unregistration. Hal ini wajar karena riset final hanya memakai informasi sampai hari ke-28, sehingga evaluasi lebih dekat dengan skenario intervensi dini.

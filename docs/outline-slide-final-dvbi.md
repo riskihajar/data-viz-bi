@@ -61,8 +61,8 @@
 | Multi-table join | 4 tabel berbeda perlu digabung ke satu unit analisis |
 | Volume besar | studentVle memiliki >10 juta baris yang harus diagregasi |
 | Missing value | Indeks deprivasi kosong pada sebagian data → diisi "Unknown" |
-| Sinyal unregistration | 30.9% mahasiswa memiliki tanggal unregistration |
-| Skala fitur beragam | Klik VLE (0–24.139) vs assessment count (0–14) |
+| Batas temporal | Fitur hanya memakai data yang tersedia sampai hari ke-28 |
+| Skala fitur beragam | Klik VLE, hari aktif, dan skor assessment memiliki rentang nilai berbeda |
 
 ---
 
@@ -73,12 +73,13 @@
 | Sumber | Fitur yang dibentuk |
 |---|---|
 | studentInfo | gender, region, highest_education, imd_band, age_band, disability, num_of_prev_attempts, studied_credits |
-| studentRegistration | date_registration, date_unregistration, has_unregistration |
+| studentRegistration | date_registration |
 | studentAssessment | assessment_count, assessment_score_mean/max/min |
 | studentVle | vle_total_clicks, vle_active_days, vle_site_count, vle_last_activity_day |
 
-- **Total fitur:** 21 (8 kategorikal + 13 numerik)
+- **Total fitur model:** 8 kategorikal + 11 numerik
 - **Label:** AtRisk = Withdrawn + Fail; Successful = Pass + Distinction
+- **Fitur masa depan dikeluarkan:** `date_unregistration`, `has_unregistration`, hasil akhir, dan aktivitas setelah hari ke-28
 
 ---
 
@@ -92,7 +93,7 @@
 **Evaluasi:** Accuracy, Precision, Recall, F1 — fokus Recall AtRisk (meminimalkan mahasiswa berisiko yang terlewat)
 
 **Knowledge-Based Risk Layer:**
-- Rule-based scoring berdasarkan: assessment score, assessment count, VLE clicks, VLE active days, sinyal unregistration
+- Rule-based scoring berdasarkan: assessment score, assessment count, VLE clicks, VLE active days
 - Output: High Risk / Medium Risk / Low Risk + alasan risiko
 
 **Split:** 80% train+validation, 20% test — dikelompokkan berdasarkan mahasiswa agar tidak ada mahasiswa yang sama di train dan test
@@ -124,22 +125,22 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 
 | Model | Accuracy | Precision | Recall | F1 |
 |---|---:|---:|---:|---:|
-| Logistic Regression | 93.65% ± 0.29% | 97.39% ± 0.22% | 90.41% ± 0.74% | 93.77% ± 0.33% |
-| Random Forest | 94.19% ± 0.28% | 97.76% ± 0.27% | 91.10% ± 0.60% | 94.31% ± 0.32% |
-| **XGBoost** | **94.41% ± 0.31%** | **97.82% ± 0.18%** | **91.47% ± 0.67%** | **94.53% ± 0.34%** |
+| Logistic Regression | 74.84% ± 0.33% | 80.81% ± 0.63% | 68.71% ± 0.38% | 74.27% ± 0.43% |
+| **Random Forest** | 75.38% ± 0.33% | 79.99% ± 1.48% | **71.26% ± 0.40%** | **75.36% ± 0.50%** |
+| XGBoost | **75.82% ± 0.41%** | **82.17% ± 0.93%** | 69.31% ± 0.33% | 75.19% ± 0.28% |
 
-→ Standar deviasi rendah (~0.3–0.7%) menunjukkan performa stabil di seluruh fold.
+→ XGBoost unggul pada accuracy, sedangkan Random Forest memiliki recall AtRisk tertinggi sehingga lebih sesuai untuk early warning.
 
 **Test Set (20%, 6.471 baris, 5.757 mahasiswa):**
 
 | Model | Accuracy | Precision | Recall | F1 |
 |---|---:|---:|---:|---:|
-| Logistic Regression | 93.09% | 97.34% | 89.29% | 93.14% |
-| **Random Forest** | **93.77%** | **97.65%** | **90.32%** | **93.84%** |
-| XGBoost | 93.94% | 98.02% | 90.29% | 94.00% |
+| Logistic Regression | 74.76% | 80.40% | 68.69% | 74.08% |
+| **Random Forest** | 75.92% | 80.32% | **71.72%** | **75.78%** |
+| XGBoost | **76.33%** | **81.86%** | 70.54% | **75.78%** |
 
 - **Model terpilih:** Random Forest (recall tertinggi pada test set)
-- False negative kelas AtRisk: 329 dari 3.398 mahasiswa AtRisk tidak terdeteksi (9,7%)
+- False negative kelas AtRisk: 961 dari 3.398 kasus AtRisk belum terdeteksi
 
 **Data Split:**
 - Train+Validation: 26.122 baris (23.028 mahasiswa unik)
@@ -149,43 +150,35 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 **Knowledge-Based Risk Layer:**
 | Level | Jumlah | Persentase |
 |---|---:|---:|
-| Low Risk | 22.168 | 68.0% |
-| High Risk | 6.508 | 20.0% |
-| Medium Risk | 3.917 | 12.0% |
+| High Risk | 1.795 | 27.7% |
+| Medium Risk | 1.994 | 30.8% |
+| Low Risk | 2.682 | 41.4% |
 
 ---
 
 ## Slide 10 — Analisis Hasil
 
-**Feature Importance (XGBoost Top 5):**
+**Feature Importance (Random Forest):**
 
-| Rank | Fitur | Importance |
-|---|---|---:|
-| 1 | assessment_count | 0.371 |
-| 2 | vle_last_activity_day | 0.132 |
-| 3 | has_unregistration | 0.081 |
-| 4 | date_unregistration | 0.060 |
-| 5 | assessment_score_mean | 0.052 |
+Fitur dengan kontribusi tertinggi didominasi sinyal perilaku awal:
+- total klik VLE
+- hari aktivitas terakhir VLE
+- jumlah hari aktif VLE
+- jumlah situs VLE yang diakses
+- fitur assessment dan registrasi
 
-→ Partisipasi assessment dan aktivitas terakhir di VLE menjadi fitur paling dominan dalam model.
+→ Aktivitas awal di VLE dan assessment menjadi sinyal utama yang membantu model membedakan mahasiswa berisiko.
 
-**Modul dengan Risiko Tertinggi:**
+**Knowledge Layer vs Model:**
 
-| Module-Presentation | % AtRisk |
-|---|---:|
-| CCC-2014B | 65.0% |
-| CCC-2014J | 60.1% |
-| DDD-2014B | 59.8% |
+| Metrik | Random Forest | RF + Knowledge Layer |
+|---|---:|---:|
+| Accuracy | **75.92%** | 71.36% |
+| Precision AtRisk | **80.32%** | 70.39% |
+| Recall AtRisk | 71.72% | **78.49%** |
+| F1 AtRisk | **75.78%** | 74.22% |
 
-**Cross-tab Knowledge Layer vs Model:**
-
-| Knowledge Level | Predicted AtRisk | Predicted Successful | Agreement |
-|---|---:|---:|---|
-| High Risk | 1.288 | 0 | 100% → AtRisk |
-| Medium Risk | 750 | 7 | 99.1% → AtRisk |
-| Low Risk | 1.105 | 3.321 | 75.0% → Successful |
-
-→ Knowledge layer dan model sangat konsisten di area High/Medium Risk. Model menangkap 1.105 kasus tambahan pada kelompok Low Risk yang teridentifikasi AtRisk melalui pola data yang lebih kompleks.
+→ Knowledge layer meningkatkan recall dan memperluas cakupan mahasiswa yang masuk antrean verifikasi.
 
 ---
 
@@ -194,7 +187,7 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 **Dari prediksi ke pendukung keputusan:**
 - Jumlah mahasiswa AtRisk per module → prioritas monitoring prodi
 - Distribusi High/Medium/Low Risk → alokasi sumber daya untuk *counselling*
-- Sinyal risiko (skor assessment rendah, aktivitas VLE rendah, sinyal unregistration) → alasan yang bisa dibaca dosen wali
+- Sinyal risiko (skor assessment rendah, assessment belum dikerjakan, klik VLE rendah, hari aktif rendah) → alasan yang bisa dibaca dosen wali
 - Antrean intervensi: daftar prioritas mahasiswa yang berpotensi membutuhkan tindak lanjut, yang efektivitasnya dapat dievaluasi pada implementasi berikutnya
 
 **Stakeholder:**
@@ -210,14 +203,14 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 ## Slide 12 — Kesimpulan & Saran
 
 **Kesimpulan:**
-1. Ketiga model menunjukkan performa stabil melalui 5-fold CV (std < 0.7%), dengan XGBoost terbaik di CV dan Random Forest terpilih berdasarkan recall tertinggi pada test set
+1. Ketiga model menunjukkan performa yang relatif konsisten pada 5-fold CV; XGBoost unggul pada accuracy/ROC-AUC, sedangkan Random Forest terpilih berdasarkan recall AtRisk
 2. Split berdasarkan identitas mahasiswa mengurangi risiko data leakage antar split
-3. Knowledge-based risk layer konsisten dengan model (agreement 99–100% untuk High/Medium Risk)
+3. Knowledge-based risk layer meningkatkan recall dari 71,72% menjadi 78,49% dengan konsekuensi precision turun
 4. Kombinasi ML + rule-based menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu
 
 **Saran:**
 1. Validasi threshold knowledge layer dengan data semester baru
-2. Tambahkan temporal features (per-minggu) untuk early prediction lebih awal
+2. Tambahkan fitur temporal harian atau mingguan untuk membaca dinamika engagement
 3. Integrasikan output ke LMS institusi jika ingin dikembangkan sebagai dashboard operasional
 4. Lakukan evaluasi efektivitas intervensi berbasis output model
 
@@ -244,4 +237,3 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 - [8] Sarker et al., "Multi-class phased prediction of academic performance and dropout," 2023
 - [9] Iatrellis et al., "Study regarding the influence of personality and LMS usage profile on learning performance," 2024
 - [10] Berens et al., "Crossing individual university boundaries: a comprehensive approach to predicting dropouts," 2025
-

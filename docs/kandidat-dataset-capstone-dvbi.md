@@ -1,7 +1,7 @@
-# Kandidat Dataset untuk Capstone DVBI
+# Pemilihan Dataset untuk Capstone DVBI
 
-## Tujuan shortlist
-Dokumen ini dibuat untuk mencari kandidat dataset yang **lebih aman terhadap syarat capstone dosen** sambil mempertahankan tema project:
+## Tujuan dokumen
+Dokumen ini mencatat proses pemilihan dataset yang **aman terhadap syarat capstone dosen** sambil mempertahankan tema project:
 - **Student Performance / Dropout Analytics**
 
 ## Ringkasan syarat capstone yang relevan
@@ -12,7 +12,7 @@ Untuk jalur **tabular classification**, target minimalnya adalah:
 
 ## Kandidat 1 — Open University Learning Analytics Dataset (OULAD)
 ### Status
-**Kandidat paling kuat saat ini**
+**Dataset final yang dipakai**
 
 ### Sumber
 - Situs dataset: https://analyse.kmi.open.ac.uk/open_dataset
@@ -71,12 +71,13 @@ Artinya:
 ### Risiko / catatan
 1. Dataset lebih kompleks daripada UCI sebelumnya.
 2. Preprocessing akan lebih berat karena multi-table dan perlu join/agregasi.
-3. Perlu keputusan formulasi target:
-   - 4-class (`Pass`, `Withdraw`, `Fail`, `Distinction`), atau
-   - reformulasi tertentu sesuai tujuan analisis.
+3. Untuk eksperimen final, target direformulasi menjadi binary risk:
+   - `AtRisk` = `Withdrawn` + `Fail`
+   - `Successful` = `Pass` + `Distinction`
+4. Horizon early warning final dibatasi sampai hari ke-28, sehingga fitur masa depan seperti status unregistration tidak dipakai sebagai prediktor.
 
 ### Penilaian akhir
-**Sangat layak dijadikan kandidat utama / front-runner.**
+**Dipilih sebagai dataset final karena paling kuat untuk analisis early warning, dashboard BI, dan storytelling intervensi dini.**
 
 ---
 
@@ -121,8 +122,8 @@ Saat ini metadata yang terlihat menunjukkan ukuran kecil atau menengah, misalnya
 
 ---
 
-## Rekomendasi saat ini
-### Dataset paling direkomendasikan
+## Keputusan final
+### Dataset yang digunakan
 **Open University Learning Analytics Dataset (OULAD)**
 
 ### Alasan utama
@@ -133,13 +134,12 @@ Saat ini metadata yang terlihat menunjukkan ukuran kecil atau menengah, misalnya
 - cukup kuat untuk dibawa ke analisis, dashboard, dan storytelling BI.
 
 ## Keputusan kerja yang disarankan
-1. Jadikan **OULAD** sebagai kandidat utama.
-2. Lakukan tahap berikutnya:
-   - cari sumber unduh yang stabil,
-   - download dataset,
-   - audit tabel-tabel inti,
-   - tentukan formulasi label final untuk capstone.
-3. Simpan dataset UCI sebelumnya sebagai baseline pembanding, bukan pilihan final.
+1. Gunakan **OULAD** sebagai dataset final.
+2. Pakai formulasi binary risk untuk early warning:
+   - `AtRisk` = `Withdrawn` + `Fail`
+   - `Successful` = `Pass` + `Distinction`
+3. Batasi fitur prediktor sampai hari ke-28 agar evaluasi sesuai dengan skenario intervensi dini.
+4. Simpan dataset UCI sebelumnya sebagai pembanding historis, bukan pilihan final.
 
 ## Kesimpulan singkat
-Jika tujuan kita adalah **aman terhadap syarat capstone dan tetap konsisten dengan tema**, maka **OULAD saat ini adalah kandidat terbaik yang ditemukan**.
+Jika tujuan project adalah **aman terhadap syarat capstone dan tetap konsisten dengan tema early warning**, maka **OULAD adalah dataset final yang digunakan**.

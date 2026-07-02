@@ -39,7 +39,7 @@ Notebook mengunduh dataset otomatis agar eksperimen dapat direproduksi dari runt
 
 “EDA digunakan untuk melihat distribusi kelas, missing values, dan perbedaan pola awal. Fokusnya adalah apakah mahasiswa AtRisk menunjukkan aktivitas assessment atau VLE yang berbeda pada empat minggu pertama.”
 
-Angka pada grafik mengacu pada hasil notebook terbaru. Eksperimen lama menggunakan horizon seluruh semester sehingga menghasilkan konteks evaluasi yang berbeda.
+Angka pada grafik dibaca dalam konteks early warning minggu keempat, sehingga seluruh fitur perilaku dibatasi sampai hari ke-28.
 
 ## 5. Pembagian Data
 

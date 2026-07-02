@@ -1,4 +1,6 @@
-# EDA Ringkas OULAD — Binary Risk Dataset
+# EDA Ringkas OULAD — Audit Awal Binary Risk Dataset
+
+Dokumen ini merangkum EDA awal pada dataset turunan OULAD sebelum horizon early warning final dikunci. Angka `unregistration` dan statistik aktivitas sepanjang semester tetap dicatat sebagai audit data sumber, tetapi eksperimen final membatasi fitur prediktor sampai hari ke-28 dan tidak menggunakan `date_unregistration` maupun `has_unregistration` sebagai prediktor.
 
 ## Ringkasan dataset
 - Total row: **32593**

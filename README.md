@@ -172,15 +172,14 @@ Saat ini repository telah mencakup:
 - daftar awal **10 paper kandidat**,
 - matriks literature review berbasis 10 paper,
 - arsip PDF referensi yang telah divalidasi,
-- struktur awal untuk pengembangan draft tugas,
-- draft artikel UTS IEEE sampai bagian **Methodology**.
+- pipeline OULAD untuk early warning minggu keempat,
+- eksperimen supervised learning dengan Logistic Regression, Random Forest, dan XGBoost,
+- knowledge-based risk layer,
+- dashboard early warning OULAD,
+- artikel IEEE lengkap dalam Markdown, DOCX, dan PDF,
+- outline dan narasi presentasi final DVBI.
 
-Tahap berikutnya yang dapat dikembangkan dari repository ini meliputi:
-
-- eksperimen modeling supervised learning dengan minimal tiga algoritma,
-- implementasi knowledge-based risk layer,
-- penyusunan Results, Discussion, dan Conclusion untuk artikel akhir,
-- pengembangan visualisasi atau dashboard early warning sebagai implikasi BI jika waktu memungkinkan.
+Fokus riset terkini adalah deteksi risiko dropout mahasiswa pada akhir minggu keempat menggunakan fitur yang tersedia sampai hari ke-28. Random Forest menjadi model final karena menghasilkan recall `AtRisk` tertinggi, sedangkan knowledge-based risk layer digunakan untuk memperluas cakupan deteksi dan menghasilkan alasan risiko yang dapat ditindaklanjuti.
 
 ## Update terbaru: OULAD sebagai dataset kerja utama
 
@@ -203,16 +202,23 @@ Notebook tersebut mengunduh OULAD secara otomatis, membatasi aktivitas sampai ha
 
 Dashboard ini ditujukan untuk pimpinan akademik, program studi, dosen wali/tutor, dan tim counselling. Fokusnya bukan evaluasi teknis model, tetapi monitoring risiko, intervention queue, prioritas module-presentation, alasan risiko, dan daftar mahasiswa yang perlu ditindaklanjuti.
 
-Untuk menjalankan ulang pipeline:
+Untuk membangun ulang dataset turunan lokal:
 
 ```bash
 PYTHONPATH=. python3 scripts/build_oulad_binary_dataset.py
-PYTHONPATH=. python3 scripts/run_oulad_experiment.py
-PYTHONPATH=. python3 scripts/build_oulad_dashboard.py
+```
+
+Eksperimen final early warning minggu keempat, figure artikel, dan dashboard final mengikuti notebook Colab:
+
+- [`notebooks/oulad_early_warning_dvbi_colab.ipynb`](notebooks/oulad_early_warning_dvbi_colab.ipynb)
+
+Dashboard HTML lokal yang tersedia di `assets/dashboard/oulad-risk-dashboard.html` adalah artifact dashboard yang dapat dibuka dengan server statis:
+
+```bash
 python3 -m http.server 8765
 ```
 
-Lalu buka dashboard di:
+Lalu buka:
 
 ```text
 http://localhost:8765/assets/dashboard/oulad-risk-dashboard.html
@@ -252,7 +258,7 @@ Model pembanding:
 - Random Forest
 - XGBoost
 
-Eksperimen final menggunakan cut-off hari ke-28 dan mengeluarkan sinyal unregistration dari fitur. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation. Knowledge-based risk layer menggunakan assessment dan aktivitas VLE awal untuk menghasilkan level, alasan risiko, dan rekomendasi.
+Eksperimen final menggunakan cut-off hari ke-28 dan mengeluarkan kolom unregistration dari fitur karena merepresentasikan informasi masa depan. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation dan hold-out test. Knowledge-based risk layer menggunakan assessment dan aktivitas VLE awal untuk menghasilkan level, alasan risiko, dan rekomendasi.
 
 ### Posisi DVBI dalam artikel
 
@@ -283,20 +289,20 @@ Ringkasan aturan dari [`WRITING_RULES.md`](docs/artikel-ieee/WRITING_RULES.md):
 |---|---|
 | [Artikel IEEE](docs/artikel-ieee/) | Artikel lengkap dalam Markdown, DOCX, dan PDF beserta writing rules dan research direction guardrail. |
 | [Audit Dataset OULAD](docs/audit-dataset-oulad.md) | Audit sumber unduh, struktur tabel, distribusi label, missing values penting, dan verifikasi kelayakan OULAD terhadap syarat capstone. |
-| [Preprocessing Plan OULAD: Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing baseline OULAD, termasuk framing label `AtRisk` vs `Successful`, tabel sumber, fitur baseline, aturan preprocessing, dan command eksekusi. |
-| [EDA Ringkas OULAD: Binary Risk Dataset](docs/eda-oulad-binary-risk.md) | Ringkasan EDA dari dataset turunan OULAD hasil preprocessing, mencakup ukuran data, distribusi label, distribusi `final_result`, dan statistik numerik utama. |
-| [Kandidat Dataset untuk Capstone DVBI](docs/kandidat-dataset-capstone-dvbi.md) | Shortlist kandidat dataset yang dievaluasi untuk capstone, beserta alasan mengapa OULAD menjadi kandidat utama dibanding opsi lain. |
-| [Catatan Arah Capstone DVBI](docs/catatan-arah-capstone-dvbi.md) | Catatan keputusan arah project, syarat capstone dari dosen, evaluasi dataset awal, dan implikasi metodologis sebelum masuk preprocessing. |
+| [Preprocessing Plan OULAD: Binary Risk Framing](docs/preprocessing-plan-oulad-binary-risk.md) | Rencana preprocessing final OULAD untuk early warning minggu keempat, termasuk cut-off hari ke-28, fitur prediktor, split berbasis mahasiswa, dan knowledge-based risk layer. |
+| [EDA Ringkas OULAD: Binary Risk Dataset](docs/eda-oulad-binary-risk.md) | Ringkasan EDA awal dari dataset turunan OULAD; dipertahankan sebagai audit data sumber sebelum horizon final hari ke-28 dikunci. |
+| [Pemilihan Dataset untuk Capstone DVBI](docs/kandidat-dataset-capstone-dvbi.md) | Catatan pemilihan dataset capstone, termasuk alasan OULAD menjadi dataset final dibanding opsi lain. |
+| [Catatan Arah Capstone DVBI](docs/catatan-arah-capstone-dvbi.md) | Catatan keputusan terkini: OULAD sebagai dataset final, framing early warning minggu keempat, model Random Forest, knowledge-based risk layer, dan output final project. |
 | [Ringkasan Dataset: Predict Students' Dropout and Academic Success](docs/ringkasan-dataset-uci-student-dropout.md) | Ringkasan dataset UCI yang sempat dipakai sebagai baseline pembanding, termasuk ukuran data, distribusi kelas, karakteristik fitur, dan keterbatasannya. |
 | [Outline Slide: Student Performance / Dropout Analytics](docs/outline-presentasi-student-dropout-10-paper.md) | Outline presentasi literature review untuk topik student performance / dropout analytics dalam konteks DVBI. |
 
 ### Script data & preprocessing
 - `scripts/download_oulad.py`: download dan extract dataset OULAD ke `data/oulad/`.
-- `src/oulad_preprocessing.py`: builder dataset baseline OULAD.
-- `scripts/build_oulad_binary_dataset.py`: runner untuk menghasilkan dataset turunan.
-- `src/oulad_experiment.py`: pipeline eksperimen model dan knowledge-based risk layer.
-- `scripts/run_oulad_experiment.py`: runner eksperimen Logistic Regression, Random Forest, dan XGBoost.
-- `scripts/build_oulad_dashboard.py`: generator dashboard DVBI stakeholder.
+- `src/oulad_preprocessing.py`: builder dataset turunan OULAD.
+- `scripts/build_oulad_binary_dataset.py`: runner untuk menghasilkan dataset turunan lokal.
+- `src/oulad_experiment.py`: pipeline eksperimen baseline lokal historis.
+- `scripts/run_oulad_experiment.py`: runner eksperimen baseline lokal historis; hasil final early warning mengikuti notebook Colab dan artikel IEEE.
+- `scripts/build_oulad_dashboard.py`: generator dashboard HTML lokal historis.
 - `src/oulad_eda.py`: helper untuk merangkum dataset turunan OULAD dan menghasilkan laporan markdown EDA.
 - `scripts/run_oulad_eda.py`: runner untuk membuat `docs/eda-oulad-binary-risk.md`.
 - `tests/test_oulad_preprocessing.py`: test otomatis untuk memverifikasi logika preprocessing baseline.

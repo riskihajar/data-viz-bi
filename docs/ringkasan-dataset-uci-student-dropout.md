@@ -1,6 +1,9 @@
-# Ringkasan Dataset — Predict Students' Dropout and Academic Success
+# Ringkasan Dataset Pembanding — Predict Students' Dropout and Academic Success
 
-## Dataset yang dipilih
+## Status dataset
+Dataset ini adalah **pembanding historis** dari tahap eksplorasi awal. Dataset final project menggunakan **Open University Learning Analytics Dataset (OULAD)** karena ukuran data, kekayaan tabel, dan dukungan untuk skenario early warning lebih kuat.
+
+## Identitas dataset
 - **Nama:** Predict Students' Dropout and Academic Success
 - **Sumber:** UCI Machine Learning Repository
 - **DOI:** 10.24432/C5MC89
@@ -9,8 +12,8 @@
 - **File lokal utama:** `data/uci-student-dropout/data.csv`
 - **Arsip unduhan:** `data/uci-student-dropout/predict-students-dropout-and-academic-success.zip`
 
-## Alasan pemilihan
-Dataset ini paling cocok dengan tema repository kita karena:
+## Alasan sempat dipertimbangkan
+Dataset ini sempat dipertimbangkan karena:
 1. langsung relevan dengan **student dropout / academic success**,
 2. bersifat **tabular** dan siap dipakai untuk klasifikasi,
 3. berasal dari sumber publik yang kredibel,
@@ -135,7 +138,7 @@ Contoh:
 5. Dataset berasal dari konteks institusi tertentu, sehingga generalisasi ke kampus lain tetap terbatas.
 
 ## Implikasi untuk tugas DVBI
-Dataset ini cocok dipakai untuk dua arah sekaligus:
+Dataset ini tetap berguna sebagai pembanding konseptual untuk dua arah:
 
 ### A. Arah analitik / machine learning
 - klasifikasi status mahasiswa (`Dropout`, `Enrolled`, `Graduate`),
@@ -150,9 +153,6 @@ Dataset ini cocok dipakai untuk dua arah sekaligus:
 - segmentasi mahasiswa untuk early warning.
 
 ## Kesimpulan
-Dataset **Predict Students' Dropout and Academic Success** layak dipakai sebagai dataset utama untuk project ini karena paling selaras dengan topik **Student Performance / Dropout Analytics** dan cukup siap untuk tahap berikutnya.
+Dataset **Predict Students' Dropout and Academic Success** relevan dengan topik **Student Performance / Dropout Analytics**, tetapi tidak menjadi dataset final project ini.
 
-Dengan demikian, langkah setelah ini yang paling tepat adalah:
-1. menetapkan **scope analisis** (full features vs early prediction scenario),
-2. menentukan **kolom kategorikal vs numerik**,
-3. menyusun **rencana preprocessing dataset** secara eksplisit.
+Dataset final yang digunakan adalah **OULAD** dengan horizon early warning hari ke-28 dan target binary risk.
