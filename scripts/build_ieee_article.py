@@ -33,7 +33,23 @@ AUTHORS = [
     ("Muhammad Rizky Hajar", "riskihajar@students.amikom.ac.id"),
     ("Alwie Muflich", "alwiemuflich@students.amikom.ac.id"),
     ("Heri Santosa", "heri.sant@students.amikom.ac.id"),
+    ("Andi Sunyoto", "andi@amikom.ac.id"),
+    ("Robert Marco", "robert.marco@amikom.ac.id"),
 ]
+
+FULL_WIDTH_FIGURES = {
+    "fig-4-dashboard-dvbi.png",
+}
+
+FIGURE_WIDTHS = {
+    "fig-1a-target-distribution.png": 3.25,
+    "fig-1b-missing-values.png": 3.25,
+    "fig-2a-metrics-comparison.png": 3.25,
+    "fig-2b-confusion-matrix.png": 3.25,
+    "fig-2c-roc-curve.png": 3.25,
+    "fig-3-feature-importance.png": 3.25,
+    "fig-4-dashboard-dvbi.png": 6.0,
+}
 
 
 def set_cell_margins(cell, top=60, start=80, bottom=60, end=80):
@@ -233,29 +249,30 @@ def add_result_table(doc, rows, caption=None):
         two_col.right_margin = current.right_margin
         set_columns(two_col, 2)
 
+    spacer = doc.add_paragraph()
+    spacer.paragraph_format.space_before = Pt(0)
+    spacer.paragraph_format.space_after = Pt(7)
+    spacer.paragraph_format.line_spacing = 1.0
+
 
 def add_result_figure(doc, image_path: Path, caption: str):
     current = doc.sections[-1]
-    one_col = doc.add_section(WD_SECTION.CONTINUOUS)
-    one_col.top_margin = current.top_margin
-    one_col.bottom_margin = current.bottom_margin
-    one_col.left_margin = current.left_margin
-    one_col.right_margin = current.right_margin
-    set_columns(one_col, 1)
+    is_full_width = image_path.name in FULL_WIDTH_FIGURES
+    if is_full_width:
+        one_col = doc.add_section(WD_SECTION.CONTINUOUS)
+        one_col.top_margin = current.top_margin
+        one_col.bottom_margin = current.bottom_margin
+        one_col.left_margin = current.left_margin
+        one_col.right_margin = current.right_margin
+        set_columns(one_col, 1)
 
-    widths = {
-        "fig-1-eda.png": 7.05,
-        "fig-2-model-evaluation.png": 7.05,
-        "fig-3-feature-importance.png": 5.2,
-        "fig-4-dashboard-dvbi.png": 6.0,
-    }
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(4)
     p.paragraph_format.space_after = Pt(1)
     p.paragraph_format.keep_with_next = True
     shape = p.add_run().add_picture(
-        str(image_path), width=Inches(widths.get(image_path.name, 7.05))
+        str(image_path), width=Inches(FIGURE_WIDTHS.get(image_path.name, 3.25))
     )
     doc_pr = shape._inline.docPr
     doc_pr.set("descr", caption)
@@ -268,12 +285,13 @@ def add_result_figure(doc, image_path: Path, caption: str):
     caption_p.paragraph_format.keep_together = True
     add_inline_markdown(caption_p, caption, size=8)
 
-    two_col = doc.add_section(WD_SECTION.CONTINUOUS)
-    two_col.top_margin = current.top_margin
-    two_col.bottom_margin = current.bottom_margin
-    two_col.left_margin = current.left_margin
-    two_col.right_margin = current.right_margin
-    set_columns(two_col, 2)
+    if is_full_width:
+        two_col = doc.add_section(WD_SECTION.CONTINUOUS)
+        two_col.top_margin = current.top_margin
+        two_col.bottom_margin = current.bottom_margin
+        two_col.left_margin = current.left_margin
+        two_col.right_margin = current.right_margin
+        set_columns(two_col, 2)
 
 
 def add_markdown_section(doc, path: Path):
@@ -364,35 +382,31 @@ def build_docx():
     run = p.add_run(title)
     set_run_font(run, size=20)
 
-    author_table = doc.add_table(rows=1, cols=3)
+    author_table = doc.add_table(rows=2, cols=3)
     author_table.alignment = WD_TABLE_ALIGNMENT.CENTER
     author_table.autofit = False
     set_table_widths(author_table, [3420, 3420, 3420])
     author_table.rows[0]._tr.get_or_add_trPr().append(OxmlElement("w:tblHeader"))
-    for cell, (name, email) in zip(author_table.rows[0].cells, AUTHORS):
+    author_cells = [cell for row in author_table.rows for cell in row.cells]
+    for cell in author_cells:
         cell._tc.get_or_add_tcPr().append(OxmlElement("w:tcBorders"))
+    for cell, (name, email) in zip(author_cells, AUTHORS):
         p = cell.paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         p.paragraph_format.space_after = Pt(0)
-        for text, size, italic in [
+        lines = [
             (name, 10, False),
             ("\nDepartment of Computer Science", 9, False),
             ("\nUniversitas Amikom Yogyakarta", 9, False),
             ("\nYogyakarta, Indonesia", 9, False),
-            (f"\n{email}", 8.5, True),
-        ]:
+        ]
+        if email:
+            lines.append((f"\n{email}", 8.5, True))
+        for text, size, italic in lines:
             r = p.add_run(text)
             set_run_font(r, size=size, italic=italic)
-
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_before = Pt(4)
-    p.paragraph_format.space_after = Pt(7)
-    add_inline_markdown(
-        p,
-        "Supervisi: Dr. Andi Sunyoto, M.Kom | Dosen kelas: Robert Marco, M.T., Ph.D",
-        size=8.5,
-    )
+    for cell in author_cells[len(AUTHORS) :]:
+        cell.text = ""
 
     body_section = doc.add_section(WD_SECTION.CONTINUOUS)
     body_section.top_margin = Inches(0.65)

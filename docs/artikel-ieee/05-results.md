@@ -4,9 +4,13 @@
 
 Dataset hasil preprocessing memuat 32.593 student-module-presentation dari 28.785 mahasiswa unik. Kelas `AtRisk` berjumlah 17.208 baris dan kelas `Successful` berjumlah 15.385 baris. Train-validation memuat 26.122 baris, sedangkan hold-out test memuat 6.471 baris dengan 3.398 kasus `AtRisk` dan 3.073 kasus `Successful`. Pemisahan berbasis `id_student` menghasilkan overlap mahasiswa sebesar nol.
 
-Fig. 1 memperlihatkan bahwa distribusi target relatif berimbang. Missing value terkonsentrasi pada `imd_band` dan sebagian kecil pada `date_registration`; keduanya ditangani di dalam pipeline berdasarkan data train-validation.
+Komposisi target pada dataset pemodelan relatif berimbang, sehingga evaluasi model tidak berangkat dari dominasi satu kelas yang ekstrem. Keseimbangan ini menjadi titik awal yang penting karena tujuan penelitian bukan hanya memperoleh accuracy tinggi, tetapi juga menjaga kemampuan model mengenali mahasiswa yang masuk kelompok `AtRisk`.
 
-![Fig. 1. Distribusi target dan missing value pada dataset pemodelan.](figures/fig-1-eda.png)
+![Fig. 1. Distribusi target pada dataset pemodelan.](figures/fig-1a-target-distribution.png)
+
+Pemeriksaan kualitas data kemudian dilakukan sebelum model dilatih. Missing value terutama muncul pada `imd_band`, dengan jumlah yang jauh lebih kecil pada `date_registration`. Dua kondisi tersebut ditangani di dalam pipeline berdasarkan data train-validation agar proses imputasi tidak membawa informasi dari hold-out test.
+
+![Fig. 2. Missing value pada fitur dataset pemodelan.](figures/fig-1b-missing-values.png)
 
 ## B. Cross-Validation Performance
 
@@ -36,15 +40,21 @@ Tabel II memperlihatkan performa pada hold-out test. Random Forest mencapai accu
 | F1 AtRisk | 0,7408 | **0,7578** | **0,7578** |
 | ROC-AUC | 0,8298 | 0,8396 | **0,8440** |
 
-Classification report Random Forest menunjukkan precision 0,80, recall 0,72, dan F1-score 0,76 pada 3.398 kasus `AtRisk`. Pada 3.073 kasus `Successful`, precision mencapai 0,72, recall 0,81, dan F1-score 0,76. Weighted average F1-score mencapai 0,76.
+Classification report Random Forest menunjukkan precision 0,80, recall 0,72, dan F1-score 0,76 pada 3.398 kasus `AtRisk`. Pada 3.073 kasus `Successful`, precision mencapai 0,72, recall 0,81, dan F1-score 0,76. Weighted average F1-score mencapai 0,76. Perbandingan metrik antar model menempatkan Random Forest sebagai pilihan yang paling relevan untuk konteks early warning karena recall `AtRisk` menjadi ukuran yang paling dekat dengan kebutuhan menemukan mahasiswa berisiko sejak awal.
 
-Fig. 2 merangkum perbandingan metrik, confusion matrix Random Forest, dan kurva ROC. Confusion matrix menunjukkan 2.437 kasus `AtRisk` terdeteksi dan 961 kasus `AtRisk` belum terdeteksi pada hold-out test. Kedekatan kurva ROC ketiga model konsisten dengan selisih ROC-AUC yang relatif kecil.
+![Fig. 3. Perbandingan metrik AtRisk pada hold-out test.](figures/fig-2a-metrics-comparison.png)
 
-![Fig. 2. Perbandingan metrik, confusion matrix Random Forest, dan kurva ROC pada hold-out test.](figures/fig-2-model-evaluation.png)
+Setelah model dipilih, pola kesalahan Random Forest diperiksa untuk memahami risiko operasionalnya. Model tersebut berhasil mengenali 2.437 kasus `AtRisk`, tetapi masih melewatkan 961 kasus yang seharusnya masuk kelompok berisiko. Temuan ini menunjukkan bahwa sistem sudah cukup kuat untuk menyaring sebagian besar mahasiswa berisiko, namun tetap membutuhkan lapisan prioritas dan verifikasi agar kasus yang belum terdeteksi dapat diminimalkan.
 
-Feature importance pada Fig. 3 menunjukkan bahwa total klik VLE, hari aktivitas terakhir, jumlah hari aktif VLE, dan jumlah situs VLE menjadi prediktor teratas. Fitur assessment dan registrasi juga berkontribusi. Nilai importance menunjukkan kontribusi prediktif dalam Random Forest dan tidak menyatakan hubungan sebab akibat.
+![Fig. 4. Confusion matrix Random Forest pada hold-out test.](figures/fig-2b-confusion-matrix.png)
 
-![Fig. 3. Lima belas fitur dengan feature importance tertinggi pada Random Forest.](figures/fig-3-feature-importance.png)
+Kurva ROC memberikan konteks tambahan terhadap perbedaan antar model. Ketiga kurva berada cukup berdekatan, sehingga selisih ROC-AUC perlu dibaca bersama tujuan keputusan. Dalam penelitian ini, kemampuan memperluas cakupan deteksi lebih diprioritaskan daripada memilih model hanya berdasarkan peringkat ROC-AUC.
+
+![Fig. 5. Kurva ROC pada hold-out test.](figures/fig-2c-roc-curve.png)
+
+Kontribusi fitur Random Forest memperlihatkan bahwa sinyal perilaku awal menjadi pembeda utama. Total klik VLE, hari aktivitas terakhir, jumlah hari aktif, dan ragam situs yang diakses muncul sebagai prediktor teratas, diikuti fitur assessment dan registrasi. Temuan ini selaras dengan tujuan early warning karena model banyak bertumpu pada jejak engagement yang sudah tersedia sampai akhir minggu keempat. Nilai importance tetap dibaca sebagai kontribusi prediktif, bukan bukti hubungan sebab akibat.
+
+![Fig. 6. Lima belas fitur dengan feature importance tertinggi pada Random Forest.](figures/fig-3-feature-importance.png)
 
 ## D. Knowledge-Based Risk Layer
 
@@ -67,6 +77,6 @@ Dashboard mengidentifikasi 3.789 student-module-presentation dalam antrean `High
 
 Daftar prioritas menyajikan identitas anonim mahasiswa, module-presentation, probabilitas `AtRisk`, level risiko, jumlah sinyal, alasan, dan rekomendasi. Struktur tersebut menghubungkan hasil model dengan tindakan seperti monitoring akses VLE, pendampingan assessment, serta konseling akademik.
 
-Fig. 4 menyatukan KPI, level risiko, prioritas module-presentation, distribusi probabilitas, sinyal dominan, perbandingan perilaku, confusion matrix, dan trade-off model dengan knowledge layer. Tampilan ini menyediakan ringkasan strategis sekaligus dasar penelusuran prioritas operasional.
+Keluaran analitik kemudian diterjemahkan ke dalam dashboard agar hasil model dapat dibaca sebagai prioritas tindakan, bukan hanya sebagai angka evaluasi. Tampilan tersebut menghubungkan KPI risiko, level prioritas, konsentrasi module-presentation, distribusi probabilitas, sinyal dominan, perbandingan perilaku, confusion matrix, dan trade-off setelah knowledge layer. Dengan susunan ini, pengguna dapat bergerak dari ringkasan strategis menuju penelusuran kelompok atau mahasiswa yang membutuhkan tindak lanjut.
 
-![Fig. 4. Dashboard early warning OULAD pada akhir minggu keempat.](figures/fig-4-dashboard-dvbi.png)
+![Fig. 7. Dashboard early warning OULAD pada akhir minggu keempat.](figures/fig-4-dashboard-dvbi.png)
