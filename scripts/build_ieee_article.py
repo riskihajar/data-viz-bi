@@ -14,7 +14,7 @@ from docx.shared import Inches, Pt, RGBColor
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTICLE_DIR = ROOT / "docs" / "artikel-ieee"
-OUTPUT_DOCX = ARTICLE_DIR / "Artikel IEEE - 24.55.2714 - Muhammad Rizky Hajar.docx"
+OUTPUT_DOCX = ARTICLE_DIR / "Artikel IEEE - Early Warning OULAD.docx"
 OUTPUT_MD = ARTICLE_DIR / "artikel-ieee.md"
 
 SECTION_FILES = [
