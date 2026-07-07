@@ -50,13 +50,15 @@ Tujuan section ini adalah memastikan struktur data sudah terbaca dengan benar se
 
 ### Section 4 - Membentuk Dataset Early Warning Minggu Ke-4
 
-Pada section ini, data mentah diubah menjadi dataset analisis.
+Pada section ini, data mentah diubah menjadi dataset analisis. Ini adalah preprocessing tahap pertama dalam notebook, yaitu preprocessing dari data mentah OULAD menjadi dataset early warning.
 
 Unit analisis yang digunakan adalah satu mahasiswa pada satu module-presentation. Artinya, satu baris mewakili seorang mahasiswa dalam satu modul dan satu periode pembelajaran.
 
 Assessment difilter menggunakan `date_submitted <= 28`, sedangkan aktivitas VLE difilter menggunakan `date <= 28`. Setelah itu, data diagregasi menjadi fitur seperti jumlah assessment, rata-rata skor, total klik VLE, jumlah hari aktif, dan aktivitas terakhir sampai hari ke-28.
 
 Fitur seperti tanggal unregistration tidak digunakan sebagai prediktor karena informasi tersebut berada di luar cakupan early warning minggu keempat. Dengan begitu, fitur model tetap konsisten dengan skenario deteksi dini.
+
+Jadi, preprocessing pada notebook ini dilakukan dalam dua level. Pertama, preprocessing data mentah menjadi dataset early warning pada Section 4. Kedua, preprocessing fitur untuk model machine learning pada Section 8.
 
 ### Section 5 - Validasi Anti-Leakage
 
@@ -90,7 +92,7 @@ Dengan group-based split, mahasiswa yang sama ditempatkan hanya pada salah satu 
 
 ### Section 8 - Pipeline Preprocessing dan Model
 
-Pada section ini, notebook membangun pipeline preprocessing dan model.
+Pada section ini, notebook membangun pipeline preprocessing dan model. Ini adalah preprocessing tahap kedua, yaitu preprocessing fitur sebelum masuk ke algoritma machine learning.
 
 Fitur numerik diimputasi dengan median dan distandardisasi. Fitur kategorikal diimputasi lalu diubah dengan one-hot encoding.
 
