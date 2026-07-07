@@ -176,3 +176,63 @@ Untuk validasi, setiap model dijalankan dalam skema 5-fold cross-validation. Art
 
 **Jawaban:**
 Random seed yang digunakan adalah 42 melalui variabel `RANDOM_STATE = 42`. Seed ini dipakai pada `GroupShuffleSplit` dan model yang memiliki komponen random seperti Random Forest dan XGBoost. Tujuannya agar pembagian data dan hasil eksperimen dapat direproduksi.
+
+## 36. Jika dosen bertanya: apakah `Fail` dan `Withdrawn` sebenarnya sama?
+
+**Jawaban:**
+Secara akademik, `Fail` dan `Withdrawn` tidak sama. `Fail` berarti mahasiswa menyelesaikan proses tetapi tidak lulus, sedangkan `Withdrawn` berarti mahasiswa keluar atau berhenti dari modul. Namun dalam konteks early warning, keduanya sama-sama menunjukkan kondisi tidak berhasil atau membutuhkan perhatian akademik, sehingga digabung menjadi kelas `AtRisk`.
+
+## 37. Jika dosen bertanya: mengapa cut-off hari ke-28, bukan minggu ke-2 atau minggu ke-8?
+
+**Jawaban:**
+Hari ke-28 dipilih sebagai kompromi antara cukup awal untuk intervensi dan cukup data untuk membaca pola perilaku mahasiswa. Jika terlalu awal, misalnya minggu ke-2, data aktivitas dan assessment mungkin masih terlalu sedikit. Jika terlalu akhir, misalnya minggu ke-8, prediksi menjadi kurang bernilai sebagai early warning karena waktu intervensinya semakin pendek.
+
+## 38. Jika dosen bertanya: apakah dataset mengalami class imbalance?
+
+**Jawaban:**
+Distribusi kelas tidak terlalu ekstrem. Dataset hasil preprocessing memiliki 17.208 baris `AtRisk` dan 15.385 baris `Successful`. Namun kami tetap mengantisipasi perbedaan kelas dengan memakai `class_weight='balanced'` pada Logistic Regression dan Random Forest, serta `scale_pos_weight` pada XGBoost.
+
+## 39. Jika dosen bertanya: kenapa Random Forest dipilih padahal XGBoost memiliki accuracy dan ROC-AUC lebih tinggi?
+
+**Jawaban:**
+Karena tujuan utama sistem adalah early warning, metrik yang diprioritaskan adalah recall `AtRisk`, bukan accuracy atau ROC-AUC saja. XGBoost memang memiliki accuracy dan ROC-AUC tertinggi, tetapi Random Forest menghasilkan recall `AtRisk` lebih tinggi. Artinya Random Forest lebih banyak menangkap mahasiswa yang benar-benar berisiko, sehingga lebih sesuai dengan tujuan intervensi dini.
+
+## 40. Jika dosen bertanya: apakah model bisa menjelaskan alasan mahasiswa dianggap berisiko?
+
+**Jawaban:**
+Bisa, tetapi penjelasannya dibantu oleh dua lapisan. Model machine learning menghasilkan prediksi, probabilitas, dan feature importance untuk melihat fitur yang berkontribusi. Knowledge-based risk layer kemudian menerjemahkan sinyal perilaku menjadi alasan yang lebih operasional, misalnya skor assessment rendah, jumlah assessment rendah, total klik VLE rendah, atau hari aktif VLE rendah.
+
+## 41. Jika dosen bertanya: apakah `id_student` digunakan sebagai fitur model?
+
+**Jawaban:**
+Tidak. `id_student` tidak digunakan sebagai prediktor. Kolom tersebut hanya digunakan sebagai grup saat data split dan cross-validation. Tujuannya agar mahasiswa yang sama tidak muncul di train dan test atau train dan validation sekaligus. Jika `id_student` dipakai sebagai fitur, model berisiko menghafal identitas mahasiswa, bukan mempelajari pola akademik dan aktivitas.
+
+## 42. Jika dosen bertanya: risiko false positive dalam sistem ini apa?
+
+**Jawaban:**
+False positive berarti mahasiswa yang sebenarnya `Successful`, tetapi diprediksi atau ditandai sebagai `AtRisk`. Risikonya adalah tim akademik melakukan verifikasi pada mahasiswa yang sebenarnya tidak bermasalah. Karena itu output sistem tidak dipakai sebagai keputusan final, melainkan sebagai daftar prioritas untuk dicek lebih lanjut.
+
+## 43. Jika dosen bertanya: risiko false negative dalam sistem ini apa?
+
+**Jawaban:**
+False negative berarti mahasiswa yang sebenarnya `AtRisk`, tetapi diprediksi sebagai `Successful`. Ini lebih kritis dalam early warning karena mahasiswa tersebut bisa tidak masuk daftar intervensi. Oleh karena itu penelitian ini memprioritaskan recall `AtRisk`, agar sebanyak mungkin mahasiswa berisiko dapat terdeteksi.
+
+## 44. Jika dosen bertanya: mengapa threshold knowledge layer memakai kuartil bawah?
+
+**Jawaban:**
+Kuartil bawah dipakai karena memberi batas berbasis distribusi data, bukan angka asumsi manual. Mahasiswa yang berada pada kuartil bawah untuk indikator seperti aktivitas VLE atau assessment dianggap memiliki perilaku yang relatif rendah dibandingkan kelompok train. Threshold dihitung dari data train-validation agar tidak mengambil informasi dari hold-out test.
+
+## 45. Jika dosen bertanya: apakah hasil model bisa langsung digeneralisasi ke kampus lain?
+
+**Jawaban:**
+Belum tentu. Dataset OULAD berasal dari konteks Open University di Inggris, sehingga pola aktivitas, struktur modul, sistem assessment, dan karakteristik mahasiswa bisa berbeda dengan kampus lain. Untuk penerapan di kampus lain, model perlu divalidasi ulang menggunakan data institusi tersebut.
+
+## 46. Jika dosen bertanya: dashboard menampilkan semua mahasiswa atau hanya test set?
+
+**Jawaban:**
+Pada eksperimen ini dashboard dibuat dari hold-out test agar evaluasi tetap objektif dan tidak mencampur data yang dipakai untuk training. Dalam implementasi nyata, alur yang sama dapat diterapkan pada data mahasiswa aktif, lalu dashboard menampilkan daftar mahasiswa yang sedang berjalan untuk kebutuhan monitoring dan intervensi.
+
+## 47. Jika dosen bertanya: apakah etis menandai mahasiswa sebagai berisiko?
+
+**Jawaban:**
+Etis jika digunakan sebagai alat bantu intervensi positif, bukan untuk menghukum atau memberi label permanen kepada mahasiswa. Output model harus diperlakukan sebagai sinyal awal yang diverifikasi oleh manusia. Selain itu, penerapan nyata perlu memperhatikan privasi data, transparansi penggunaan, dan evaluasi fairness agar tidak merugikan kelompok mahasiswa tertentu.
