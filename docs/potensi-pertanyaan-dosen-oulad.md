@@ -105,7 +105,7 @@ Missing value ditangani di dalam pipeline preprocessing. Fitur numerik diimputas
 ## 21. Mengapa memakai cross-validation lima fold?
 
 **Jawaban:**
-Cross-validation lima fold digunakan untuk melihat kestabilan performa model pada beberapa pembagian data. Dengan skema ini, hasil evaluasi tidak bergantung pada satu split saja. Karena menggunakan group-based fold, mahasiswa yang sama tidak muncul di train dan validation pada fold yang sama.
+Cross-validation lima fold digunakan untuk melihat kestabilan performa model pada beberapa pembagian data. Dengan skema ini, hasil evaluasi tidak bergantung pada satu split saja. Karena menggunakan group-based fold, mahasiswa yang sama tidak muncul di train dan validation pada fold yang sama. Hasil cross-validation juga dilaporkan dalam bentuk rata-rata dan standar deviasi.
 
 ## 22. Apa arti false negative dalam confusion matrix?
 
@@ -152,3 +152,27 @@ Pada notebook ini fokus evaluasi masih pada performa prediksi umum. Untuk penera
 **Jawaban:**
 Pengembangan berikutnya adalah validasi dengan data institusi sendiri, menambahkan fitur temporal mingguan, melakukan evaluasi fairness, menguji dampak intervensi, dan mengintegrasikan output ke LMS atau dashboard operasional kampus.
 
+## 31. Jika dosen bertanya: rasio data split yang digunakan berapa?
+
+**Jawaban:**
+Rasio split yang digunakan adalah 80% train-validation dan 20% hold-out test. Secara jumlah, train-validation berisi 26.122 baris, sedangkan hold-out test berisi 6.471 baris. Split dilakukan menggunakan `GroupShuffleSplit` dengan `id_student` sebagai grup, sehingga mahasiswa yang sama tidak muncul di train dan test sekaligus.
+
+## 32. Jika dosen bertanya: mengapa tidak memakai 70:20:10?
+
+**Jawaban:**
+Kami tidak memakai 70:20:10 karena validasi tidak dibuat sebagai satu validation set statis. Bagian 80% train-validation masih dievaluasi menggunakan 5-fold `GroupKFold`, sehingga setiap bagian data bergantian menjadi validation. Dengan begitu, data training tetap lebih banyak, evaluasi lebih stabil, dan 20% hold-out test tetap disimpan sebagai data uji akhir yang belum dipakai saat training maupun pemilihan model.
+
+## 33. Jika dosen bertanya: apakah ada standar deviasi hasil model?
+
+**Jawaban:**
+Ada. Standar deviasi diambil dari hasil 5-fold `GroupKFold` cross-validation. Untuk model final Random Forest, hasilnya adalah accuracy 0,7538 ± 0,0033, precision `AtRisk` 0,7999 ± 0,0148, recall `AtRisk` 0,7126 ± 0,0040, F1 `AtRisk` 0,7536 ± 0,0050, dan ROC-AUC 0,8362 ± 0,0026. Nilai standar deviasi yang kecil menunjukkan performa model relatif stabil antar fold.
+
+## 34. Jika dosen bertanya: sudah berapa kali eksperimen dijalankan?
+
+**Jawaban:**
+Untuk validasi, setiap model dijalankan dalam skema 5-fold cross-validation. Artinya setiap model dilatih dan divalidasi 5 kali pada fold yang berbeda. Karena ada tiga model, yaitu Logistic Regression, Random Forest, dan XGBoost, total proses cross-validation adalah 15 fit evaluasi. Setelah model terbaik dipilih, model final dilatih ulang pada seluruh train-validation dan diuji sekali pada hold-out test.
+
+## 35. Jika dosen bertanya: random seed yang digunakan berapa?
+
+**Jawaban:**
+Random seed yang digunakan adalah 42 melalui variabel `RANDOM_STATE = 42`. Seed ini dipakai pada `GroupShuffleSplit` dan model yang memiliki komponen random seperti Random Forest dan XGBoost. Tujuannya agar pembagian data dan hasil eksperimen dapat direproduksi.
