@@ -224,11 +224,17 @@ Hasil pada hold-out test terdiri dari 1.785 baris `High Risk`, 1.943 `Medium Ris
 
 ### Section 14 - Evaluasi Alarm Intervensi
 
-> **Cursor:** Sorot tabel perbandingan pada kolom precision, recall, dan F1; kemudian pindah ke confusion matrix alarm.
+> **Cursor:** Sorot tabel perbandingan pada kolom precision, recall, dan F1; kemudian pindah ke confusion matrix alarm. Tunjuk matriks dari kiri atas, kanan atas, kiri bawah, lalu kanan bawah.
 
 Untuk mengevaluasi alarm, `High Risk` dan `Medium Risk` dipetakan sebagai alarm `AtRisk`. Hasilnya dibandingkan dengan prediksi Random Forest sebelum aturan diterapkan.
 
-Confusion matrix alarm menunjukkan 2.642 kasus `AtRisk` terdeteksi dan 756 kasus terlewat. Dari angka tersebut, recall alarm sebesar 77,75 persen. Sebanyak 1.086 baris `Successful` juga masuk ke dalam alarm, dengan precision sebesar 70,87 persen.
+Pada confusion matrix ini, `AtRisk` menjadi kelas positif. Angka 1.987 merupakan true negative, yaitu aktual `Successful` dan diprediksi `Successful`. Angka 1.086 merupakan false positive, yaitu aktual `Successful` dan diprediksi `AtRisk`.
+
+Pada baris berikutnya, 756 merupakan false negative, yaitu aktual `AtRisk` dan diprediksi `Successful`. Angka 2.642 merupakan true positive, yaitu aktual `AtRisk` dan diprediksi `AtRisk`.
+
+Kolom prediksi `Successful` berjumlah 2.743 dan sesuai dengan jumlah `Low Risk`. Kolom prediksi `AtRisk` berjumlah 3.728, berasal dari 1.785 `High Risk` ditambah 1.943 `Medium Risk`.
+
+Dari 3.398 kasus aktual `AtRisk`, sebanyak 2.642 masuk ke dalam alarm. Hasil ini memberikan recall sebesar 77,75 persen. Dari 3.728 alarm `AtRisk`, sebanyak 2.642 sesuai dengan kelas aktual dan menghasilkan precision sebesar 70,87 persen.
 
 Knowledge layer pada konfigurasi ini memperluas cakupan deteksi sekaligus menambah antrean yang perlu diverifikasi. Angka recall dan precision tersebut memberi gambaran trade-off operasional dari aturan yang digunakan.
 
