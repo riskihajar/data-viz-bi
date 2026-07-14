@@ -18,7 +18,7 @@ Naskah ini mengikuti urutan tampilan pada `notebooks/oulad_early_warning_dvbi_co
 
 > **Cursor:** Sorot baris **Judul**, lalu pindahkan ke heading **Ringkasan Penelitian** ketika mulai menjelaskan konteks riset.
 
-Assalamualaikum warahmatullahi wabarakatuh. Selamat pagi atau siang Bapak/Ibu dosen dan teman-teman.
+Assalamualaikum warahmatullahi wabarakatuh. Selamat sore Pak Andi dan teman-teman.
 
 Kami dari Kelompok 5 akan mempresentasikan penelitian berjudul “Early Warning Risiko Dropout Mahasiswa pada Minggu Keempat Menggunakan Supervised Learning dan KnowledgeBased Risk Layer pada Open University Learning Analytics Dataset”.
 
@@ -276,16 +276,18 @@ Artefak tersebut menyimpan hasil utama dalam format terstruktur sehingga dapat d
 
 ### Section 18 - Kesimpulan dan Keterbatasan
 
-> **Cursor:** Sorot paragraf **Kesimpulan**, terutama supervised binary classification, Random Forest, dan knowledge-based layer.
+> **Cursor:** Sorot paragraf **Kesimpulan** mulai dari tiga model pembanding, Random Forest, metrik hold-out, knowledge-based risk layer, lalu dashboard.
 
-Penelitian ini membandingkan tiga model supervised binary classification untuk mengenali risiko `Withdrawn` atau `Fail` berdasarkan informasi sampai minggu keempat.
+Penelitian ini membandingkan Logistic Regression, Random Forest, dan XGBoost menggunakan supervised binary classification untuk mengenali risiko `Withdrawn` atau `Fail` berdasarkan informasi sampai minggu keempat.
 
-Random Forest dipilih karena memperoleh mean recall `AtRisk` tertinggi pada cross-validation. Pada hold-out test, model menghasilkan recall 0,7063 dan precision 0,8100. Knowledge-based risk layer kemudian mengubah hasil model dan sinyal perilaku menjadi tiga level prioritas beserta alasan dan rekomendasi.
+Random Forest dipilih karena memperoleh mean recall `AtRisk` tertinggi pada cross-validation. Pada hold-out test, model menghasilkan recall `AtRisk` 0,7063 dan precision `AtRisk` 0,8100.
 
-Hasil penelitian menunjukkan bagaimana prediksi, aturan berbasis pengetahuan, dan visualisasi BI dapat disusun menjadi alur decision support pada eksperimen OULAD.
+Knowledge-based risk layer menggabungkan prediksi model dengan sinyal assessment dan VLE untuk membentuk tiga level prioritas beserta alasan dan rekomendasi. Dashboard menyajikan hasil tersebut sebagai indikator monitoring dan prioritas intervensi.
 
-> **Cursor:** Turunkan ke daftar **Keterbatasan** dan tunjuk item threshold, probability calibration, hyperparameter tuning, fairness, serta konteks OULAD seiring narasi dibacakan.
+> **Cursor:** Turunkan ke daftar **Keterbatasan** dan tunjuk kelima poin secara berurutan: target dan horizon, aturan operasional, trade-off metrik, pengembangan model, lalu validasi institusi.
 
-Bagian akhir mencatat ruang pengembangan penelitian, yaitu validasi threshold bersama pakar akademik, probability calibration, hyperparameter tuning, dan evaluasi fairness antarkelompok. Penerapan pada institusi lain dilanjutkan melalui validasi dengan data dan proses akademik setempat karena OULAD merepresentasikan konteks Open University di Inggris.
+Pada bagian ini, target berasal dari hasil akhir dan predictors dibatasi sampai hari ke-28. Level risiko serta threshold kuartil berfungsi sebagai aturan operasional, sedangkan feature importance menunjukkan kontribusi prediktif dalam model.
 
-Demikian presentasi dari Kelompok 5. Terima kasih atas perhatian Bapak/Ibu dosen dan teman-teman. Wassalamualaikum warahmatullahi wabarakatuh.
+Perubahan recall dibaca bersama precision dan jumlah kasus dalam antrean intervensi. Ruang pengembangan berikutnya mencakup probability calibration, hyperparameter tuning, optimasi classification threshold, dan evaluasi fairness. Penerapan pada institusi lain dilanjutkan melalui validasi dengan data dan proses akademik setempat karena OULAD merepresentasikan konteks Open University di Inggris.
+
+Demikian presentasi dari Kelompok 5. Terima kasih atas perhatian Pak Andi dan teman-teman. Wassalamualaikum warahmatullahi wabarakatuh.
