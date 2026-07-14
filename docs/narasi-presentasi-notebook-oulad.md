@@ -82,7 +82,7 @@ Output menampilkan jejak dari data assessment dan VLE menuju aggregated features
 
 > **Cursor:** Pada preview dataset akhir, tunjuk `assessment_count`, `Mean score`, `Total VLE clicks`, dan `Active VLE days` pada baris yang memiliki nilai nol.
 
-Nilai nol pada behavioral features menunjukkan tidak adanya aktivitas atau submission yang tercatat sampai cut-off. Karena itu, nilai nol pada skor assessment dibaca bersama jumlah assessment, bukan sebagai bukti bahwa mahasiswa memperoleh nilai ujian nol.
+Behavioral features yang belum memiliki catatan sampai hari ke-28 diisi dengan nilai nol. Pada data assessment, nilai tersebut dibaca bersama `assessment_count` untuk melihat apakah mahasiswa sudah melakukan submission.
 
 ### Section 5 - Prediction Horizon Validation
 
@@ -90,7 +90,7 @@ Nilai nol pada behavioral features menunjukkan tidak adanya aktivitas atau submi
 
 Prediction horizon menetapkan informasi yang tersedia ketika prediksi dibuat. Di sini seluruh predictor dibatasi pada informasi yang tersedia sampai hari ke-28.
 
-Tabel pada layar membedakan peran setiap jenis data. `risk_label` menjadi target, `id_student` digunakan untuk grouping saat split, dan `final_result` menjadi sumber pembentukan label. `date_unregistration` tidak masuk ke feature matrix karena kolom tersebut berkaitan dengan kejadian pengunduran diri.
+Tabel pada layar membedakan peran setiap jenis data. `risk_label` menjadi target, `id_student` digunakan untuk grouping saat split, dan `final_result` menjadi sumber pembentukan label. Feature matrix mengecualikan `date_unregistration` karena kolom tersebut berkaitan dengan kejadian pengunduran diri.
 
 Feature matrix terdiri dari delapan categorical features dan sebelas numerical features. Daftar ini menjadi batas eksplisit atribut yang masuk ke pipeline model.
 
@@ -126,7 +126,7 @@ Output menunjukkan 26.122 baris pada train-validation dan 6.471 baris pada hold-
 
 > **Cursor:** Sorot tiga baris output: ukuran split, **Overlap mahasiswa: 0**, dan distribusi train-test.
 
-Diagram berikutnya menunjukkan bahwa lima fold hanya diterapkan pada bagian train-validation. Hold-out test digunakan setelah model final dipilih.
+Diagram berikutnya menunjukkan lima fold pada bagian train-validation. Setelah model final dipilih, hold-out test digunakan untuk evaluasi generalisasi.
 
 ### Section 8 - Pipeline Preprocessing dan Model
 
@@ -136,7 +136,7 @@ Numerical features diproses dengan median imputation dan standardization. Catego
 
 Seluruh transformasi ditempatkan di dalam pipeline. Dengan susunan ini, nilai imputasi, skala, dan kategori dipelajari dari training fold pada setiap putaran cross-validation.
 
-Class weighting digunakan untuk menyeimbangkan kontribusi kelas sesuai distribusi training data tanpa membuat sampel sintetis. Karena distribusi kelas cukup dekat, pengaruh pembobotannya juga terbatas.
+Class weighting menyesuaikan kontribusi kedua kelas berdasarkan distribusi training data. Proporsi kelas yang berdekatan menghasilkan bobot yang juga berdekatan.
 
 Tiga model yang dibandingkan adalah Logistic Regression sebagai baseline linear, Random Forest sebagai ensemble decision tree, dan XGBoost sebagai gradient-boosted trees. Konfigurasinya dibuat tetap agar tahap ini berfungsi sebagai perbandingan baseline.
 
@@ -150,11 +150,11 @@ Setiap model dievaluasi dengan lima fold berbasis kelompok mahasiswa. Pada setia
 
 Random Forest memperoleh mean recall `AtRisk` tertinggi sebesar 0,7107. XGBoost memperoleh recall 0,6938 dan Logistic Regression 0,6889. Berdasarkan kriteria yang ditetapkan sejak awal, Random Forest dipilih sebagai model final.
 
-Metrik lain tetap diperhatikan. XGBoost memiliki mean ROC-AUC tertinggi sebesar 0,8440, sementara Random Forest memperoleh 0,8362. Hasil ini menunjukkan bahwa pemilihan model mengikuti prioritas recall pada konteks early warning, sekaligus mempertahankan metrik lain sebagai pembanding.
+XGBoost memiliki mean ROC-AUC tertinggi sebesar 0,8440, sementara Random Forest memperoleh 0,8362. Tabel ini memperlihatkan hasil setiap model pada beberapa metrik, dengan recall `AtRisk` sebagai dasar model selection.
 
 > **Cursor:** Gerakkan horizontal pada baris Random Forest dari `recall_mean` ke `recall_std`, lalu bandingkan dengan dua baris di bawahnya.
 
-Standard deviation antar-fold juga ditampilkan untuk melihat variasi performa. Selisih antar-model pada baseline ini cukup kecil, sehingga hasilnya dibaca sebagai dasar model selection dalam ruang eksperimen yang diuji.
+Standard deviation antar-fold menunjukkan variasi performa pada lima validation fold. Pada recall `AtRisk`, Random Forest mencatat standard deviation sebesar 0,0085.
 
 ### Section 10 - Evaluasi Generalisasi pada Hold-Out Test
 
@@ -168,15 +168,15 @@ Recall 0,7213 berarti sekitar 72 persen baris `AtRisk` pada hold-out test berhas
 
 > **Cursor:** Pada classification report, tunjuk baris `AtRisk` dan kolom precision, recall, serta support.
 
-Tabel juga menampilkan hasil dua model lain untuk memberi konteks evaluasi. Pemilihan Random Forest tetap berasal dari hasil cross-validation; angka test digunakan untuk membaca generalisasi akhir.
+Tabel juga menampilkan hasil dua model lain sebagai pembanding. Hasil cross-validation menentukan Random Forest sebagai model final, kemudian angka test menunjukkan performanya pada hold-out data.
 
 ### Cell Benchmark Penelitian Sebelumnya
 
-> **Cursor:** Tunjuk kolom **Skenario** lebih dahulu, lalu baca hanya sel metrik yang tersedia pada setiap penelitian.
+> **Cursor:** Tunjuk kolom **Skenario** lebih dahulu, lalu baca sel metrik yang tersedia pada setiap penelitian.
 
 Bagian ini menyandingkan metrik notebook dengan angka yang dilaporkan dalam tiga penelitian sebelumnya.
 
-Tanda kosong menunjukkan metrik yang tidak dilaporkan pada paper terkait. Perbandingan ini digunakan sebagai konteks literatur karena dataset, target, prediction horizon, dan desain evaluasinya berbeda. Oleh karena itu, grafik dibaca per metrik yang tersedia dan tidak digunakan untuk menentukan peringkat penelitian.
+Tabel menampilkan metrik yang tersedia dari setiap paper. Kolom skenario membantu membaca angka tersebut bersama dataset, target, prediction horizon, dan desain evaluasi masing-masing penelitian.
 
 ### Section 11 - Visualisasi Evaluasi Model
 
@@ -220,7 +220,7 @@ Hasil pada hold-out test terdiri dari 1.816 baris `High Risk`, 1.979 `Medium Ris
 
 > **Cursor:** Ikuti satu baris pada tabel contoh dari `predicted_atrisk` menuju `probability_atrisk`, `risk_signal_count`, level, alasan, dan rekomendasi.
 
-`P(AtRisk)` merupakan probabilitas yang dihasilkan Random Forest. Nilai tersebut digunakan untuk pengurutan prioritas dan belum melalui probability calibration khusus.
+`P(AtRisk)` merupakan probabilitas yang dihasilkan Random Forest dan digunakan untuk mengurutkan prioritas. Probability calibration dicatat sebagai tahap pengembangan berikutnya.
 
 ### Section 14 - Evaluasi Alarm Intervensi
 
@@ -254,7 +254,7 @@ Daftar prioritas mengambil baris `High Risk` dan `Medium Risk`, kemudian menguru
 
 Output menghasilkan 3.795 `student-module-presentation` dalam antrean. Sinyal yang paling sering muncul adalah skor assessment rendah dengan 2.341 kasus.
 
-Module GGG presentation 2014J memiliki proporsi High dan Medium Risk tertinggi pada hold-out test. Persentase pada bagian ini menggambarkan komposisi sampel test untuk module-presentation tersebut, sehingga pembacaannya perlu disertai jumlah observasi ketika digunakan untuk keputusan operasional.
+Output juga menunjukkan module-presentation dengan proporsi prioritas tertinggi dan sinyal risiko yang paling sering muncul pada hold-out test.
 
 Tabel dua puluh baris teratas menunjukkan bahwa probabilitas, alasan risiko, dan rekomendasi dapat ditelusuri untuk setiap unit analisis. Dalam penerapan akademik, ID yang sama dapat diringkas kembali jika seorang mahasiswa muncul pada lebih dari satu modul.
 
@@ -276,10 +276,10 @@ Penelitian ini membandingkan tiga model supervised binary classification untuk m
 
 Random Forest dipilih karena memperoleh mean recall `AtRisk` tertinggi pada cross-validation. Pada hold-out test, model menghasilkan recall 0,7213 dan precision 0,8007. Knowledge-based risk layer kemudian mengubah hasil model dan sinyal perilaku menjadi tiga level prioritas beserta alasan dan rekomendasi.
 
-Hasil penelitian menunjukkan bagaimana prediksi, aturan berbasis pengetahuan, dan visualisasi BI dapat disusun menjadi alur decision support. Hasilnya masih berada dalam konteks eksperimen OULAD.
+Hasil penelitian menunjukkan bagaimana prediksi, aturan berbasis pengetahuan, dan visualisasi BI dapat disusun menjadi alur decision support pada eksperimen OULAD.
 
 > **Cursor:** Turunkan ke daftar **Keterbatasan** dan tunjuk item threshold, probability calibration, hyperparameter tuning, fairness, serta konteks OULAD seiring narasi dibacakan.
 
-Keterbatasan penelitian mencakup threshold aturan yang masih berupa baseline berbasis kuartil, probabilitas yang belum dikalibrasi, hyperparameter yang belum dituning, dan fairness antarkelompok yang belum dievaluasi. OULAD juga berasal dari konteks Open University di Inggris, sehingga penerapan pada institusi lain memerlukan validasi menggunakan data dan proses akademik setempat.
+Bagian akhir mencatat ruang pengembangan penelitian, yaitu validasi threshold bersama pakar akademik, probability calibration, hyperparameter tuning, dan evaluasi fairness antarkelompok. Penerapan pada institusi lain dilanjutkan melalui validasi dengan data dan proses akademik setempat karena OULAD merepresentasikan konteks Open University di Inggris.
 
 Demikian presentasi dari Kelompok 5. Terima kasih atas perhatian Bapak/Ibu dosen dan teman-teman. Wassalamualaikum warahmatullahi wabarakatuh.
