@@ -1,138 +1,158 @@
 # Narasi Presentasi Notebook OULAD Early Warning
 
-Dokumen ini adalah naskah baca terpisah untuk presentasi notebook `notebooks/oulad_early_warning_dvbi_colab.ipynb`. Narasi ini tidak perlu dimasukkan ke cell notebook, karena notebook akan ditampilkan sebagai media visual dan eksekusi.
+Naskah ini mengikuti urutan tampilan pada `notebooks/oulad_early_warning_dvbi_colab.ipynb`. Teks dapat dibaca langsung dengan tetap memberi ruang untuk menunjuk tabel atau grafik yang sedang tampil.
 
 ## Pembagian Presenter
 
-| Presenter | Bagian Notebook | Fokus |
+| Presenter | Tampilan notebook | Fokus |
 |---|---|---|
-| Presenter 1 | Pembukaan sampai Section 5 | konteks masalah, dataset, pembentukan data, anti-leakage |
-| Presenter 2 | Section 6 sampai Section 12 | EDA, split data, pipeline model, evaluasi, interpretasi model |
-| Presenter 3 | Section 13 sampai Section 18 | knowledge-based risk layer, dashboard, insight BI, kesimpulan |
+| Presenter 1 | Pembukaan sampai Section 5 | konteks penelitian, sumber data, konstruksi dataset, prediction horizon |
+| Presenter 2 | Section 6 sampai Section 12 | EDA, data split, preprocessing, model selection, evaluasi |
+| Presenter 3 | Section 13 sampai Section 18 | knowledge layer, alarm intervensi, dashboard, prioritas, kesimpulan |
 
 ---
 
-## Presenter 1 - Pembukaan dan Persiapan Data
+## Presenter 1 - Konteks Penelitian dan Persiapan Data
 
-### Pembukaan
+### Cell Pembuka - Judul dan Ringkasan Penelitian
 
-Assalamualaikum warahmatullahi wabarakatuh, selamat pagi atau siang Bapak/Ibu dosen dan teman-teman semua.
+Assalamualaikum warahmatullahi wabarakatuh. Selamat pagi atau siang Bapak/Ibu dosen dan teman-teman.
 
-Kami dari Kelompok 5 akan mempresentasikan notebook berjudul "Early Warning Risiko Mahasiswa OULAD". Fokus notebook ini adalah membangun sistem pendukung keputusan untuk mendeteksi mahasiswa yang berisiko gagal atau mengundurkan diri sejak minggu keempat perkuliahan.
+Kami dari Kelompok 5 akan mempresentasikan penelitian berjudul “Early Warning Risiko Dropout Mahasiswa pada Minggu Keempat Menggunakan Supervised Learning dan KnowledgeBased Risk Layer pada Open University Learning Analytics Dataset”.
 
-Target yang digunakan adalah dua kelas. Kelas `AtRisk` mencakup mahasiswa dengan hasil akhir `Withdrawn` atau `Fail`, sedangkan kelas `Successful` mencakup mahasiswa dengan hasil akhir `Pass` atau `Distinction`.
+Penelitian ini menyusun early warning system untuk mengenali mahasiswa yang berisiko memperoleh hasil akhir `Withdrawn` atau `Fail` berdasarkan informasi yang tersedia sampai akhir minggu keempat. Data yang digunakan adalah OULAD, yang memuat profil mahasiswa, registrasi, assessment, dan aktivitas pada Virtual Learning Environment atau VLE.
 
-Hasil model ini kami posisikan sebagai decision support. Model membantu memberi sinyal awal, lalu dosen atau pengelola program studi dapat memadukannya dengan konteks akademik sebelum menentukan bentuk intervensi.
+Masalah prediksinya dirumuskan sebagai supervised binary classification. Kelas `AtRisk` berasal dari hasil akhir `Withdrawn` atau `Fail`, sedangkan kelas `Successful` berasal dari `Pass` atau `Distinction`.
 
-### Section 1 - Persiapan Library
+Kami membandingkan Logistic Regression, Random Forest, dan XGBoost. Model dipilih melalui cross-validation dengan recall `AtRisk` sebagai metrik utama. Recall menunjukkan proporsi kasus `AtRisk` yang berhasil dikenali oleh model.
 
-Pada bagian pertama, kami menyiapkan seluruh library yang dibutuhkan untuk pengolahan data, visualisasi, preprocessing, pemodelan, dan evaluasi.
+Keluaran penelitian terdiri dari evaluasi model, knowledge-based risk layer, dan dashboard monitoring. Hasilnya digunakan sebagai decision support untuk menyusun prioritas verifikasi dan tindak lanjut akademik.
 
-Di sini kami juga menetapkan `RANDOM_STATE` agar eksperimen dapat direproduksi, serta `CUTOFF_DAY` sebesar 28. Nilai ini berarti seluruh fitur perilaku mahasiswa hanya dihitung sampai akhir minggu keempat.
+### Cell Alur Analitik Penelitian
 
-Pembatasan waktu ini selaras dengan tujuan early warning, karena fitur yang digunakan merepresentasikan informasi yang tersedia sampai minggu keempat.
+Diagram ini merangkum alurnya. Data sampai hari ke-28 masuk ke model klasifikasi biner. Model menghasilkan kelas prediksi dan `P(AtRisk)`, yaitu probabilitas kelas `AtRisk` menurut model.
 
-### Section 2 - Mengunduh Dataset OULAD
+Setelah itu, prediksi dipadukan dengan sinyal assessment dan aktivitas VLE. Gabungan tersebut membentuk prioritas `High Risk`, `Medium Risk`, atau `Low Risk`. Jadi, model memprediksi dua kelas, sementara tiga level risiko digunakan untuk mengatur prioritas tindak lanjut.
 
-Pada bagian kedua, notebook mengunduh Open University Learning Analytics Dataset atau OULAD secara otomatis dari UCI Machine Learning Repository.
+### Section 1 - Konfigurasi Analisis
 
-Langkah ini mendukung reproduksibilitas eksperimen, karena pengguna dapat menjalankan notebook dari runtime Google Colab baru tanpa mengunggah file secara manual. Jika file sudah tersedia di runtime, proses download akan dilewati.
+Pada bagian ini kami menyiapkan library untuk pengolahan data, visualisasi, preprocessing, pemodelan, dan evaluasi.
 
-Output pada section ini menunjukkan daftar file CSV yang berhasil ditemukan dan divalidasi.
+`RANDOM_STATE` ditetapkan sebesar 42 agar data split dan komponen acak model dapat direproduksi. `CUTOFF_DAY` ditetapkan sebesar 28 sebagai observation horizon pada akhir minggu keempat.
 
-### Section 3 - Membaca dan Memeriksa Data Sumber
+Minggu keempat dipilih karena data perilaku awal sudah mulai terbentuk dan waktu untuk melakukan tindak lanjut masih tersedia. Dalam penelitian ini, hari ke-28 digunakan sebagai baseline horizon yang sama untuk seluruh eksperimen.
 
-Setelah dataset tersedia, notebook membaca tabel-tabel utama yang digunakan dalam analisis.
+### Section 2 - Akuisisi Data OULAD
 
-Tabel `studentInfo` berisi profil mahasiswa dan hasil akhir. Tabel `studentRegistration` berisi informasi tanggal registrasi. Tabel `assessments` memberi konteks tugas atau penilaian. Sementara `studentAssessment` dan `studentVle` menggambarkan aktivitas assessment serta aktivitas mahasiswa pada Virtual Learning Environment.
+Notebook mengambil arsip OULAD dari UCI Machine Learning Repository. File kemudian diekstrak dan diperiksa berdasarkan daftar tabel yang dibutuhkan.
 
-Tujuan section ini adalah memastikan struktur data sudah terbaca dengan benar sebelum dilakukan penggabungan dan agregasi.
+Output menunjukkan tujuh tabel sumber tersedia. Lima tabel digunakan langsung dalam konstruksi dataset analisis, sedangkan tabel lain tetap diverifikasi sebagai bagian dari arsip OULAD.
 
-### Section 4 - Membentuk Dataset Early Warning Minggu Ke-4
+### Section 3 - Struktur Dataset
 
-Pada section ini, data mentah diubah menjadi dataset analisis. Ini adalah preprocessing tahap pertama dalam notebook, yaitu preprocessing dari data mentah OULAD menjadi dataset early warning.
+Bagian ini memperlihatkan struktur tabel yang digunakan. `studentInfo` menyediakan profil mahasiswa dan `final_result`. `studentRegistration` menyediakan waktu registrasi. `assessments` menghubungkan assessment dengan modul dan presentation. `studentAssessment` mencatat submission dan skor, sedangkan `studentVle` mencatat aktivitas akses pada VLE.
 
-Unit analisis yang digunakan adalah satu mahasiswa pada satu module-presentation. Artinya, satu baris mewakili seorang mahasiswa dalam satu modul dan satu periode pembelajaran.
+Preview di bawah tabel ringkasan memperlihatkan sumber label hasil akhir dan informasi registrasi. Nilai tanggal pada OULAD dinyatakan relatif terhadap awal perkuliahan, sehingga nilai negatif menunjukkan kejadian sebelum hari pertama modul.
 
-Assessment difilter menggunakan `date_submitted <= 28`, sedangkan aktivitas VLE difilter menggunakan `date <= 28`. Setelah itu, data diagregasi menjadi fitur seperti jumlah assessment, rata-rata skor, total klik VLE, jumlah hari aktif, dan aktivitas terakhir sampai hari ke-28.
+### Section 4 - Konstruksi Dataset Early Warning Minggu Keempat
 
-Fitur seperti tanggal unregistration tidak digunakan sebagai prediktor karena informasi tersebut berada di luar cakupan early warning minggu keempat. Dengan begitu, fitur model tetap konsisten dengan skenario deteksi dini.
+Pada bagian ini tabel sumber digabungkan menjadi dataset analisis. Unit analisisnya adalah `student-module-presentation`, yaitu satu mahasiswa pada satu modul dan satu periode penyelenggaraan. Seorang mahasiswa dapat memiliki lebih dari satu baris ketika mengikuti modul atau presentation yang berbeda.
 
-Jadi, preprocessing pada notebook ini dilakukan dalam dua level. Pertama, preprocessing data mentah menjadi dataset early warning pada Section 4. Kedua, preprocessing fitur untuk model machine learning pada Section 8.
+Assessment dibatasi pada `date_submitted` sampai hari ke-28. Aktivitas VLE juga dibatasi sampai hari ke-28, kemudian diringkas menjadi total klik, jumlah hari aktif, jumlah site yang diakses, dan hari aktivitas terakhir.
 
-### Section 5 - Validasi Anti-Leakage
+Target `risk_label` dibentuk dari `final_result`. Informasi tersebut digunakan sebagai label pembelajaran, sementara predictor berasal dari profil, registrasi, assessment awal, dan aktivitas VLE awal.
 
-Bagian ini memastikan seluruh fitur prediktor hanya berasal dari informasi yang tersedia pada atau sebelum hari ke-28.
+Output menampilkan jejak dari data assessment dan VLE menuju aggregated features, kemudian preview dataset hasil penggabungan. Dataset yang terbentuk berisi 32.593 `student-module-presentation` dari 28.785 mahasiswa unik.
 
-Validasi anti-leakage membantu menjaga evaluasi tetap sesuai dengan kondisi nyata early warning. Fokusnya adalah memastikan model belajar dari informasi yang memang tersedia saat sistem memberi sinyal awal.
+Nilai nol pada behavioral features menunjukkan tidak adanya aktivitas atau submission yang tercatat sampai cut-off. Karena itu, nilai nol pada skor assessment dibaca bersama jumlah assessment, bukan sebagai bukti bahwa mahasiswa memperoleh nilai ujian nol.
 
-Output yang diharapkan adalah status lulus validasi serta daftar fitur kategorikal dan numerik yang digunakan untuk pemodelan.
+### Section 5 - Prediction Horizon Validation
 
-Sampai di sini, bagian pertama sudah menyiapkan dataset yang siap dipakai untuk eksplorasi dan pemodelan.
+Prediction horizon menetapkan informasi yang tersedia ketika prediksi dibuat. Di sini seluruh predictor dibatasi pada informasi yang tersedia sampai hari ke-28.
+
+Tabel pada layar membedakan peran setiap jenis data. `risk_label` menjadi target, `id_student` digunakan untuk grouping saat split, dan `final_result` menjadi sumber pembentukan label. `date_unregistration` tidak masuk ke feature matrix karena kolom tersebut berkaitan dengan kejadian pengunduran diri.
+
+Feature matrix terdiri dari delapan categorical features dan sebelas numerical features. Daftar ini menjadi batas eksplisit atribut yang masuk ke pipeline model.
+
+Selanjutnya, kami masuk ke eksplorasi data dan proses pemodelan.
 
 ---
 
-## Presenter 2 - EDA, Model, dan Evaluasi
+## Presenter 2 - Eksplorasi, Pemodelan, dan Evaluasi
 
-### Section 6 - Exploratory Data Analysis
+### Section 6 - Eksplorasi Data
 
-Pada bagian EDA, kami melihat distribusi kelas target, missing values, serta pola awal antara mahasiswa `AtRisk` dan `Successful`.
+Exploratory Data Analysis digunakan untuk membaca distribusi target, missing values, dan pola awal pada behavioral features.
 
-Tujuan EDA adalah membaca distribusi data dan melihat pola awal yang berpotensi menjadi sinyal risiko pada empat minggu pertama.
+Dataset memiliki 17.208 baris `AtRisk` dan 15.385 baris `Successful`, sehingga proporsinya relatif berdekatan. Median total klik VLE pada kelas `AtRisk` adalah 92, sedangkan pada kelas `Successful` adalah 298. Median hari aktifnya masing-masing 7 dan 16 hari.
 
-Perbedaan yang diamati mencakup aktivitas assessment dan VLE, misalnya jumlah assessment yang dikumpulkan, skor assessment, total klik, dan jumlah hari aktif. Semua angka tetap dibaca dalam konteks cut-off hari ke-28.
+Median skor assessment kelas `AtRisk` tampil nol karena banyak mahasiswa belum memiliki submission sampai hari ke-28. Angka ini menggambarkan pola data pada horizon tersebut dan dibaca bersama assessment count.
 
-### Section 7 - Pembagian Data Berdasarkan Mahasiswa
+Perbedaan pada grafik merupakan pola deskriptif dalam dataset. Pengaruh setiap feature terhadap prediksi akan dibaca kembali setelah model dilatih.
 
-Setelah EDA, data dibagi menjadi train-validation dan hold-out test.
+### Section 7 - Data Split Design
 
-Pembagian dilakukan berdasarkan `id_student`, bukan baris acak biasa. Hal ini penting karena seorang mahasiswa bisa muncul lebih dari sekali jika mengambil lebih dari satu modul.
+Data kemudian dibagi menjadi 80 persen train-validation dan 20 persen hold-out test menggunakan `GroupShuffleSplit` berdasarkan `id_student`.
 
-Dengan group-based split, mahasiswa yang sama ditempatkan hanya pada salah satu bagian data. Strategi ini membuat evaluasi lebih representatif untuk membaca performa pada mahasiswa yang berbeda.
+Grouping diperlukan karena satu mahasiswa dapat muncul pada beberapa `student-module-presentation`. Seluruh baris milik mahasiswa yang sama ditempatkan pada satu bagian data.
+
+Output menunjukkan 26.122 baris pada train-validation dan 6.471 baris pada hold-out test, dengan overlap mahasiswa sebesar nol. Proporsi `AtRisk` juga serupa, yaitu 52,9 persen pada train-validation dan 52,5 persen pada test.
+
+Diagram berikutnya menunjukkan bahwa lima fold hanya diterapkan pada bagian train-validation. Hold-out test digunakan setelah model final dipilih.
 
 ### Section 8 - Pipeline Preprocessing dan Model
 
-Pada section ini, notebook membangun pipeline preprocessing dan model. Ini adalah preprocessing tahap kedua, yaitu preprocessing fitur sebelum masuk ke algoritma machine learning.
+Numerical features diproses dengan median imputation dan standardization. Categorical features diproses dengan most-frequent imputation dan one-hot encoding.
 
-Fitur numerik diimputasi dengan median dan distandardisasi. Fitur kategorikal diimputasi lalu diubah dengan one-hot encoding.
+Seluruh transformasi ditempatkan di dalam pipeline. Dengan susunan ini, nilai imputasi, skala, dan kategori dipelajari dari training fold pada setiap putaran cross-validation.
 
-Semua transformasi dimasukkan ke dalam pipeline agar proses preprocessing hanya belajar dari data train pada setiap fold. Ini menjaga prosedur evaluasi tetap konsisten.
+Class weighting digunakan untuk menyeimbangkan kontribusi kelas sesuai distribusi training data tanpa membuat sampel sintetis. Karena distribusi kelas cukup dekat, pengaruh pembobotannya juga terbatas.
 
-Tiga model yang dibandingkan adalah Logistic Regression, Random Forest, dan XGBoost. Logistic Regression digunakan sebagai baseline linear, Random Forest sebagai ensemble berbasis pohon, dan XGBoost sebagai boosting model untuk data tabular.
+Tiga model yang dibandingkan adalah Logistic Regression sebagai baseline linear, Random Forest sebagai ensemble decision tree, dan XGBoost sebagai gradient-boosted trees. Konfigurasinya dibuat tetap agar tahap ini berfungsi sebagai perbandingan baseline.
 
-### Section 9 - Cross-Validation Lima Fold
+### Section 9 - Model Selection with Cross-Validation
 
-Evaluasi awal dilakukan menggunakan lima fold cross-validation berbasis kelompok mahasiswa.
+Setiap model dievaluasi dengan lima fold berbasis kelompok mahasiswa. Pada setiap putaran, empat fold digunakan untuk training dan satu fold untuk validation.
 
-Metrik utama yang digunakan adalah recall untuk kelas `AtRisk`. Dalam konteks early warning, recall membantu melihat seberapa luas sistem menangkap mahasiswa yang berpotensi membutuhkan perhatian awal.
+Random Forest memperoleh mean recall `AtRisk` tertinggi sebesar 0,7107. XGBoost memperoleh recall 0,6938 dan Logistic Regression 0,6889. Berdasarkan kriteria yang ditetapkan sejak awal, Random Forest dipilih sebagai model final.
 
-F1-score digunakan sebagai tie-breaker jika recall antar model berdekatan. Selain itu, notebook juga menampilkan accuracy, precision, dan ROC-AUC agar performa model tetap terbaca secara seimbang.
+Metrik lain tetap diperhatikan. XGBoost memiliki mean ROC-AUC tertinggi sebesar 0,8440, sementara Random Forest memperoleh 0,8362. Hasil ini menunjukkan bahwa pemilihan model mengikuti prioritas recall pada konteks early warning, sekaligus mempertahankan metrik lain sebagai pembanding.
 
-### Section 10 - Evaluasi Akhir pada Hold-Out Test
+Standard deviation antar-fold juga ditampilkan untuk melihat variasi performa. Selisih antar-model pada baseline ini cukup kecil, sehingga hasilnya dibaca sebagai dasar model selection dalam ruang eksperimen yang diuji.
 
-Setelah cross-validation, model terbaik dipilih berdasarkan recall `AtRisk` dan F1. Model tersebut kemudian dilatih ulang pada seluruh data train-validation.
+### Section 10 - Evaluasi Generalisasi pada Hold-Out Test
 
-Evaluasi akhir dilakukan pada hold-out test, yaitu data yang dipisahkan sejak awal dan tidak digunakan selama training maupun pemilihan model.
+Setelah dipilih melalui cross-validation, Random Forest dilatih kembali menggunakan seluruh train-validation dan dievaluasi pada hold-out test.
 
-Bagian ini memberi gambaran performa model pada data uji yang terpisah. Output utamanya adalah tabel perbandingan metrik dan nama model terbaik.
+Pada test set, Random Forest menghasilkan accuracy 0,7594, precision `AtRisk` 0,8007, recall `AtRisk` 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396.
+
+Recall 0,7213 berarti sekitar 72 persen baris `AtRisk` pada hold-out test berhasil dikenali. Precision 0,8007 berarti sekitar 80 persen prediksi `AtRisk` sesuai dengan label aktual.
+
+Tabel juga menampilkan hasil dua model lain untuk memberi konteks evaluasi. Pemilihan Random Forest tetap berasal dari hasil cross-validation; angka test digunakan untuk membaca generalisasi akhir.
+
+### Cell Benchmark Penelitian Sebelumnya
+
+Bagian ini menyandingkan metrik notebook dengan angka yang dilaporkan dalam tiga penelitian sebelumnya.
+
+Tanda kosong menunjukkan metrik yang tidak dilaporkan pada paper terkait. Perbandingan ini digunakan sebagai konteks literatur karena dataset, target, prediction horizon, dan desain evaluasinya berbeda. Oleh karena itu, grafik dibaca per metrik yang tersedia dan tidak digunakan untuk menentukan peringkat penelitian.
 
 ### Section 11 - Visualisasi Evaluasi Model
 
-Pada bagian ini, hasil evaluasi divisualisasikan agar mudah dibandingkan.
+Visualisasi pertama membandingkan metrik ketiga model pada hold-out test. Confusion matrix menunjukkan prediksi benar dan salah dari Random Forest, termasuk false negative, yaitu kasus `AtRisk` yang diprediksi `Successful`.
 
-Notebook menampilkan grafik perbandingan metrik, confusion matrix, dan ROC curve.
+ROC curve memperlihatkan kemampuan model membedakan kedua kelas pada berbagai decision threshold. Nilai ROC-AUC Random Forest pada hold-out test adalah 0,8396.
 
-Confusion matrix membantu melihat jenis prediksi yang benar dan keliru. Salah satu bagian yang dibaca adalah false negative kelas `AtRisk`, yaitu mahasiswa berisiko yang belum tertangkap oleh model.
+Ketiga tampilan ini dibaca bersama: recall menggambarkan cakupan deteksi, precision menggambarkan ketepatan alarm, dan confusion matrix menunjukkan jumlah kasus konkret di setiap kategori.
 
-### Section 12 - Faktor yang Memengaruhi Model Terbaik
+### Section 12 - Feature Importance of the Final Model
 
-Setelah model terbaik dipilih, notebook menampilkan fitur yang paling berpengaruh.
+Karena model finalnya Random Forest, kontribusi feature dibaca melalui `feature_importances_`.
 
-Jika model berbasis pohon, yang ditampilkan adalah feature importance. Jika modelnya Logistic Regression, yang ditampilkan adalah nilai absolut coefficient.
+Feature dengan importance tertinggi adalah total klik VLE, hari aktivitas terakhir, jumlah hari aktif VLE, jumlah site VLE, dan tanggal registrasi. Assessment score juga muncul dalam kelompok feature dengan kontribusi besar.
 
-Bagian ini membantu menjelaskan fitur mana yang paling banyak berkontribusi dalam prediksi. Interpretasinya dibaca sebagai kontribusi prediktif dalam model, bukan sebagai hubungan sebab akibat.
+Feature importance menunjukkan kontribusi prediktif global di dalam model. Nilai ini membantu memahami pola yang digunakan model, sementara alasan pada level mahasiswa akan dibentuk melalui aturan pada knowledge layer.
 
-Sampai bagian ini, notebook sudah menghasilkan model prediksi dan ringkasan evaluasi. Bagian berikutnya menerjemahkan hasil model menjadi level risiko dan indikator Business Intelligence.
+Sampai bagian ini, penelitian sudah menghasilkan model klasifikasi dan evaluasi generalisasi. Selanjutnya, output model diterjemahkan menjadi prioritas monitoring akademik.
 
 ---
 
@@ -140,60 +160,58 @@ Sampai bagian ini, notebook sudah menghasilkan model prediksi dan ringkasan eval
 
 ### Section 13 - Knowledge-Based Risk Layer
 
-Pada section ini, hasil machine learning diterjemahkan menjadi kategori risiko yang lebih operasional.
+Random Forest menghasilkan prediksi kelas dan `P(AtRisk)`. Knowledge-based risk layer menggabungkan hasil tersebut dengan empat sinyal: skor assessment, partisipasi assessment, total klik VLE, dan hari aktif VLE.
 
-Model menghasilkan prediksi dan probabilitas `AtRisk`. Knowledge-based risk layer menambahkan sinyal perilaku seperti skor assessment rendah, jumlah assessment rendah, total klik VLE rendah, dan jumlah hari aktif VLE rendah.
+Threshold sinyal dihitung dari kuartil bawah train-validation. Pada output ini threshold-nya adalah skor assessment 0, assessment count 0, total klik VLE 47, dan hari aktif VLE 4.
 
-Threshold sinyal dihitung dari data train menggunakan kuartil bawah, sehingga aturan konsisten dengan alur evaluasi berbasis data latih dan data uji terpisah.
+Aturan `High Risk` memerlukan prediksi `AtRisk` dan minimal dua sinyal. `Medium Risk` diberikan ketika salah satu kondisi tersebut terpenuhi. Baris lainnya masuk `Low Risk`.
 
-Aturannya adalah: `High Risk` diberikan ketika model memprediksi `AtRisk` dan terdapat minimal dua sinyal perilaku. `Medium Risk` diberikan ketika model memprediksi `AtRisk` atau terdapat minimal dua sinyal perilaku. Selain itu, mahasiswa masuk kategori `Low Risk`.
+Hasil pada hold-out test terdiri dari 1.816 baris `High Risk`, 1.979 `Medium Risk`, dan 2.676 `Low Risk`. Tabel contoh memperlihatkan hubungan antara prediksi model, probabilitas, jumlah sinyal, alasan, level risiko, dan rekomendasi.
 
-Keluaran bagian ini tidak hanya berupa label risiko, tetapi juga alasan risiko dan rekomendasi tindak lanjut.
+`P(AtRisk)` merupakan probabilitas yang dihasilkan Random Forest. Nilai tersebut digunakan untuk pengurutan prioritas dan belum melalui probability calibration khusus.
 
-### Section 14 - Evaluasi Sistem Gabungan
+### Section 14 - Evaluasi Alarm Intervensi
 
-Setelah risk layer dibuat, notebook mengevaluasi sistem gabungan.
+Untuk mengevaluasi alarm, `High Risk` dan `Medium Risk` dipetakan sebagai alarm `AtRisk`. Hasilnya dibandingkan dengan prediksi Random Forest sebelum aturan diterapkan.
 
-Untuk evaluasi, kategori `High Risk` dan `Medium Risk` dipetakan kembali sebagai `AtRisk`. Kemudian metriknya dibandingkan dengan model machine learning terbaik.
+Confusion matrix alarm menunjukkan 2.673 kasus `AtRisk` terdeteksi dan 725 kasus terlewat. Dari angka tersebut, recall alarm sekitar 78,7 persen. Sebanyak 1.122 baris `Successful` juga masuk ke dalam alarm, sehingga precision turun menjadi sekitar 70,4 persen.
 
-Penambahan knowledge layer dapat memperluas cakupan deteksi karena lebih banyak mahasiswa masuk antrean verifikasi. Di sisi lain, precision perlu dibaca bersama karena jumlah kasus yang perlu ditinjau juga dapat bertambah.
+Knowledge layer pada konfigurasi ini memperluas cakupan deteksi sekaligus menambah antrean yang perlu diverifikasi. Angka recall dan precision tersebut memberi gambaran trade-off operasional dari aturan yang digunakan.
 
-Keseimbangan antara recall dan precision dibaca bersama kapasitas institusi. Dengan begitu, daftar prioritas dapat disesuaikan dengan jumlah kasus yang realistis untuk ditindaklanjuti.
+### Section 15 - Dashboard Monitoring Akademik
 
-### Section 15 - Dashboard Statis DVBI
+Dashboard merangkum hasil pada hold-out test. KPI di bagian atas menunjukkan mahasiswa unik, jumlah `student-module-presentation` yang masuk prioritas, dan persentasenya.
 
-Bagian dashboard menyatukan hasil model, risk level, dan indikator monitoring dalam satu tampilan.
+Panel berikutnya memperlihatkan distribusi level risiko serta proporsi High dan Medium Risk per module-presentation. Panel perilaku menampilkan distribusi `P(AtRisk)`, frekuensi sinyal, serta median aktivitas per level risiko.
 
-Dashboard menampilkan KPI, distribusi level risiko, risiko per module-presentation, probabilitas, sinyal dominan, pola perilaku berdasarkan level, dan confusion matrix.
+Bagian bawah dashboard menghubungkan tampilan monitoring dengan evaluasi model melalui confusion matrix dan perbandingan metrik model terhadap alarm intervensi.
 
-Tujuannya adalah menerjemahkan output analitik menjadi informasi yang mudah dibaca oleh stakeholder. Pimpinan akademik dapat melihat skala risiko, program studi dapat melihat modul prioritas, dan dosen wali atau tutor dapat melihat daftar mahasiswa yang membutuhkan perhatian awal.
+Seluruh angka pada dashboard ini merupakan hasil evaluasi hold-out, sehingga fungsinya dalam penelitian adalah demonstrasi tampilan monitoring pada data uji.
 
-### Section 16 - Daftar Prioritas dan Insight Business Intelligence
+### Section 16 - Prioritas Intervensi dan Temuan Utama
 
-Pada section ini, notebook menyusun daftar prioritas mahasiswa dengan level risiko tertinggi.
+Daftar prioritas mengambil baris `High Risk` dan `Medium Risk`, kemudian mengurutkannya berdasarkan level, `P(AtRisk)`, dan jumlah sinyal.
 
-Mahasiswa diurutkan berdasarkan probabilitas risiko dan jumlah sinyal. Outputnya mencakup ID mahasiswa, level risiko, alasan risiko, dan rekomendasi tindakan.
+Output menghasilkan 3.795 `student-module-presentation` dalam antrean. Sinyal yang paling sering muncul adalah skor assessment rendah dengan 2.341 kasus.
 
-Insight BI membantu menjawab tiga pertanyaan utama: area mana yang memiliki konsentrasi risiko lebih tinggi, sinyal risiko apa yang menonjol, dan siapa yang dapat diprioritaskan untuk tindak lanjut.
+Module GGG presentation 2014J memiliki proporsi High dan Medium Risk tertinggi pada hold-out test. Persentase pada bagian ini menggambarkan komposisi sampel test untuk module-presentation tersebut, sehingga pembacaannya perlu disertai jumlah observasi ketika digunakan untuk keputusan operasional.
 
-### Section 17 - Ekspor Hasil untuk Pelaporan
+Tabel dua puluh baris teratas menunjukkan bahwa probabilitas, alasan risiko, dan rekomendasi dapat ditelusuri untuk setiap unit analisis. Dalam penerapan akademik, ID yang sama dapat diringkas kembali jika seorang mahasiswa muncul pada lebih dari satu modul.
 
-Bagian ini menyimpan hasil analisis ke file CSV.
+### Section 17 - Ekspor Artefak Analisis
 
-File yang diekspor dapat digunakan untuk laporan, analisis lanjutan, atau bahan awal integrasi jika sistem dikembangkan menjadi dashboard operasional.
+Notebook mengekspor tiga file CSV: evaluasi model, evaluasi knowledge layer, dan daftar prioritas intervensi.
 
-Dengan ekspor ini, notebook menyediakan output terstruktur yang bisa dipakai ulang setelah sesi analisis selesai.
+Artefak tersebut menyimpan hasil utama dalam format terstruktur sehingga dapat digunakan kembali untuk pemeriksaan hasil atau pengembangan dashboard berikutnya.
 
 ### Section 18 - Kesimpulan dan Keterbatasan
 
-Sebagai kesimpulan, notebook ini membandingkan tiga model supervised learning pada skenario early warning minggu keempat.
+Penelitian ini membandingkan tiga model supervised binary classification untuk mengenali risiko `Withdrawn` atau `Fail` berdasarkan informasi sampai minggu keempat.
 
-Model dipilih berdasarkan recall kelas `AtRisk`, karena tujuan sistem adalah memberi cakupan deteksi awal yang baik untuk mahasiswa berisiko. Setelah itu, knowledge-based risk layer menambahkan level risiko, alasan, dan rekomendasi agar hasil model lebih mudah dibaca oleh stakeholder.
+Random Forest dipilih karena memperoleh mean recall `AtRisk` tertinggi pada cross-validation. Pada hold-out test, model menghasilkan recall 0,7213 dan precision 0,8007. Knowledge-based risk layer kemudian mengubah hasil model dan sinyal perilaku menjadi tiga level prioritas beserta alasan dan rekomendasi.
 
-Dashboard kemudian menerjemahkan keluaran tersebut menjadi indikator monitoring dan daftar prioritas tindak lanjut.
+Hasil penelitian menunjukkan bagaimana prediksi, aturan berbasis pengetahuan, dan visualisasi BI dapat disusun menjadi alur decision support. Hasilnya masih berada dalam konteks eksperimen OULAD.
 
-Keterbatasannya, label berasal dari hasil akhir, sementara prediktor dibatasi sampai hari ke-28. Threshold aturan berbasis kuartil data dan akan lebih kuat jika divalidasi bersama pakar akademik. Selain itu, OULAD berasal dari konteks Open University di Inggris, sehingga penerapan pada institusi lain perlu diawali dengan penyesuaian dan validasi lokal.
+Keterbatasan penelitian mencakup threshold aturan yang masih berupa baseline berbasis kuartil, probabilitas yang belum dikalibrasi, hyperparameter yang belum dituning, dan fairness antarkelompok yang belum dievaluasi. OULAD juga berasal dari konteks Open University di Inggris, sehingga penerapan pada institusi lain memerlukan validasi menggunakan data dan proses akademik setempat.
 
-Secara keseluruhan, notebook ini memberi contoh integrasi machine learning, rule-based reasoning, dan dashboard BI sebagai decision support untuk monitoring mahasiswa berisiko.
-
-Demikian presentasi notebook dari Kelompok 5. Terima kasih atas perhatian Bapak/Ibu dosen dan teman-teman semua. Wassalamualaikum warahmatullahi wabarakatuh.
+Demikian presentasi dari Kelompok 5. Terima kasih atas perhatian Bapak/Ibu dosen dan teman-teman. Wassalamualaikum warahmatullahi wabarakatuh.
