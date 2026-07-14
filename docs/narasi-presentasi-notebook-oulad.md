@@ -68,21 +68,39 @@ Preview di bawah tabel ringkasan memperlihatkan sumber label hasil akhir dan inf
 
 ### Section 4 - Konstruksi Dataset Early Warning Minggu Keempat
 
-> **Cursor:** Sorot `KEYS = ['code_module', 'code_presentation', 'id_student']` ketika menjelaskan unit analisis.
+> **Cursor:** Sorot `KEYS = ['code_module', 'code_presentation', 'id_student']`, kemudian arahkan ke pembentukan `base` dan `risk_label`.
 
-Pada bagian ini tabel sumber digabungkan menjadi dataset analisis. Unit analisisnya adalah `student-module-presentation`, yaitu satu mahasiswa pada satu modul dan satu periode penyelenggaraan. Seorang mahasiswa dapat memiliki lebih dari satu baris ketika mengikuti modul atau presentation yang berbeda.
+Pada bagian ini dataset dibentuk dengan tiga key: kode modul, kode presentation, dan ID mahasiswa. Kombinasi tersebut membentuk unit analisis `student-module-presentation`, yaitu satu mahasiswa pada satu modul dan satu periode penyelenggaraan.
 
-> **Cursor:** Sorot filter `date_submitted <= CUTOFF_DAY` dan `date <= CUTOFF_DAY`, kemudian arahkan ke blok agregasi assessment dan VLE.
+Kolom `risk_label` kemudian dibentuk dari `final_result`. Hasil `Withdrawn` dan `Fail` diberi label `AtRisk`. Hasil `Pass` dan `Distinction` diberi label `Successful`.
 
-Assessment dibatasi pada `date_submitted` sampai hari ke-28. Aktivitas VLE juga dibatasi sampai hari ke-28, kemudian diringkas menjadi total klik, jumlah hari aktif, jumlah site yang diakses, dan hari aktivitas terakhir.
+> **Cursor:** Turunkan ke `reg_features` dan sorot `date_registration`.
 
-Target `risk_label` dibentuk dari `final_result`. Informasi tersebut digunakan sebagai label pembelajaran, sementara predictor berasal dari profil, registrasi, assessment awal, dan aktivitas VLE awal.
+Setelah target terbentuk, fitur registrasi mengambil `date_registration` berdasarkan tiga key yang sama.
 
-Output menampilkan jejak dari data assessment dan VLE menuju aggregated features, kemudian preview dataset hasil penggabungan. Dataset yang terbentuk berisi 32.593 `student-module-presentation` dari 28.785 mahasiswa unik.
+> **Cursor:** Sorot pembentukan `assessment_early`, filter `date_submitted <= CUTOFF_DAY`, lalu blok `assessment_features`.
 
-> **Cursor:** Pada preview dataset akhir, tunjuk `assessment_count`, `Mean score`, `Total VLE clicks`, dan `Active VLE days` pada baris yang memiliki nilai nol.
+Data submission kemudian dihubungkan dengan konteks modul dan presentation. Baris assessment dibatasi sampai hari ke-28, lalu diringkas menjadi jumlah assessment serta mean, maximum, dan minimum score untuk setiap unit analisis.
+
+> **Cursor:** Lanjutkan ke pembentukan `vle_early`, filter `date <= CUTOFF_DAY`, lalu blok `vle_features`.
+
+Aktivitas VLE juga dibatasi sampai hari ke-28. Data tersebut diringkas menjadi total clicks, active days, jumlah site yang diakses, dan hari aktivitas terakhir.
+
+> **Cursor:** Sorot blok `dataset` yang menggabungkan `base`, `reg_features`, `assessment_features`, dan `vle_features`.
+
+Empat bagian tersebut kemudian digabungkan menjadi dataset analisis: profil dan target dari `base`, fitur registrasi, fitur assessment, serta fitur VLE.
+
+> **Cursor:** Turunkan ke daftar `behavior_cols`, lalu sorot baris `dataset[behavior_cols] = dataset[behavior_cols].fillna(0)`.
 
 Behavioral features yang belum memiliki catatan sampai hari ke-28 diisi dengan nilai nol. Pada data assessment, nilai tersebut dibaca bersama `assessment_count` untuk melihat apakah mahasiswa sudah melakukan submission.
+
+> **Cursor:** Pada output, tunjuk preview assessment mentah, assessment features, aktivitas VLE mentah, dan VLE features sesuai urutan tampilannya.
+
+Empat output pertama memperlihatkan perubahan data harian menjadi aggregated features per `student-module-presentation`. Preview assessment menampilkan submission dan score sampai hari ke-28, kemudian tabel berikutnya menampilkan hasil agregasinya. Urutan yang sama ditampilkan untuk aktivitas VLE.
+
+> **Cursor:** Arahkan ke output **Unit analisis** dan **Mahasiswa unik**, lalu tunjuk preview **Analysis dataset setelah merging dan aggregation**.
+
+Dataset yang terbentuk berisi 32.593 `student-module-presentation` dari 28.785 mahasiswa unik. Preview terakhir menyatukan final result, risk label, registration day, assessment, dan aktivitas VLE dalam satu tampilan.
 
 ### Section 5 - Prediction Horizon Validation
 
