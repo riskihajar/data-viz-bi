@@ -148,13 +148,13 @@ Tiga model yang dibandingkan adalah Logistic Regression sebagai baseline linear,
 
 Setiap model dievaluasi dengan lima fold berbasis kelompok mahasiswa. Pada setiap putaran, empat fold digunakan untuk training dan satu fold untuk validation.
 
-Random Forest memperoleh mean recall `AtRisk` tertinggi sebesar 0,7107. XGBoost memperoleh recall 0,6938 dan Logistic Regression 0,6889. Berdasarkan kriteria yang ditetapkan sejak awal, Random Forest dipilih sebagai model final.
+Random Forest memperoleh mean recall `AtRisk` tertinggi sebesar 0,6973. XGBoost memperoleh recall 0,6943 dan Logistic Regression 0,6889. Berdasarkan kriteria yang ditetapkan sejak awal, Random Forest dipilih sebagai model final.
 
-XGBoost memiliki mean ROC-AUC tertinggi sebesar 0,8440, sementara Random Forest memperoleh 0,8362. Tabel ini memperlihatkan hasil setiap model pada beberapa metrik, dengan recall `AtRisk` sebagai dasar model selection.
+XGBoost memiliki mean ROC-AUC tertinggi sebesar 0,8445, sementara Random Forest memperoleh 0,8388. Tabel ini memperlihatkan hasil setiap model pada beberapa metrik, dengan recall `AtRisk` sebagai dasar model selection.
 
 > **Cursor:** Gerakkan horizontal pada baris Random Forest dari `recall_mean` ke `recall_std`, lalu bandingkan dengan dua baris di bawahnya.
 
-Standard deviation antar-fold menunjukkan variasi performa pada lima validation fold. Pada recall `AtRisk`, Random Forest mencatat standard deviation sebesar 0,0085.
+Standard deviation antar-fold menunjukkan variasi performa pada lima validation fold. Pada recall `AtRisk`, Random Forest mencatat standard deviation sebesar 0,0124.
 
 ### Section 10 - Evaluasi Generalisasi pada Hold-Out Test
 
@@ -162,9 +162,9 @@ Standard deviation antar-fold menunjukkan variasi performa pada lima validation 
 
 Setelah dipilih melalui cross-validation, Random Forest dilatih kembali menggunakan seluruh train-validation dan dievaluasi pada hold-out test.
 
-Pada test set, Random Forest menghasilkan accuracy 0,7594, precision `AtRisk` 0,8007, recall `AtRisk` 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396.
+Pada test set, Random Forest menghasilkan accuracy 0,7588, precision `AtRisk` 0,8100, recall `AtRisk` 0,7063, F1-score 0,7546, dan ROC-AUC 0,8400.
 
-Recall 0,7213 berarti sekitar 72 persen baris `AtRisk` pada hold-out test berhasil dikenali. Precision 0,8007 berarti sekitar 80 persen prediksi `AtRisk` sesuai dengan label aktual.
+Recall 0,7063 berarti sekitar 71 persen baris `AtRisk` pada hold-out test berhasil dikenali. Precision 0,8100 berarti 81 persen prediksi `AtRisk` sesuai dengan label aktual.
 
 > **Cursor:** Pada classification report, tunjuk baris `AtRisk` dan kolom precision, recall, serta support.
 
@@ -184,7 +184,7 @@ Tabel menampilkan metrik yang tersedia dari setiap paper. Kolom skenario membant
 
 Visualisasi pertama membandingkan metrik ketiga model pada hold-out test. Confusion matrix menunjukkan prediksi benar dan salah dari Random Forest, termasuk false negative, yaitu kasus `AtRisk` yang diprediksi `Successful`.
 
-ROC curve memperlihatkan kemampuan model membedakan kedua kelas pada berbagai decision threshold. Nilai ROC-AUC Random Forest pada hold-out test adalah 0,8396.
+ROC curve memperlihatkan kemampuan model membedakan kedua kelas pada berbagai decision threshold. Nilai ROC-AUC Random Forest pada hold-out test adalah 0,8400.
 
 Ketiga tampilan ini dibaca bersama: recall menggambarkan cakupan deteksi, precision menggambarkan ketepatan alarm, dan confusion matrix menunjukkan jumlah kasus konkret di setiap kategori.
 
@@ -216,7 +216,7 @@ Threshold sinyal dihitung dari kuartil bawah train-validation. Pada output ini t
 
 Aturan `High Risk` memerlukan prediksi `AtRisk` dan minimal dua sinyal. `Medium Risk` diberikan ketika salah satu kondisi tersebut terpenuhi. Baris lainnya masuk `Low Risk`.
 
-Hasil pada hold-out test terdiri dari 1.816 baris `High Risk`, 1.979 `Medium Risk`, dan 2.676 `Low Risk`. Tabel contoh memperlihatkan hubungan antara prediksi model, probabilitas, jumlah sinyal, alasan, level risiko, dan rekomendasi.
+Hasil pada hold-out test terdiri dari 1.785 baris `High Risk`, 1.943 `Medium Risk`, dan 2.743 `Low Risk`. Tabel contoh memperlihatkan hubungan antara prediksi model, probabilitas, jumlah sinyal, alasan, level risiko, dan rekomendasi.
 
 > **Cursor:** Ikuti satu baris pada tabel contoh dari `predicted_atrisk` menuju `probability_atrisk`, `risk_signal_count`, level, alasan, dan rekomendasi.
 
@@ -228,7 +228,7 @@ Hasil pada hold-out test terdiri dari 1.816 baris `High Risk`, 1.979 `Medium Ris
 
 Untuk mengevaluasi alarm, `High Risk` dan `Medium Risk` dipetakan sebagai alarm `AtRisk`. Hasilnya dibandingkan dengan prediksi Random Forest sebelum aturan diterapkan.
 
-Confusion matrix alarm menunjukkan 2.673 kasus `AtRisk` terdeteksi dan 725 kasus terlewat. Dari angka tersebut, recall alarm sekitar 78,7 persen. Sebanyak 1.122 baris `Successful` juga masuk ke dalam alarm, sehingga precision turun menjadi sekitar 70,4 persen.
+Confusion matrix alarm menunjukkan 2.642 kasus `AtRisk` terdeteksi dan 756 kasus terlewat. Dari angka tersebut, recall alarm sebesar 77,75 persen. Sebanyak 1.086 baris `Successful` juga masuk ke dalam alarm, dengan precision sebesar 70,87 persen.
 
 Knowledge layer pada konfigurasi ini memperluas cakupan deteksi sekaligus menambah antrean yang perlu diverifikasi. Angka recall dan precision tersebut memberi gambaran trade-off operasional dari aturan yang digunakan.
 
@@ -252,7 +252,7 @@ Seluruh angka pada dashboard ini merupakan hasil evaluasi hold-out, sehingga fun
 
 Daftar prioritas mengambil baris `High Risk` dan `Medium Risk`, kemudian mengurutkannya berdasarkan level, `P(AtRisk)`, dan jumlah sinyal.
 
-Output menghasilkan 3.795 `student-module-presentation` dalam antrean. Sinyal yang paling sering muncul adalah skor assessment rendah dengan 2.341 kasus.
+Output menghasilkan 3.728 `student-module-presentation` dalam antrean. Sinyal yang paling sering muncul adalah skor assessment rendah dengan 2.341 kasus.
 
 Output juga menunjukkan module-presentation dengan proporsi prioritas tertinggi dan sinyal risiko yang paling sering muncul pada hold-out test.
 
@@ -274,7 +274,7 @@ Artefak tersebut menyimpan hasil utama dalam format terstruktur sehingga dapat d
 
 Penelitian ini membandingkan tiga model supervised binary classification untuk mengenali risiko `Withdrawn` atau `Fail` berdasarkan informasi sampai minggu keempat.
 
-Random Forest dipilih karena memperoleh mean recall `AtRisk` tertinggi pada cross-validation. Pada hold-out test, model menghasilkan recall 0,7213 dan precision 0,8007. Knowledge-based risk layer kemudian mengubah hasil model dan sinyal perilaku menjadi tiga level prioritas beserta alasan dan rekomendasi.
+Random Forest dipilih karena memperoleh mean recall `AtRisk` tertinggi pada cross-validation. Pada hold-out test, model menghasilkan recall 0,7063 dan precision 0,8100. Knowledge-based risk layer kemudian mengubah hasil model dan sinyal perilaku menjadi tiga level prioritas beserta alasan dan rekomendasi.
 
 Hasil penelitian menunjukkan bagaimana prediksi, aturan berbasis pengetahuan, dan visualisasi BI dapat disusun menjadi alur decision support pada eksperimen OULAD.
 
