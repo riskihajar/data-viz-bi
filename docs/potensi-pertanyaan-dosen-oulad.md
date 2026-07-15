@@ -10,7 +10,7 @@ Kami menggunakan OULAD karena dataset ini menyediakan data yang relevan untuk le
 ## 2. Mengapa target `AtRisk` digabung dari `Withdrawn` dan `Fail`?
 
 **Jawaban:**
-Karena tujuan sistem adalah early warning untuk mahasiswa yang berpotensi tidak berhasil menyelesaikan pembelajaran. `Withdrawn` dan `Fail` sama-sama menunjukkan kondisi yang membutuhkan perhatian akademik, sehingga keduanya digabung sebagai kelas `AtRisk`. Sementara `Pass` dan `Distinction` digabung sebagai `Successful`.
+Karena tujuan sistem adalah early warning untuk hasil akhir mata kuliah yang membutuhkan perhatian akademik. `Withdrawn` dan `Fail` digabung sebagai kelas `AtRisk`, sedangkan `Pass` dan `Distinction` digabung sebagai `Successful`. Setiap label berlaku pada satu mahasiswa dalam satu module-presentation.
 
 ## 3. Mengapa hanya memakai data sampai hari ke-28?
 
@@ -67,10 +67,10 @@ Aturan dibuat dari kombinasi prediksi model dan jumlah sinyal perilaku. `High Ri
 **Jawaban:**
 Kuartil bawah digunakan sebagai baseline berbasis data untuk mengidentifikasi mahasiswa dengan perilaku relatif rendah dibandingkan kelompok train. Threshold dihitung dari data train agar tidak mengambil informasi dari data test. Namun threshold ini tetap perlu divalidasi dengan pakar akademik jika diterapkan di institusi nyata.
 
-## 14. Apakah feature importance berarti penyebab dropout?
+## 14. Apakah feature importance berarti penyebab gagal atau mengundurkan diri dari mata kuliah?
 
 **Jawaban:**
-Tidak. Feature importance menunjukkan kontribusi fitur terhadap prediksi model, bukan hubungan sebab akibat. Misalnya aktivitas VLE rendah berkontribusi dalam membedakan mahasiswa berisiko, tetapi tidak otomatis berarti aktivitas rendah adalah penyebab tunggal dropout. Analisis kausal membutuhkan desain penelitian khusus.
+Feature importance menunjukkan kontribusi fitur terhadap prediksi model. Misalnya, aktivitas VLE rendah berkontribusi dalam membedakan hasil `AtRisk` dan `Successful`. Penetapan hubungan sebab akibat memerlukan desain penelitian kausal.
 
 ## 15. Apa peran dashboard dalam konteks DVBI?
 
@@ -165,7 +165,7 @@ Kami tidak memakai 70:20:10 karena validasi tidak dibuat sebagai satu validation
 ## 33. Jika dosen bertanya: apakah ada standar deviasi hasil model?
 
 **Jawaban:**
-Ada. Standar deviasi diambil dari hasil 5-fold `GroupKFold` cross-validation. Untuk model final Random Forest, hasilnya adalah accuracy 0,7538 ± 0,0033, precision `AtRisk` 0,7999 ± 0,0148, recall `AtRisk` 0,7126 ± 0,0040, F1 `AtRisk` 0,7536 ± 0,0050, dan ROC-AUC 0,8362 ± 0,0026. Nilai standar deviasi yang kecil menunjukkan performa model relatif stabil antar fold.
+Ada. Standar deviasi diambil dari hasil 5-fold `GroupKFold` cross-validation. Untuk model final Random Forest, hasilnya adalah accuracy 0,7524 ± 0,0013, precision `AtRisk` 0,7989 ± 0,0136, recall `AtRisk` 0,7107 ± 0,0085, F1 `AtRisk` 0,7521 ± 0,0030, dan ROC-AUC 0,8362 ± 0,0023. Nilai standar deviasi menunjukkan variasi performa antar-fold.
 
 ## 34. Jika dosen bertanya: sudah berapa kali eksperimen dijalankan?
 
@@ -180,7 +180,7 @@ Random seed yang digunakan adalah 42 melalui variabel `RANDOM_STATE = 42`. Seed 
 ## 36. Jika dosen bertanya: apakah `Fail` dan `Withdrawn` sebenarnya sama?
 
 **Jawaban:**
-Secara akademik, `Fail` dan `Withdrawn` tidak sama. `Fail` berarti mahasiswa menyelesaikan proses tetapi tidak lulus, sedangkan `Withdrawn` berarti mahasiswa keluar atau berhenti dari modul. Namun dalam konteks early warning, keduanya sama-sama menunjukkan kondisi tidak berhasil atau membutuhkan perhatian akademik, sehingga digabung menjadi kelas `AtRisk`.
+`Fail` menunjukkan hasil tidak lulus pada module-presentation, sedangkan `Withdrawn` menunjukkan mahasiswa berhenti mengikuti module-presentation tersebut. Keduanya menjadi kondisi yang membutuhkan perhatian akademik dalam early warning, sehingga digabung menjadi kelas `AtRisk`. Status ini berada pada tingkat mata kuliah dan tidak menyatakan mahasiswa keluar dari universitas.
 
 ## 37. Jika dosen bertanya: mengapa cut-off hari ke-28, bukan minggu ke-2 atau minggu ke-8?
 

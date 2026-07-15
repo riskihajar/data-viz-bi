@@ -1,4 +1,4 @@
-# Narasi Presentasi — Analisis Risiko Dropout Mahasiswa
+# Narasi Presentasi — Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah
 ## Data Visualization and Business Intelligence
 
 ---
@@ -7,7 +7,7 @@
 
 Assalamualaikum warahmatullahi wabarakatuh, selamat pagi/siang Bapak/Ibu dosen dan teman-teman semua.
 
-Pada kesempatan ini kami dari Kelompok 5 akan mempresentasikan penelitian dengan judul "Analisis Risiko Dropout Mahasiswa Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset."
+Pada kesempatan ini kami dari Kelompok 5 akan mempresentasikan penelitian dengan judul "Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset."
 
 Presentasi ini disusun untuk mata kuliah Data Visualization and Business Intelligence. Anggota kelompok kami adalah Muhammad Rizky Hajar, Alwie Muflich, dan Heri Santosa, dari S2 PJJ Informatika, Konsentrasi Big Data dan Predictive Analytics, Universitas Amikom Yogyakarta.
 
@@ -15,7 +15,7 @@ Presentasi ini disusun untuk mata kuliah Data Visualization and Business Intelli
 
 ## Slide 2 — Latar Belakang
 
-Dropout mahasiswa merupakan permasalahan serius dalam pengelolaan pendidikan tinggi. Ketika mahasiswa gagal menyelesaikan studi, dampaknya meluas pada efektivitas layanan akademik dan evaluasi kinerja institusi secara keseluruhan.
+Kegagalan dan pengunduran diri dari mata kuliah memerlukan perhatian dalam monitoring akademik. Kondisi tersebut berkaitan dengan capaian pembelajaran, efektivitas layanan akademik, dan evaluasi penyelenggaraan mata kuliah.
 
 Institusi umumnya baru menyadari masalah ini setelah kondisi mahasiswa sudah sulit ditangani. Jika identifikasi risiko dapat dilakukan lebih awal, intervensi akademik dapat diarahkan secara lebih tepat sasaran.
 
@@ -29,7 +29,7 @@ Dalam konteks Data Visualization dan Business Intelligence, hasil prediksi harus
 
 Dari latar belakang tersebut, kami merumuskan tiga pertanyaan penelitian.
 
-Pertama, bagaimana membangun model klasifikasi risiko dropout mahasiswa menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks Business Intelligence atau BI.
+Pertama, bagaimana membangun model klasifikasi risiko gagal atau mengundurkan diri dari mata kuliah menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks Business Intelligence atau BI.
 
 Tujuan penelitian ini ada tiga. Pertama, membangun model binary classification dengan tiga algoritma pembanding. Kedua, merancang knowledge-based risk layer berbasis aturan untuk menjelaskan faktor risiko. Dan ketiga, memetakan keluaran model menjadi indikator monitoring dan peringatan dini yang dapat menjadi bahan pertimbangan pihak akademik.
 
@@ -41,7 +41,7 @@ Dataset yang kami gunakan adalah Open University Learning Analytics Dataset, ata
 
 OULAD terdiri dari empat tabel utama: studentInfo, studentRegistration, studentAssessment, dan studentVle. VLE adalah singkatan dari Virtual Learning Environment, yaitu platform pembelajaran daring tempat mahasiswa mengakses materi, forum, dan aktivitas akademik. Total data setelah preprocessing adalah 32.593 baris, di mana setiap baris merepresentasikan satu mahasiswa pada satu modul dan satu periode.
 
-Dataset mencakup 7 modul dan 4 periode pembelajaran dari tahun 2013 sampai 2014. Distribusi labelnya cukup seimbang: 52,8 persen masuk kelas AtRisk, yaitu mahasiswa yang Withdrawn atau Fail, dan 47,2 persen masuk kelas Successful, yaitu mahasiswa yang Pass atau Distinction.
+Dataset mencakup 7 modul dan 4 periode pembelajaran dari tahun 2013 sampai 2014. Distribusi labelnya cukup seimbang: 52,8 persen masuk kelas AtRisk, yaitu hasil mata kuliah Withdrawn atau Fail, dan 47,2 persen masuk kelas Successful, yaitu Pass atau Distinction. Final result tersebut berlaku pada satu mahasiswa dalam satu module-presentation.
 
 ---
 
@@ -95,11 +95,11 @@ Fokus penelitian ini adalah menghubungkan prediksi machine learning dengan rule-
 
 Pertama, hasil cross-validation 5-fold yang dikelompokkan per mahasiswa. Setiap fold menggunakan sekitar 20.900 baris sebagai training dan 5.200 baris sebagai validation, dengan pengaturan agar mahasiswa yang sama tidak muncul di train dan validation pada fold yang sama.
 
-Hasil cross-validation menunjukkan bahwa XGBoost memiliki accuracy dan ROC-AUC tertinggi, yaitu accuracy 75,82 persen dan ROC-AUC 84,40 persen. Namun Random Forest memiliki recall AtRisk tertinggi, yaitu 71,26 persen, sehingga lebih sesuai dengan tujuan early warning yang memprioritaskan cakupan mahasiswa berisiko.
+Hasil cross-validation menunjukkan bahwa XGBoost memiliki accuracy dan ROC-AUC tertinggi, yaitu accuracy 75,84 persen dan ROC-AUC 84,40 persen. Random Forest memiliki recall AtRisk tertinggi, yaitu 71,07 persen, sehingga dipilih sesuai tujuan early warning yang memprioritaskan cakupan mahasiswa berisiko.
 
-Kedua, evaluasi dilakukan pada hold-out test yang terdiri dari 6.471 baris, dengan 3.398 kasus AtRisk dan 3.073 kasus Successful. Pada test set ini, Random Forest memiliki recall AtRisk tertinggi yaitu 71,72 persen, sehingga dipilih sebagai model utama untuk skenario peringatan dini. Dari 3.398 kasus AtRisk, model berhasil mengenali 2.437 kasus dan masih melewatkan 961 kasus.
+Kedua, evaluasi dilakukan pada hold-out test yang terdiri dari 6.471 baris, dengan 3.398 kasus AtRisk dan 3.073 kasus Successful. Random Forest yang telah dipilih melalui cross-validation menghasilkan recall AtRisk 72,13 persen. Dari 3.398 kasus AtRisk, model berhasil mengenali 2.451 kasus dan melewatkan 947 kasus.
 
-Untuk knowledge-based risk layer pada hold-out test, terdapat 1.795 High Risk, 1.994 Medium Risk, dan 2.682 Low Risk.
+Untuk knowledge-based risk layer pada hold-out test, terdapat 1.816 High Risk, 1.979 Medium Risk, dan 2.676 Low Risk.
 
 ---
 
@@ -109,9 +109,9 @@ Feature importance Random Forest menunjukkan bahwa sinyal perilaku awal menjadi 
 
 Pada knowledge layer, threshold kuartil bawah train-validation adalah skor assessment 0, jumlah assessment 0, total klik VLE 47, dan hari aktif VLE 4. Nilai ini membantu mengubah prediksi model menjadi alasan risiko yang bisa dibaca lebih operasional.
 
-Ketika High Risk dan Medium Risk dipetakan sebagai AtRisk, recall meningkat dari 71,72 persen menjadi 78,49 persen. Artinya, cakupan deteksi mahasiswa berisiko bertambah.
+Ketika High Risk dan Medium Risk dipetakan sebagai AtRisk, recall berubah dari 72,13 persen menjadi 78,66 persen. Angka tersebut menunjukkan cakupan kasus AtRisk yang masuk ke dalam alarm intervensi.
 
-Konsekuensinya, precision turun dari 80,32 persen menjadi 70,39 persen. Trade-off ini penting untuk dibaca bersama kapasitas tim akademik dalam melakukan verifikasi.
+Precision berubah dari 80,07 persen menjadi 70,43 persen. Perubahan recall dan precision dibaca bersama kapasitas tim akademik dalam melakukan verifikasi.
 
 ---
 
@@ -133,7 +133,7 @@ Sebagai kesimpulan, pertama, ketiga model menunjukkan performa yang relatif kons
 
 Kedua, seluruh split dikelompokkan berdasarkan identitas mahasiswa sehingga mahasiswa yang sama tidak muncul pada train dan test. Skema ini mengurangi risiko data leakage antar split.
 
-Ketiga, knowledge-based risk layer meningkatkan recall dari 71,72 persen menjadi 78,49 persen, dengan konsekuensi precision turun karena lebih banyak kasus masuk antrean verifikasi.
+Ketiga, knowledge-based risk layer meningkatkan recall dari 72,13 persen menjadi 78,66 persen, disertai perubahan precision dan jumlah kasus dalam antrean verifikasi.
 
 Dan keempat, kombinasi machine learning dan rule-based dapat menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu.
 

@@ -1,6 +1,6 @@
 # Preprocessing Plan OULAD — Early Warning Binary Risk
 
-Dokumen ini menyinkronkan preprocessing dengan arah riset terkini: early warning risiko dropout mahasiswa pada akhir minggu keempat.
+Dokumen ini menyinkronkan preprocessing dengan arah riset terkini: early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat.
 
 ## Framing
 Problem dirumuskan sebagai **binary classification**:
@@ -8,7 +8,7 @@ Problem dirumuskan sebagai **binary classification**:
 - `AtRisk` = `Withdrawn` + `Fail`
 - `Successful` = `Pass` + `Distinction`
 
-Tujuan model adalah mendeteksi mahasiswa berisiko sedini mungkin menggunakan informasi yang sudah tersedia sampai hari ke-28.
+Tujuan model adalah mendeteksi risiko hasil akhir mata kuliah `Withdrawn` atau `Fail` sedini mungkin menggunakan informasi yang sudah tersedia sampai hari ke-28.
 
 ## Unit Analisis
 - **1 row = 1 student pada 1 module-presentation**

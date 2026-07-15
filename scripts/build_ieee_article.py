@@ -444,8 +444,8 @@ def build_docx():
 
     doc.core_properties.title = title
     doc.core_properties.author = ", ".join(name for name, _ in AUTHORS)
-    doc.core_properties.subject = "Early warning student dropout using OULAD"
-    doc.core_properties.keywords = "student dropout, OULAD, early warning, knowledge-based system, business intelligence"
+    doc.core_properties.subject = "Early warning of course failure or withdrawal using OULAD"
+    doc.core_properties.keywords = "academic risk prediction, course withdrawal, course failure, OULAD, early warning"
     doc.save(OUTPUT_DOCX)
 
 

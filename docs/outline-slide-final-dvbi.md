@@ -1,11 +1,11 @@
-# Analisis Risiko Dropout Mahasiswa Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada OULAD
+# Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada OULAD
 ## Data Visualization and Business Intelligence
 
 ---
 
 ## Slide 1 — Judul
 
-- **Judul:** Analisis Risiko Dropout Mahasiswa Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
+- **Judul:** Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
 - **Kelompok 5:**
   - Muhammad Rizky Hajar (24.55.2714)
   - Alwie Muflich (24.55.2667)
@@ -19,8 +19,8 @@
 
 ## Slide 2 — Latar Belakang
 
-- Dropout mahasiswa merupakan permasalahan serius dalam pengelolaan pendidikan tinggi
-- Dampak: capaian akademik mahasiswa, efektivitas layanan, dan evaluasi kinerja institusi
+- Kegagalan dan pengunduran diri dari mata kuliah memerlukan perhatian dalam monitoring akademik
+- Dampak: capaian pembelajaran mahasiswa, efektivitas layanan, dan evaluasi penyelenggaraan mata kuliah
 - Identifikasi dini mahasiswa berisiko memungkinkan intervensi tepat sasaran sebelum terlambat
 - Saat ini tersedia data akademik, registrasi, dan jejak digital yang dapat diolah
 - Dalam konteks DVBI: hasil analitik harus diterjemahkan menjadi indikator yang dapat ditindaklanjuti untuk monitoring dan pengambilan keputusan
@@ -30,7 +30,7 @@
 ## Slide 3 — Rumusan Masalah & Tujuan
 
 **Rumusan Masalah:**
-1. Bagaimana membangun model klasifikasi risiko dropout mahasiswa menggunakan supervised learning?
+1. Bagaimana membangun model klasifikasi risiko gagal atau mengundurkan diri dari mata kuliah menggunakan supervised learning?
 2. Bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi?
 3. Bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks BI?
 
@@ -51,6 +51,7 @@
 - **Distribusi label:**
   - AtRisk (Withdrawn + Fail): 17.208 (52.8%)
   - Successful (Pass + Distinction): 15.385 (47.2%)
+- `final_result` menunjukkan hasil mahasiswa pada satu module-presentation
 
 ---
 
@@ -125,9 +126,9 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 
 | Model | Accuracy | Precision | Recall | F1 |
 |---|---:|---:|---:|---:|
-| Logistic Regression | 74.84% ± 0.33% | 80.81% ± 0.63% | 68.71% ± 0.38% | 74.27% ± 0.43% |
-| **Random Forest** | 75.38% ± 0.33% | 79.99% ± 1.48% | **71.26% ± 0.40%** | **75.36% ± 0.50%** |
-| XGBoost | **75.82% ± 0.41%** | **82.17% ± 0.93%** | 69.31% ± 0.33% | 75.19% ± 0.28% |
+| Logistic Regression | 74.96% ± 0.39% | 80.90% ± 0.59% | 68.89% ± 0.64% | 74.42% ± 0.59% |
+| **Random Forest** | 75.24% ± 0.13% | 79.89% ± 1.36% | **71.07% ± 0.85%** | 75.21% ± 0.30% |
+| XGBoost | **75.84% ± 0.24%** | **82.15% ± 0.96%** | 69.38% ± 0.29% | **75.22% ± 0.39%** |
 
 → XGBoost unggul pada accuracy, sedangkan Random Forest memiliki recall AtRisk tertinggi sehingga lebih sesuai untuk early warning.
 
@@ -135,12 +136,12 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 
 | Model | Accuracy | Precision | Recall | F1 |
 |---|---:|---:|---:|---:|
-| Logistic Regression | 74.76% | 80.40% | 68.69% | 74.08% |
-| **Random Forest** | 75.92% | 80.32% | **71.72%** | **75.78%** |
-| XGBoost | **76.33%** | **81.86%** | 70.54% | **75.78%** |
+| Logistic Regression | 74.87% | 80.34% | 69.04% | 74.26% |
+| **Random Forest** | 75.94% | 80.07% | **72.13%** | **75.89%** |
+| XGBoost | **76.11%** | **81.54%** | 70.45% | 75.59% |
 
 - **Model terpilih:** Random Forest (recall tertinggi pada test set)
-- False negative kelas AtRisk: 961 dari 3.398 kasus AtRisk belum terdeteksi
+- False negative kelas AtRisk: 947 dari 3.398 kasus AtRisk belum terdeteksi
 
 **Data Split:**
 - Train+Validation: 26.122 baris (23.028 mahasiswa unik)
@@ -150,9 +151,9 @@ Setiap fold: ~20.900 baris train, ~5.200 baris validation. Tidak ada mahasiswa y
 **Knowledge-Based Risk Layer:**
 | Level | Jumlah | Persentase |
 |---|---:|---:|
-| High Risk | 1.795 | 27.7% |
-| Medium Risk | 1.994 | 30.8% |
-| Low Risk | 2.682 | 41.4% |
+| High Risk | 1.816 | 28.1% |
+| Medium Risk | 1.979 | 30.6% |
+| Low Risk | 2.676 | 41.4% |
 
 ---
 
@@ -173,10 +174,10 @@ Fitur dengan kontribusi tertinggi didominasi sinyal perilaku awal:
 
 | Metrik | Random Forest | RF + Knowledge Layer |
 |---|---:|---:|
-| Accuracy | **75.92%** | 71.36% |
-| Precision AtRisk | **80.32%** | 70.39% |
-| Recall AtRisk | 71.72% | **78.49%** |
-| F1 AtRisk | **75.78%** | 74.22% |
+| Accuracy | **75.94%** | 71.46% |
+| Precision AtRisk | **80.07%** | 70.43% |
+| Recall AtRisk | 72.13% | **78.66%** |
+| F1 AtRisk | **75.89%** | 74.32% |
 
 → Knowledge layer meningkatkan recall dan memperluas cakupan mahasiswa yang masuk antrean verifikasi.
 
@@ -205,7 +206,7 @@ Fitur dengan kontribusi tertinggi didominasi sinyal perilaku awal:
 **Kesimpulan:**
 1. Ketiga model menunjukkan performa yang relatif konsisten pada 5-fold CV; XGBoost unggul pada accuracy/ROC-AUC, sedangkan Random Forest terpilih berdasarkan recall AtRisk
 2. Split berdasarkan identitas mahasiswa mengurangi risiko data leakage antar split
-3. Knowledge-based risk layer meningkatkan recall dari 71,72% menjadi 78,49% dengan konsekuensi precision turun
+3. Knowledge-based risk layer meningkatkan recall dari 72,13% menjadi 78,66% dengan perubahan precision dan jumlah kasus dalam antrean verifikasi
 4. Kombinasi ML + rule-based menghasilkan label prediksi, alasan risiko, dan prioritas monitoring dalam satu keluaran terpadu
 
 **Saran:**

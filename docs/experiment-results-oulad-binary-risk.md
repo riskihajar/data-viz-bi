@@ -1,6 +1,6 @@
 # Hasil Eksperimen OULAD Early Warning Binary Risk
 
-Dokumen ini mencatat hasil eksperimen final untuk skenario early warning risiko dropout mahasiswa pada akhir minggu keempat. Angka di sini disinkronkan dengan artikel IEEE dan notebook OULAD terbaru.
+Dokumen ini mencatat hasil eksperimen final untuk skenario early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Angka di sini disinkronkan dengan artikel IEEE dan notebook OULAD terbaru.
 
 ## Ringkasan Dataset
 - Total baris: **32.593** student-module-presentation
@@ -28,16 +28,16 @@ Dokumen ini mencatat hasil eksperimen final untuk skenario early warning risiko 
 ## Cross-Validation (5-Fold GroupKFold)
 | Model | Accuracy | Precision AtRisk | Recall AtRisk | F1 AtRisk | ROC-AUC |
 |---|---:|---:|---:|---:|---:|
-| Logistic Regression | 0,7484 ± 0,0033 | 0,8081 ± 0,0063 | 0,6871 ± 0,0038 | 0,7427 ± 0,0043 | 0,8324 ± 0,0028 |
-| Random Forest | 0,7538 ± 0,0033 | 0,7999 ± 0,0148 | **0,7126 ± 0,0040** | **0,7536 ± 0,0050** | 0,8362 ± 0,0026 |
-| XGBoost | **0,7582 ± 0,0041** | **0,8217 ± 0,0093** | 0,6931 ± 0,0033 | 0,7519 ± 0,0028 | **0,8440 ± 0,0020** |
+| Logistic Regression | 0,7496 ± 0,0039 | 0,8090 ± 0,0059 | 0,6889 ± 0,0064 | 0,7442 ± 0,0059 | 0,8330 ± 0,0027 |
+| Random Forest | 0,7524 ± 0,0013 | 0,7989 ± 0,0136 | **0,7107 ± 0,0085** | 0,7521 ± 0,0030 | 0,8362 ± 0,0023 |
+| XGBoost | **0,7584 ± 0,0024** | **0,8215 ± 0,0096** | 0,6938 ± 0,0029 | **0,7522 ± 0,0039** | **0,8440 ± 0,0019** |
 
 ## Performa pada Hold-Out Test
 | Model | Accuracy | Precision AtRisk | Recall AtRisk | F1 AtRisk | ROC-AUC |
 |---|---:|---:|---:|---:|---:|
-| Logistic Regression | 0,7476 | 0,8040 | 0,6869 | 0,7408 | 0,8298 |
-| Random Forest | 0,7592 | 0,8032 | **0,7172** | **0,7578** | 0,8396 |
-| XGBoost | **0,7633** | **0,8186** | 0,7054 | **0,7578** | **0,8440** |
+| Logistic Regression | 0,7487 | 0,8034 | 0,6904 | 0,7426 | 0,8311 |
+| Random Forest | 0,7594 | 0,8007 | **0,7213** | **0,7589** | 0,8396 |
+| XGBoost | **0,7611** | **0,8154** | 0,7045 | 0,7559 | **0,8443** |
 
 ## Model Terpilih
 Model final adalah **Random Forest** karena menghasilkan recall `AtRisk` tertinggi pada cross-validation dan hold-out test. Pemilihan ini sesuai dengan tujuan early warning yang memprioritaskan cakupan deteksi mahasiswa berisiko.
@@ -46,8 +46,8 @@ Confusion matrix Random Forest pada hold-out test:
 
 | Aktual \ Prediksi | Successful | AtRisk |
 |---|---:|---:|
-| Successful | 2.476 | 597 |
-| AtRisk | 961 | 2.437 |
+| Successful | 2.463 | 610 |
+| AtRisk | 947 | 2.451 |
 
 ## Knowledge-Based Risk Layer
 Threshold kuartil bawah train-validation:
@@ -57,23 +57,23 @@ Threshold kuartil bawah train-validation:
 - `vle_active_days`: **4**
 
 Distribusi level risiko pada hold-out test:
-- `High Risk`: **1.795**
-- `Medium Risk`: **1.994**
-- `Low Risk`: **2.682**
+- `High Risk`: **1.816**
+- `Medium Risk`: **1.979**
+- `Low Risk`: **2.676**
 
 Perbandingan Random Forest dan sistem gabungan:
 
 | Metrik | Random Forest | RF + Knowledge Layer |
 |---|---:|---:|
-| Accuracy | **0,7592** | 0,7136 |
-| Precision AtRisk | **0,8032** | 0,7039 |
-| Recall AtRisk | 0,7172 | **0,7849** |
-| F1 AtRisk | **0,7578** | 0,7422 |
+| Accuracy | **0,7594** | 0,7146 |
+| Precision AtRisk | **0,8007** | 0,7043 |
+| Recall AtRisk | 0,7213 | **0,7866** |
+| F1 AtRisk | **0,7589** | 0,7432 |
 
-Knowledge layer meningkatkan recall dari **0,7172** menjadi **0,7849**. Peningkatan ini memperluas cakupan deteksi, dengan konsekuensi precision turun karena lebih banyak kasus masuk antrean verifikasi.
+Knowledge layer meningkatkan recall dari **0,7213** menjadi **0,7866**. Perubahan tersebut memperluas cakupan deteksi dan menambah kasus yang masuk antrean verifikasi.
 
 ## Implikasi Visual Analytics
-Dashboard early warning mengidentifikasi **3.789** student-module-presentation dalam antrean `High Risk` atau `Medium Risk`. Sinyal paling dominan adalah skor assessment rendah dengan **2.341** kasus. Module GGG presentation 2014J memiliki proporsi prioritas tertinggi pada hold-out test, yaitu **100%** kasus `High Risk` atau `Medium Risk`.
+Dashboard early warning mengidentifikasi **3.795** student-module-presentation dalam antrean `High Risk` atau `Medium Risk`. Sinyal paling dominan adalah skor assessment rendah dengan **2.341** kasus. Module GGG presentation 2014J memiliki proporsi prioritas tertinggi pada hold-out test, yaitu **100%** kasus `High Risk` atau `Medium Risk`.
 
 ## Keterbatasan
 - OULAD berasal dari konteks Open University di Inggris sehingga validitas eksternal perlu diuji ulang pada institusi lain.

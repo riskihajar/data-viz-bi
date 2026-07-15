@@ -1,6 +1,6 @@
 # II. Related Works
 
-Penelitian student dropout analytics memanfaatkan data akademik, sosiodemografis, dan aktivitas digital untuk memprediksi keberlanjutan studi. Informasi awal seperti karakteristik sosiodemografis, riwayat akademik, dan engagement digital memiliki nilai prediktif terhadap retensi mahasiswa [1]. Risiko dropout terbentuk melalui interaksi faktor akademik, perilaku belajar, dan konteks mahasiswa.
+Penelitian student dropout dan academic performance analytics memanfaatkan data akademik, sosiodemografis, dan aktivitas digital untuk memprediksi keberlanjutan studi serta hasil pembelajaran. Informasi awal seperti karakteristik sosiodemografis, riwayat akademik, dan engagement digital memiliki nilai prediktif terhadap retensi mahasiswa [1]. Pada OULAD, ruang lingkup target berada pada hasil akhir mata kuliah untuk setiap student-module-presentation.
 
 Early warning system mengarahkan hasil prediksi pada proses intervensi. Plak et al. menunjukkan bahwa informasi risiko perlu disertai rancangan tindak lanjut agar dapat memengaruhi hasil akademik [2]. Shou et al. menggunakan OULAD untuk memprediksi performa mahasiswa melalui multidimensional time-series yang menggabungkan learning behavior, assessment score, dan informasi demografis. Pada 20% durasi course, model MTAPSP harian mencapai accuracy 0,9179 dan F1-score 0,9180 untuk target biner `Pass` serta `Distinction` terhadap `Fail` serta `Withdrawn` [5]. Temuan tersebut menegaskan bahwa horizon pengamatan menjadi bagian penting dalam membaca performa early warning.
 

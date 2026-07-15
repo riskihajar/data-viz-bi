@@ -2,7 +2,7 @@
 
 ## A. Research Design
 
-Penelitian menggunakan desain supervised binary classification untuk mendeteksi risiko dropout pada akhir minggu keempat. Alur penelitian meliputi pengambilan dan audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan data berbasis mahasiswa, pelatihan dan evaluasi model, pembentukan knowledge-based risk layer, serta penyajian indikator melalui dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42` untuk mendukung reproduktibilitas.
+Penelitian menggunakan desain supervised binary classification untuk mendeteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Alur penelitian meliputi pengambilan dan audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan data berbasis mahasiswa, pelatihan dan evaluasi model, pembentukan knowledge-based risk layer, serta penyajian indikator melalui dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42` untuk mendukung reproduktibilitas.
 
 ## B. Dataset and Unit of Analysis
 
@@ -12,7 +12,7 @@ Unit analisis adalah satu mahasiswa pada satu kombinasi `code_module` dan `code_
 
 ## C. Target Label and Temporal Cut-off
 
-Target dirumuskan sebagai klasifikasi biner. Label `AtRisk` diberikan kepada baris dengan `final_result` berupa `Withdrawn` atau `Fail`. Label `Successful` diberikan kepada baris dengan `final_result` berupa `Pass` atau `Distinction`. Dataset terdiri atas 17.208 baris `AtRisk` dan 15.385 baris `Successful`.
+Target dirumuskan sebagai klasifikasi biner pada tingkat mata kuliah. Label `AtRisk` diberikan kepada baris dengan `final_result` berupa `Withdrawn` atau `Fail`. Label `Successful` diberikan kepada baris dengan `final_result` berupa `Pass` atau `Distinction`. Status tersebut menjelaskan hasil mahasiswa pada suatu module-presentation. Dataset terdiri atas 17.208 baris `AtRisk` dan 15.385 baris `Successful`.
 
 Horizon early warning ditetapkan pada hari ke-28. Submission assessment dipilih dengan kondisi `date_submitted <= 28`, sedangkan aktivitas VLE dipilih dengan kondisi `date <= 28`. Informasi `date_unregistration`, `has_unregistration`, hasil akhir, dan aktivitas setelah hari ke-28 dikeluarkan dari fitur prediktor. Hasil akhir hanya digunakan untuk membentuk target evaluasi.
 

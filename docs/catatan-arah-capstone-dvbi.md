@@ -3,8 +3,8 @@
 ## Konteks Project
 Project ini berada pada repo **Data Visualization and Business Intelligence (DVBI)** dengan tema utama:
 
-- **Student Performance / Dropout Analytics**
-- **Early warning risiko dropout mahasiswa**
+- **Student Performance Analytics**
+- **Early warning risiko gagal atau mengundurkan diri dari mata kuliah**
 - **Visual analytics dan Business Intelligence untuk monitoring akademik**
 
 ## Keputusan Dataset Final
@@ -25,6 +25,8 @@ Problem dirumuskan sebagai **supervised binary classification**:
 - `Successful` = `Pass` + `Distinction`
 
 Unit analisis adalah **1 mahasiswa pada 1 module-presentation**.
+
+`final_result` merepresentasikan hasil pada module-presentation tersebut, sehingga target penelitian berada pada tingkat mata kuliah.
 
 ## Horizon Early Warning
 Riset final menggunakan cut-off **hari ke-28** untuk merepresentasikan akhir minggu keempat.
@@ -53,8 +55,8 @@ Skema evaluasi:
 - 5-fold GroupKFold pada train-validation.
 
 Model final adalah **Random Forest** karena menghasilkan recall `AtRisk` tertinggi:
-- cross-validation recall `AtRisk`: **0,7126**,
-- hold-out recall `AtRisk`: **0,7172**.
+- cross-validation recall `AtRisk`: **0,7107**,
+- hold-out recall `AtRisk`: **0,7213**.
 
 ## Knowledge-Based Risk Layer
 Knowledge-based risk layer digunakan untuk menerjemahkan prediksi model menjadi:
@@ -63,7 +65,7 @@ Knowledge-based risk layer digunakan untuk menerjemahkan prediksi model menjadi:
 - rekomendasi intervensi,
 - antrean prioritas mahasiswa.
 
-Sistem gabungan meningkatkan recall `AtRisk` dari **0,7172** menjadi **0,7849**, dengan konsekuensi precision turun dari **0,8032** menjadi **0,7039**.
+Sistem gabungan meningkatkan recall `AtRisk` dari **0,7213** menjadi **0,7866**, dengan perubahan precision dari **0,8007** menjadi **0,7043**.
 
 ## Output Final
 Output utama project:

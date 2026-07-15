@@ -1,7 +1,7 @@
 # Artikel IEEE Lengkap
 
 
-# Early Warning Risiko Dropout Mahasiswa pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
+# Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
 
 Muhammad Rizky Hajar, Alwie Muflich, Heri Santosa, Andi Sunyoto, Robert Marco
 
@@ -12,15 +12,15 @@ Email: riskihajar@students.amikom.ac.id, alwiemuflich@students.amikom.ac.id, her
 
 # Abstract
 
-Dropout mahasiswa memengaruhi keberlanjutan studi, efektivitas layanan akademik, dan pengambilan keputusan institusional. Penelitian ini mengembangkan early warning risiko dropout mahasiswa pada akhir minggu keempat menggunakan Open University Learning Analytics Dataset (OULAD). Target dirumuskan sebagai klasifikasi biner, yaitu `AtRisk` untuk hasil akhir `Withdrawn` dan `Fail`, serta `Successful` untuk `Pass` dan `Distinction`. Fitur prediktor dibentuk dari data demografis, registrasi awal, assessment, dan aktivitas Virtual Learning Environment yang tersedia sampai hari ke-28. Evaluasi membandingkan Logistic Regression, Random Forest, dan XGBoost melalui hold-out test berbasis kelompok mahasiswa dan 5-fold GroupKFold. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation tertinggi sebesar 0,7107. Pada hold-out test, model tersebut menghasilkan accuracy 0,7594, precision 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. Knowledge-based risk layer menggabungkan prediksi model dengan empat indikator perilaku awal untuk menghasilkan level `High Risk`, `Medium Risk`, dan `Low Risk` beserta alasan dan rekomendasi intervensi. Sistem gabungan meningkatkan recall menjadi 0,7866 dengan precision 0,7043. Hasil analitik disajikan melalui dashboard statis yang memuat indikator risiko, prioritas module-presentation, sinyal dominan, dan daftar mahasiswa untuk mendukung monitoring akademik. Pendekatan ini menyediakan integrasi prediksi, interpretasi berbasis aturan, dan visual decision support untuk intervensi dini.
+Hasil akhir mata kuliah memberi informasi penting bagi monitoring akademik dan perencanaan intervensi dini. Penelitian ini mengembangkan early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat menggunakan Open University Learning Analytics Dataset (OULAD). Setiap baris merepresentasikan satu mahasiswa pada satu module-presentation. Target dirumuskan sebagai klasifikasi biner, yaitu `AtRisk` untuk hasil akhir mata kuliah `Withdrawn` dan `Fail`, serta `Successful` untuk `Pass` dan `Distinction`. Fitur prediktor dibentuk dari data demografis, registrasi awal, assessment, dan aktivitas Virtual Learning Environment yang tersedia sampai hari ke-28. Evaluasi membandingkan Logistic Regression, Random Forest, dan XGBoost melalui hold-out test berbasis kelompok mahasiswa dan 5-fold GroupKFold. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation tertinggi sebesar 0,7107. Pada hold-out test, model tersebut menghasilkan accuracy 0,7594, precision 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. Knowledge-based risk layer menggabungkan prediksi model dengan empat indikator perilaku awal untuk menghasilkan level `High Risk`, `Medium Risk`, dan `Low Risk` beserta alasan dan rekomendasi intervensi. Sistem gabungan meningkatkan recall menjadi 0,7866 dengan precision 0,7043. Hasil analitik disajikan melalui dashboard statis yang memuat indikator risiko, prioritas module-presentation, sinyal dominan, dan daftar mahasiswa untuk mendukung monitoring akademik. Pendekatan ini menyediakan integrasi prediksi, interpretasi berbasis aturan, dan visual decision support untuk intervensi dini pada tingkat mata kuliah.
 
 # Keywords
 
-student dropout, supervised learning, OULAD, early warning system, knowledge-based system, business intelligence
+academic risk prediction, course withdrawal, course failure, supervised learning, OULAD, early warning system
 
 # I. Introduction
 
-Dropout mahasiswa menjadi isu penting dalam pendidikan tinggi karena berkaitan dengan keberlanjutan studi, kualitas layanan akademik, dan efektivitas pengambilan keputusan institusional. Penelitian sebelumnya menunjukkan bahwa machine learning dapat memprediksi retensi mahasiswa menggunakan karakteristik sosiodemografis dan metrik engagement [1]. Early warning system memperluas manfaat prediksi dengan menempatkan identifikasi risiko pada periode ketika intervensi akademik masih dapat dilakukan [2]. Ketersediaan informasi risiko pada minggu-minggu awal memberi ruang bagi dosen, tutor, dan pengelola program studi untuk merancang tindak lanjut yang relevan.
+Kegagalan dan pengunduran diri dari mata kuliah menjadi perhatian dalam pendidikan tinggi karena berkaitan dengan capaian belajar, kualitas layanan akademik, dan efektivitas pengambilan keputusan institusional. Penelitian sebelumnya menunjukkan bahwa machine learning dapat memprediksi retensi mahasiswa menggunakan karakteristik sosiodemografis dan metrik engagement [1]. Early warning system memperluas manfaat prediksi dengan menempatkan identifikasi risiko pada periode ketika intervensi akademik masih dapat dilakukan [2]. Ketersediaan informasi risiko pada minggu-minggu awal memberi ruang bagi dosen, tutor, dan pengelola program studi untuk merancang tindak lanjut yang relevan.
 
 Sistem pembelajaran digital menghasilkan data akademik dan jejak aktivitas yang dapat digunakan untuk membaca engagement mahasiswa. Data tersebut mencakup interaksi dengan Virtual Learning Environment (VLE), partisipasi assessment, performa penilaian, dan informasi registrasi awal. Studi mengenai digital traces memperlihatkan bahwa pola aktivitas Learning Management System dapat membantu memahami variasi performa dan risiko mahasiswa [3]. Open University Learning Analytics Dataset (OULAD) menyediakan data tersebut dalam struktur relasional yang mencakup profil mahasiswa, assessment, registrasi, dan lebih dari sepuluh juta catatan aktivitas VLE [4].
 
@@ -28,13 +28,13 @@ Nilai prediktif suatu model bergantung pada kesesuaian data dengan waktu keputus
 
 Literatur menunjukkan bahwa kemampuan mendeteksi mahasiswa berisiko perlu dihubungkan dengan proses tindak lanjut agar memberi dampak institusional [2]. Model machine learning menghasilkan kelas dan probabilitas, sedangkan pemangku kepentingan memerlukan alasan risiko, prioritas, dan rekomendasi yang dapat dibaca secara operasional. Kebutuhan tersebut membentuk research gap pada integrasi antara evaluasi model, interpretasi berbasis aturan, dan penyajian visual untuk decision support.
 
-Penelitian ini bertujuan mengembangkan klasifikasi biner risiko dropout mahasiswa pada minggu keempat, mengevaluasi tiga algoritma supervised learning, dan mengintegrasikan model terpilih dengan knowledge-based risk layer. Hasil sistem diterjemahkan menjadi dashboard Business Intelligence untuk monitoring risiko dan prioritas intervensi akademik.
+Penelitian ini bertujuan mengembangkan klasifikasi biner risiko gagal atau mengundurkan diri dari mata kuliah pada minggu keempat, mengevaluasi tiga algoritma supervised learning, dan mengintegrasikan model terpilih dengan knowledge-based risk layer. Hasil sistem diterjemahkan menjadi dashboard Business Intelligence untuk monitoring risiko dan prioritas intervensi akademik pada tingkat module-presentation.
 
 Kontribusi penelitian terdiri atas empat bagian. Pertama, penelitian membentuk dataset early warning pada unit student-module-presentation dengan cut-off hari ke-28. Kedua, evaluasi menggunakan pemisahan berbasis `id_student` untuk menjaga independensi mahasiswa antara data pelatihan dan pengujian. Ketiga, knowledge-based risk layer menghasilkan level, alasan risiko, dan rekomendasi berdasarkan prediksi model serta perilaku awal. Keempat, dashboard mengubah keluaran analitik menjadi indikator yang mendukung keputusan pimpinan akademik, program studi, tutor, dosen wali, dan tim konseling.
 
 # II. Related Works
 
-Penelitian student dropout analytics memanfaatkan data akademik, sosiodemografis, dan aktivitas digital untuk memprediksi keberlanjutan studi. Informasi awal seperti karakteristik sosiodemografis, riwayat akademik, dan engagement digital memiliki nilai prediktif terhadap retensi mahasiswa [1]. Risiko dropout terbentuk melalui interaksi faktor akademik, perilaku belajar, dan konteks mahasiswa.
+Penelitian student dropout dan academic performance analytics memanfaatkan data akademik, sosiodemografis, dan aktivitas digital untuk memprediksi keberlanjutan studi serta hasil pembelajaran. Informasi awal seperti karakteristik sosiodemografis, riwayat akademik, dan engagement digital memiliki nilai prediktif terhadap retensi mahasiswa [1]. Pada OULAD, ruang lingkup target berada pada hasil akhir mata kuliah untuk setiap student-module-presentation.
 
 Early warning system mengarahkan hasil prediksi pada proses intervensi. Plak et al. menunjukkan bahwa informasi risiko perlu disertai rancangan tindak lanjut agar dapat memengaruhi hasil akademik [2]. Shou et al. menggunakan OULAD untuk memprediksi performa mahasiswa melalui multidimensional time-series yang menggabungkan learning behavior, assessment score, dan informasi demografis. Pada 20% durasi course, model MTAPSP harian mencapai accuracy 0,9179 dan F1-score 0,9180 untuk target biner `Pass` serta `Distinction` terhadap `Fail` serta `Withdrawn` [5]. Temuan tersebut menegaskan bahwa horizon pengamatan menjadi bagian penting dalam membaca performa early warning.
 
@@ -48,7 +48,7 @@ Penelitian ini mengambil posisi pada integrasi tiga komponen. Supervised learnin
 
 ## A. Research Design
 
-Penelitian menggunakan desain supervised binary classification untuk mendeteksi risiko dropout pada akhir minggu keempat. Alur penelitian meliputi pengambilan dan audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan data berbasis mahasiswa, pelatihan dan evaluasi model, pembentukan knowledge-based risk layer, serta penyajian indikator melalui dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42` untuk mendukung reproduktibilitas.
+Penelitian menggunakan desain supervised binary classification untuk mendeteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Alur penelitian meliputi pengambilan dan audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan data berbasis mahasiswa, pelatihan dan evaluasi model, pembentukan knowledge-based risk layer, serta penyajian indikator melalui dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42` untuk mendukung reproduktibilitas.
 
 ## B. Dataset and Unit of Analysis
 
@@ -58,7 +58,7 @@ Unit analisis adalah satu mahasiswa pada satu kombinasi `code_module` dan `code_
 
 ## C. Target Label and Temporal Cut-off
 
-Target dirumuskan sebagai klasifikasi biner. Label `AtRisk` diberikan kepada baris dengan `final_result` berupa `Withdrawn` atau `Fail`. Label `Successful` diberikan kepada baris dengan `final_result` berupa `Pass` atau `Distinction`. Dataset terdiri atas 17.208 baris `AtRisk` dan 15.385 baris `Successful`.
+Target dirumuskan sebagai klasifikasi biner pada tingkat mata kuliah. Label `AtRisk` diberikan kepada baris dengan `final_result` berupa `Withdrawn` atau `Fail`. Label `Successful` diberikan kepada baris dengan `final_result` berupa `Pass` atau `Distinction`. Status tersebut menjelaskan hasil mahasiswa pada suatu module-presentation. Dataset terdiri atas 17.208 baris `AtRisk` dan 15.385 baris `Successful`.
 
 Horizon early warning ditetapkan pada hari ke-28. Submission assessment dipilih dengan kondisi `date_submitted <= 28`, sedangkan aktivitas VLE dipilih dengan kondisi `date <= 28`. Informasi `date_unregistration`, `has_unregistration`, hasil akhir, dan aktivitas setelah hari ke-28 dikeluarkan dari fitur prediktor. Hasil akhir hanya digunakan untuk membentuk target evaluasi.
 
@@ -214,13 +214,13 @@ Penelitian memiliki beberapa keterbatasan. OULAD berasal dari konteks Open Unive
 
 # VI. Conclusion
 
-Penelitian ini mengembangkan early warning risiko dropout mahasiswa pada akhir minggu keempat menggunakan OULAD. Dataset dibentuk pada unit student-module-presentation dengan fitur demografis, registrasi awal, assessment, dan aktivitas VLE sampai hari ke-28. Pemisahan berbasis `id_student` menjaga independensi mahasiswa antara train-validation dan hold-out test.
+Penelitian ini mengembangkan early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat menggunakan OULAD. Dataset dibentuk pada unit student-module-presentation dengan fitur demografis, registrasi awal, assessment, dan aktivitas VLE sampai hari ke-28. Pemisahan berbasis `id_student` menjaga independensi mahasiswa antara train-validation dan hold-out test.
 
 Random Forest dipilih berdasarkan recall `AtRisk` cross-validation tertinggi sebesar 0,7107. Pada hold-out test, model menghasilkan accuracy 0,7594, precision 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. Knowledge-based risk layer meningkatkan recall menjadi 0,7866 dengan menggabungkan prediksi model dan empat sinyal perilaku awal. Sistem menghasilkan level risiko, alasan, dan rekomendasi yang dapat diterjemahkan menjadi antrean intervensi.
 
 Dashboard Business Intelligence menyajikan distribusi risiko, prioritas module-presentation, sinyal dominan, performa model, dan daftar mahasiswa anonim untuk monitoring. Integrasi supervised learning, knowledge-based risk layer, dan visual analytics menghasilkan decision support yang menghubungkan prediksi dengan proses tindak lanjut akademik.
 
-Pengembangan berikutnya dapat membandingkan horizon minggu keempat, kedelapan, dan kedua belas; menggunakan threshold per module-presentation; melakukan tuning hyperparameter; serta menguji validitas eksternal pada data institusi lain. Evaluasi dampak intervensi juga diperlukan untuk mengukur kontribusi sistem terhadap keberlanjutan studi mahasiswa.
+Pengembangan berikutnya dapat membandingkan horizon minggu keempat, kedelapan, dan kedua belas; menggunakan threshold per module-presentation; melakukan tuning hyperparameter; serta menguji validitas eksternal pada data institusi lain. Evaluasi dampak intervensi juga diperlukan untuk mengukur kontribusi sistem terhadap keberhasilan mahasiswa menyelesaikan mata kuliah.
 
 # References
 

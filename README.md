@@ -179,7 +179,7 @@ Saat ini repository telah mencakup:
 - artikel IEEE lengkap dalam Markdown, DOCX, dan PDF,
 - outline dan narasi presentasi final DVBI.
 
-Fokus riset terkini adalah deteksi risiko dropout mahasiswa pada akhir minggu keempat menggunakan fitur yang tersedia sampai hari ke-28. Random Forest menjadi model final karena menghasilkan recall `AtRisk` tertinggi, sedangkan knowledge-based risk layer digunakan untuk memperluas cakupan deteksi dan menghasilkan alasan risiko yang dapat ditindaklanjuti.
+Fokus riset terkini adalah deteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat menggunakan fitur yang tersedia sampai hari ke-28. Target mengikuti `final_result` pada unit student-module-presentation: `AtRisk` untuk `Withdrawn` atau `Fail`, serta `Successful` untuk `Pass` atau `Distinction`. Random Forest menjadi model final karena menghasilkan recall `AtRisk` tertinggi, sedangkan knowledge-based risk layer digunakan untuk memperluas cakupan deteksi dan menghasilkan alasan risiko yang dapat ditindaklanjuti.
 
 ## Update terbaru: OULAD sebagai dataset kerja utama
 
