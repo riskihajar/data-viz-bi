@@ -1,0 +1,1082 @@
+             electronics
+Article
+Course Success Prediction and Early Identification of At-Risk
+Students Using Explainable Artificial Intelligence
+Berat Ujkani 1, * , Daniela Minkovska 2                      and Nikolay Hinov 3, *
+
+                                            1   Department of Computer Science and Engineering, University of Mitrovica “Isa Boletini”,
+                                                40000 Mitrovica, Kosovo
+                                            2   Department of Programming and Computer Technologies, Technical University of Sofia, 1000 Sofia, Bulgaria;
+                                                daniela@tu-sofia.bg
+                                            3   Department of Power Electronics, Technical University of Sofia, 1000 Sofia, Bulgaria
+                                            *   Correspondence: berat.ujkani@umib.net (B.U.), hinov@tu-sofia.bg (N.H.)
+
+
+                                            Abstract: Artificial Intelligence (AI) is increasingly used in online education platforms to provide
+                                            valuable insights into students’ performance and success. However, the complexity of AI models
+                                            makes it challenging for educators to interpret the specific factors that influence whether a student is
+                                            going to pass or fail. Utilizing the Open University Learning Analytics Dataset (OULAD), this study
+                                            employs various machine learning and deep learning techniques for predicting students’ success,
+                                            along with SHapley Additive exPlanations (SHAP) as an Explainable Artificial Intelligence (XAI)
+                                            technique, to understand the key factors behind success or failure. Unlike traditional statistical
+                                            methods that explore variable relationships, this AI-driven approach uses advanced deep learning
+                                            techniques to identify patterns and insights, allowing for a better understanding of the factors
+                                            influencing student success. Additionally, this study focuses on identifying students at risk of failure
+                                            using XAI techniques, specifically SHAP, to interpret model outputs by breaking down how specific
+                                            factors contribute to a student’s success. This method enables targeted interventions to support
+                                            their success. Results reveal that student engagement and registration timelines are critical factors
+                                            affecting performance. The customized models achieve up to 94% accuracy for the designed tasks,
+                                            outperforming traditional approaches. This study contributes to the use of AI in education and offers
+                                            practical insights not only for educators but also for administrators and policymakers to enhance the
+Citation: Ujkani, B.; Minkovska, D.;
+                                            quality and effectiveness of online learning.
+Hinov, N. Course Success Prediction
+and Early Identification of At-Risk
+                                            Keywords: course success prediction; machine learning; education; explainable artificial intelligence;
+Students Using Explainable Artificial
+Intelligence. Electronics 2024, 13, 4157.
+                                            shap; online learning
+https://doi.org/10.3390/
+electronics13214157
+
+Academic Editor: Ioannis
+                                            1. Introduction
+Hatzilygeroudis
+                                                  Artificial Intelligence (AI) has already made a strong impact on the way systems work
+Received: 23 September 2024                 in our society, spanning fields such as science, health, industry, finance, and media. The
+Revised: 17 October 2024                    use of AI in academia has grown significantly, particularly in predicting student academic
+Accepted: 21 October 2024                   success [1]. Machine learning algorithms, trained on large datasets containing information
+Published: 23 October 2024
+                                            about students’ interactions, can accurately assess whether a student is at risk of failing [2].
+                                            Such predictions provide timely insights to educators, encouraging them to intervene
+                                            and offer support. However, the complex nature of these algorithms often obscures their
+Copyright: © 2024 by the authors.
+                                            decision-making processes in a “black box”, making it challenging to understand the
+Licensee MDPI, Basel, Switzerland.          specific reasons behind their predictions [3].
+This article is an open access article            To address this limitation, Explainable Artificial Intelligence (XAI) has emerged as
+distributed under the terms and             a critical tool [4]. XAI refers to techniques that enhance the transparency of AI models,
+conditions of the Creative Commons          allowing educators to understand the factors behind a student’s at-risk prediction and
+Attribution (CC BY) license (https://       tailor their interventions to target specific issues [5]. This study applies the XAI method,
+creativecommons.org/licenses/by/            SHapley Additive exPlanations (SHAP), to find the factors influencing a student’s academic
+4.0/).                                      outcome that is operationalized in terms of a pass or fail grade.
+
+
+
+Electronics 2024, 13, 4157. https://doi.org/10.3390/electronics13214157                                     https://www.mdpi.com/journal/electronics
+Electronics 2024, 13, 4157                                                                                             2 of 24
+
+
+
+                                  Success in education, in this context, is defined by students achieving passing grades,
+                             while failure includes failing grades or course withdrawal. This binary classification aligns
+                             with institutional grading systems and provides a practical framework for identifying
+                             students in need of support. Moreover, the focus on student success is critical because
+                             understanding the underlying factors can lead to more effective interventions and support
+                             strategies. Additional explanations will clarify how this study intends to identify at-risk
+                             students and provide insights into the complexities of failure behavior, ultimately aiming
+                             to enhance student retention and success in online learning environments.
+                                  This approach is supported by Tinto’s Student Integration Model [6], which empha-
+                             sizes the significance of student engagement and persistence as crucial factors in academic
+                             success. Both academic and social integration motivate students toward degree completion.
+                             Furthermore, Constructivist Learning Theory [7] reinforces the importance of active student
+                             involvement in learning, linking engagement to deeper understanding and success. Our
+                             study also focuses on course engagement details, aligning with these theories to support
+                             the claim that well-structured academic support enhances student outcomes.
+                                  This study addresses the gap between advanced analytics, particularly AI-driven
+                             educational data analysis, and practical educational applications. The gap refers to the
+                             disconnect between the ability to generate highly accurate predictive models and the
+                             challenge of making these models interpretable and actionable for educators. By using
+                             XAI methods, we bridge this gap, providing educators with accurate predictions as well as
+                             interpretable insights that allow them to take effective action.
+                                  The implications of this work extend to educational practices, where targeted interven-
+                             tions informed by explainable models can be more effective in preventing student failure.
+                             From a policy perspective, this research can guide the development of data-driven strategies
+                             for improving student retention and success, emphasizing the role of early identification
+                             and support for at-risk students.
+                                  The goals of this research are three-fold: (1) predict students’ grades for a course;
+                             (2) predict students at risk of failure based on the overall performance; and (3) identify
+                             the factors contributing to these predictions. These objectives are interrelated and al-
+                             low for a comprehensive understanding of the factors influencing educational success as
+                             defined above.
+                                  The main contributions of this study are summarized as follows:
+                             •    An exploratory data analysis is presented, followed by goal-specific pre-processing of
+                                  data for enhanced results.
+                             •    Grade prediction for a course is performed by employing various machine learning
+                                  techniques, accompanied by a comparative analysis.
+                             •    The prediction of at-risk students is presented using both machine learning and deep
+                                  learning models.
+                             •    The identification of critical factors influencing predictions is executed using the SHAP
+                                  method.
+                                  This article is organized as follows: Section 2 discusses the related work; exploratory
+                             data analysis is presented in Section 3; the pre-processing is discussed in Section 4; the
+                             methodology is explained in Section 5; Section 6 presents the results; the discussion is
+                             included in Section 7; and the conclusion is added in Section 8.
+
+                             2. Related Work
+                                   Explainable Artificial Intelligence (XAI) has been a busy research area recently because
+                             of its use in identifying the underlying factors behind the model’s predictions [8]. It was
+                             employed by researchers in a variety of applications. Researchers leveraged XAI to for a
+                             deep understanding of autonomous driving systems [9], while a few of them employed XAI
+                             in virtual reality environments for eye-tracking applications [10]. Romano et al. conducted
+                             a research study to identify relations between respiratory cancer mortality in Italy, pollution,
+                             and socio-economic factors using XAI [11]. Yagin et al. employed XAI to gain insights on
+Electronics 2024, 13, 4157                                                                                               3 of 24
+
+
+
+                             reasons to diabetic retinopathy [12]. Carvalho et al. studied the factors behind swimming
+                             performance using XAI [13].
+                                   The use of XAI in education to explain and predict student performance is relatively
+                             new. While AI and machine learning have been employed to predict student success, there
+                             is an increasing demand for these models to be understandable as well. People want to
+                             know why a model makes certain predictions, not just what the accuracy percentage is. This
+                             knowledge is especially important for professionals such as psychologists and researchers
+                             who use these models. They prefer simpler models that are easier to understand, even if
+                             they are not as complex.
+                                   In recent years, the application of machine learning to predict student performance
+                             has gained substantial attention in educational data mining, offering valuable insights
+                             for improving academic outcomes and institutional strategies. Hussain and Khan [14]
+                             explored the use of regression and decision tree classifiers to predict students’ marks
+                             and grades using data from the Board of Intermediate and Secondary Education (BISE),
+                             highlighting the efficiency of machine learning in forecasting academic performance based
+                             on historical student data. Pallathadka et al. expanded on this approach by utilizing a
+                             variety of machine learning algorithms, such as Naive Bayes, ID3, C4.5, and SVM, to predict
+                             student outcomes and assist educational institutions in reducing failure rates through early
+                             intervention [15]. Chen and Zhai further investigated the performance of machine learning
+                             models across different types of educational data, comparing the results of random forest,
+                             decision tree, and artificial neural networks for both binary and multi-class prediction
+                             tasks, with random forest demonstrating superior generality across various datasets [16].
+                             These studies collectively underscore the significance of machine learning techniques in
+                             forecasting student performance, enabling educational institutions to adopt data-driven
+                             strategies to enhance student retention and success.
+                                   Mothilal et al. [17] employed the Local Interpretable Model-Agnostic Explanations
+                             (LIME) method to investigate the reasons linked with students dropping out. The authors
+                             used data from the students’ grades in high school subjects such as physics, chemistry,
+                             mathematics, and the effort that students put in these subjects to explain dropout rates in
+                             the first year of engineering. There was an 84% at-risk prediction of dropping out, and the
+                             employed method showed the relation between high school grades and the probability of
+                             dropping out in the engineering program. The study, however, lacked a critical analysis
+                             of the results with respect to the LIME method and therefore highlights the thorough
+                             evaluation of the currently employed method.
+                                   A different study [4] stressed the implication of explainability in the field of learning
+                             analytics. Another study [2] employed XAI to understand the reasons for students dropping
+                             out of a massive open online course (MOOC). The authors showed the week-wise analysis
+                             of failure probabilities and explanations. They demonstrated the change in relation between
+                             contributing features and the probabilities over time.
+                                   It is clear from the above discussion that, while substantial work was made in applying
+                             XAI methods to predict student performance and understand the factors influencing
+                             student success [18], our study presents a novel approach by leveraging SHAP for in-depth
+                             analysis, specifically focused on identifying key predictors of student success in an online
+                             education system. The factors considered in this study are measurable predictors of student
+                             success, including engagement levels (e.g., time spent on the platform, participation in
+                             activities), registration timelines (e.g., how early or late a student registers for a course), and
+                             interaction with course materials (e.g., frequency and depth of interaction with learning
+                             content). By focusing on these specific factors, we aim to provide actionable insights for
+                             improving student support. In terms of student outcomes, this study refers to student
+                             learning outcomes, particularly focusing on academic performance (e.g., pass/fail rates)
+                             and overall engagement. To further connect the pedagogical and technical aspects of this
+                             study, we have drawn upon multiple foundational theories.
+                                   To connect the pedagogical and technical aspects of this study, we draw upon several
+                             foundational theories. In addition to Social Cognitive Theory [19], which emphasizes the
+Electronics 2024, 13, 4157                                                                                            4 of 24
+
+
+
+                             role of self-efficacy, and Bloom’s Taxonomy [20], which organizes learning into hierarchical
+                             cognitive levels, Constructivist Learning Theory highlights how students build knowledge
+                             through active engagement with course materials [7]. This theory aligns with our findings,
+                             which indicate that students who interact more frequently and deeply with learning content
+                             tend to perform better academically.
+                                  By combining these educational theories with AI-driven models, this study offers a
+                             framework that connects advanced technical analytics with practical pedagogical insights.
+
+                             3. Data Selection and Exploratory Analysis
+                                 In this section, the dataset is first explained, its structure and features, followed by
+                             exploratory analysis.
+
+                             3.1. Dataset
+                                  The foundation of this research is a dataset sourced from the Open University Learning
+                             Analytics Dataset [21], encompassing data on 32,593 students over a 9-month course period
+                             from 2014 to 2015. This dataset includes information related to student demographics,
+                             course enrollments, assessment performances, and interactions within the virtual learning
+                             environment (VLE). The database has seven tables, namely: studentRegistration, studen-
+                             tAssessment, assessments, studentInfo, courses, studentVle, and vle. Every table of the dataset
+                             has unique information that can be connected to the facts from other tables by means of
+                             identifier fields. There are 32,593 registered students and 22 module presentations in the
+                             dataset. The dataset structure is depicted in Figure 1.
+
+
+
+
+                             Figure 1. Dataset structure.
+
+                                  This dataset is from 2015, and several factors justify its continued relevance in the
+                             context of student behavior analysis. First, foundational trends in educational engagement
+                             have been stable over time, with various studies confirming similar patterns in student be-
+                             havior, even as technology and learning environments evolve [22]. Second, the fundamental
+                             principles of educational psychology, such as self-efficacy and motivation, remain actual
+                             despite changes brought about by events like the pandemic [23]. While we acknowledge
+                             the potential changes in student behavior, the dataset used has valuable insights relevant
+                             to current educational contexts, facilitating a deeper understanding of the continuity and
+                             change in student engagement patterns.
+
+                             3.2. Exploratory Analysis
+                                  This section presents the exploratory data analysis. The visualizations of this section
+                             provide insights into student performance and engagement patterns.
+                                  Figure 2 provides an overview of assessment scores revealing a nuanced picture of
+                             academic performance. A substantial concentration of scores corresponds to a range of
+                             moderately high to high marks. The presence of peaks around certain score ranges could
+                             imply that some assessments have a common level of difficulty, leading to clusters of
+                             similar scores.
+Electronics 2024, 13, 4157                                                                                        5 of 24
+
+
+
+
+                             Figure 2. Distribution of assessment scores.
+
+                                  Following the analysis of student assessment scores, attention is put to the types and
+                             frequency of assessments conducted across different modules, as illustrated in Figure 3.
+
+
+
+
+                             Figure 3. Type and number of assessments per module.
+
+                                  This analysis shows the composition of assessment types for each module, such as
+                             Exam, Tutor-Marked Assessments (TMAs) and Computer-Marked Assessments (CMAs).
+                             This chart shows a varied reliance on assessment types across the modules indicating the
+                             different learning outcomes that each module aims to measure. For instance, modules with
+                             a higher count of CMAs may focus on objective, knowledge-based evaluations, while those
+                             with more TMAs might emphasis subjective, skill-based assessments.
+Electronics 2024, 13, 4157                                                                                           6 of 24
+
+
+
+                                  Figure 4 shows the outcome of students’ assessment in terms of percentage among
+                             four categories, including ‘Pass’, ‘Fail’, ‘Withdrawn’, and ‘Distinction’. The percentage-
+                             based approach of this chart allows for an equitable comparison regardless of the size of
+                             the student cohort in each module. For example, the module CCC shows a substantial
+                             percentage of ‘Distinction’ results. However, it also shows a significant percentage of ‘Fail’
+                             results, indicating a polarized outcome where students either performed exceptionally
+                             good or very bad. The module GGG has the lowest ‘Fail’ results, suggesting not only
+                             high performance but also that the assessments may be well-aligned with the students’
+                             capabilities or interests. In contrast, modules AAA, BBB, and FFF show an acceptable
+                             percentage of students in each category, which indicates an intermediate difficulty in
+                             content and educational methodologies.
+
+
+
+
+                             Figure 4. Percentage of final results by module.
+
+                                  Furthermore, the ‘Withdrawn’ category is significant as it may point to external factors
+                             affecting student retention, such as the perceived difficulty of the course material, the
+                             level of student engagement required, or even personal circumstances impacting student
+                             persistence.
+                                  Building on the earlier analysis, Figure 5 illustrates the relationship between assess-
+                             ment types and student outcomes. A balanced distribution can be observed in both the
+                             CMA and TMA while there is a notable proportion of ‘Withdrawn’ in TMA. This result
+                             may indicate the demanding nature of such assessments.
+
+
+
+
+                             Figure 5. Percentage of final results by assessment type.
+Electronics 2024, 13, 4157                                                                                             7 of 24
+
+
+
+                                  Age, gender, highest education, and IMD band are significant attributes of the dataset.
+                             The percentage performance of students for each of these attributes is illustrated in Figure 6.
+                             Interestingly, students aged between 35 and 55 exhibit a more favorable performance, with
+                             fewer withdrawals and a higher count of ‘pass’ and ‘distinction’ outcomes, compared to
+                             the 0–35 age band.
+
+
+
+
+                             Figure 6. Performance of students measured against different attributes: highest education, IMD
+                             band, age and gender.
+
+                                  In terms of gender, there is minimal variation in performance between males and
+                             females, with males having a slightly higher representation. The highest educational attain-
+                             ment reveals a majority holding A-level qualifications or equivalent. A discernible trend
+                             emerges where postgraduate students showcase exemplary performance, characterized by
+                             minimal withdrawals and a greater number of ‘distinction’ results. In contrast, individu-
+                             als with no formal qualifications, although few, tend to exhibit worse performance, with
+                             increased withdrawals and fails.
+                                  The IMD band suggests a clear gradient in academic performance in relation to
+                             economic deprivation; students from less deprived areas tend to fare better academically,
+                             underlining the potential impact of socioeconomic factors on educational outcomes.
+                                  The relationship between student engagement, as measured by clicks within the
+                             virtual learning environment, and academic performance is illustrated in Figure 7. The
+                             chart shows average scores against binned click ranges. Amongst the observed patterns, a
+                             salient trend is the initial increase in average scores with higher click counts, indicative of a
+                             positive relationship between engagement and performance up to a certain threshold.
+Electronics 2024, 13, 4157                                                                                            8 of 24
+
+
+
+
+                             Figure 7. Average score per click bins.
+
+                             4. Data Preprocessing
+                                  This section presents the pre-processing of the dataset. The general steps involve the
+                             following:
+                             •    Merge and Consolidate: combining relevant tables to achieve a unified presentation.
+                             •    Missing Value Handling: filling the missing values with the mode and removing
+                                  duplicates.
+                             •    Feature Engineering: deriving new attributes and encoding categorical variables to
+                                  enrich the dataset for modeling.
+                             •    Data Splitting: splitting the dataset among train, validation, and test sets for model
+                                  training, optimization, and testing.
+                                  In this regard, as mentioned in the Contributions, the pre-processing of the dataset
+                             is segregated in two ways, where one is targeted for student grade classification while
+                             the other is aimed to be used for the prediction of at-risk students. Both pre-processing
+                             strategies are explained in the following subsections.
+
+                             4.1. Data Pre-Processing for Grade Classification
+                                  In this sub-section, the pre-processing of the data is explained in a way that is specifi-
+                             cally tailored for the goal of course grade prediction.
+                                  It is pertinent to mention that, in our study, the Open University Learning Analytics
+                             Dataset [21] served as the primary source of raw data, encompassing student engagement
+                             metrics, registration details, and various course interactions. The data transformations
+                             applied were confined to standard pre-processing techniques, including normalization
+                             and missing value imputation, to ensure data uniformity and handle gaps in the dataset.
+                             These methods are common in machine learning workflows and are vital for improving
+                             model performance without introducing bias. Beyond this pre-processing, no further
+                             arbitrary manipulation or modification of the raw data was performed. This decision
+                             ensures that the findings generated from our models reflect existing patterns within the
+                             original dataset, thus confirming the integrity of the analysis and minimizing the risk of
+                             misleading conclusions.
+                                  The first critical step in pre-processing involved the merging of tables to consolidate
+                             relevant data points into a single dataset. This process involved multiple types of data
+                             such as student information and registration, student demographic information, student
+                             assessment, and VLE interactions. Following this process, 22 features were engineered.
+                                  After the initial data merging and feature engineering, further procedures were ap-
+                             plied to refine the dataset for the grade classification task. These procedures involved
+                             the handling of missing values, the removal of duplicate entries, the identification and
+                             normalization of numerical as well as categorical variables, separating features and target
+                             labels, and data splitting in train, validation, and test sets. After performing these pro-
+                             cedures, the number of features increased to 68, encompassing both original and newly
+Electronics 2024, 13, 4157                                                                                               9 of 24
+
+
+
+                              engineered features. The expanded feature set included both specific identifiers, such
+                              as ‘id_student’, and encoded variables, such as ‘code_module_AAA’. The final features,
+                              including identifiers, numerical, and categorical features, are as follows:
+                                    Identifiers and numerical features: ‘id_student’, ‘num_of_prev_attempts’, ‘studied_credits’,
+                             ‘date_registration’, ‘date_unregistration’, ‘id_assessment’, ‘date_submitted’, ‘is_banked’,
+                             ‘score’, ‘date’, ‘weight’, ‘total_clicks’, ‘module_presentation_length’.
+                                    Encoded categorical features:             course modules (‘code_module_AAA’ to
+                             ‘code_module_GGG’), presentation years (‘code_presentation_2013B’ to ‘code_presentation_2014J’),
+                              demographic information (gender, region, highest education, IMD band, age band,
+                              disability), assessment types, and stratification columns reflecting combinations of age
+                              and gender.
+
+                             4.2. Data Pre-Processing for Early Prediction of At-Risk Students
+                                  In this sub-section, pre-processing of the data was specifically performed for the goal
+                             of early prediction for students who were at-risk of failure. A multi-step process, including
+                             data pre-processing and integration, was designed. The details are as follows:
+                             1.    Initial filtering of assessments and VLE interactions based on predetermined deadlines
+                                   was performed.
+                             2.    Subsequently, student demographic and registration information were merged with
+                                   academic records, capturing a holistic view of each student’s academic journey. To
+                                   maintain the dataset’s relevance, early withdrawn students were filtered out.
+                             3.    VLE interaction data were aggregated at the module presentation level. A quantifiable
+                                   measure of student engagement was obtained by calculating the number of clicks.
+                             4.    The final step involved merging the aggregated VLE data with student assessments
+                                   and course details.
+                                  After the pre-processing steps, a focused and relevant feature set with a balanced mix
+                             of demographic and academic performance indicators was ready.
+
+                             5. Methodology
+                                  For performance evaluation, a range of machine learning techniques were used, in-
+                             cluding ensemble methods, instance-based learning, and deep learning.
+
+                             5.1. Machine Learning Techniques Used for Course Grade Prediction
+                             5.1.1. Random Forest Classifier
+                                  Random forest was proposed by Breiman. It involves constructing multiple decision
+                             trees during training and predicting the class that is the mode of the individual tree
+                             predictions [24]. Equation (1) represents the Gini Index, which is a measure of the impurity
+                             or purity used when constructing decision trees in the context of classification problems.
+                                                                                      n
+                                                              Gini Index = 1 − ∑i=1 ( Pi )2 ,                               (1)
+
+                                  This equation is simplified in a binary classification to
+
+                                                                  = 1 − [( P+ )2 + ( P− )2 ]                                (2)
+
+                                 Here, Pi refers to the proportion of samples that belongs to class i for a particular split,
+                             and P+ and P− are the proportion of the positive and negative classes.
+
+                             5.1.2. Gradient Boosting Classifier
+                                  Gradient Boosting works by sequentially adding predictors to an ensemble, each one
+                             correcting its predecessor [25]. This method effectively reduces bias and variance, making
+                             it an effective tool for predictive modeling. Equation (3) describes the learning rate in
+Electronics 2024, 13, 4157                                                                                               10 of 24
+
+
+
+                             the context of the Gradient Boosting algorithm, which is a critical component because it
+                             dictates the contribution of each new tree added to the model.
+                                                                     Sum o f residuals
+                                                 γ=                                                                          (3)
+                                                      Sum o f each p(1 − p) f or each sample in the lea f
+
+                             5.1.3. k-Nearest Neighbors (k-NNs)
+                                  k-NN is based on instance-based learning that classifies new instances based on a
+                             similarity measure (e.g., distance functions) [26]. Equation (4) represents Euclidean distance,
+                             which is a common distance metric used with the k-Nearest Neighbor (k-NN) algorithm.
+                                                                             s
+                                                                                  n
+                                                                d( x, y) =       ∑ ( x1 − y i )2                             (4)
+                                                                                 i =1
+
+                             5.1.4. Multi-Layer Perceptron (Neural Network)
+                                  The neural network model was inspired by the biological structure of the central
+                             nervous system [27]. A multi-layer perceptron consists of at least three layers of nodes: an
+                             input layer, a hidden layer, and an output layer. Equation (5) is the representation of a type
+                             of feedforward artificial neural network used in an MLP.
+                                                                                        n
+                                                                   z = w T · x = ∑ wi x i                                    (5)
+                                                                                      i =1
+
+                             5.1.5. First Custom Neural Network Architecture
+                                   A custom neural network was developed with densely connected layers and was
+                             fine-tuned to our dataset. ReLU activation functions in the hidden layers and a sigmoid
+                             function at the output layer was used, while an Adam optimizer and binary cross-entropy
+                             loss function were used to compile the model. For the sake of reference, it is called the first
+                             custom NN model. The summary of the first custom model is shown in Figure 8 (Left).
+
+
+
+
+                             Figure 8. 1st custom model (left); 2nd custom model (center); convolutional neural network (right).
+Electronics 2024, 13, 4157                                                                                         11 of 24
+
+
+
+                             5.2. Machine Learning Techniques Used Prediction of At-Risk Students
+                                  In this sub-section, a few more machine learning as well as deep learning models are
+                             presented, which were developed for predicting students to be at-risk of failure.
+
+                             5.2.1. Second Custom Neural Network Architecture
+                                  A second custom NN model was developed for the prediction of students at risk of
+                             failure. We call it the second custom model. The model was designed to handle the data
+                             in a 1D array format, compiled using the Adam optimizer and sparse categorical cross
+                             entropy, making it suitable for our integer-labeled data. The summary of the second custom
+                             model is shown in Figure 8 (Center).
+
+                             5.2.2. Convolutional Neural Network (CNN)
+                                  The CNN model implemented here uses 1D convolutional layers, which are particu-
+                             larly useful for extracting features from sequences of data [28]. A dropout layer is used to
+                             prevent overfitting and dense layers to interpret the features for binary classification. The
+                             model summary of the CNN is shown in Figure 8 (Right).
+
+                             5.2.3. Long Short-Term Memory (LSTM)
+                                   The LSTM model is designed to process sequential data by taking advantage of its
+                             memory cells that can maintain information in memory for long periods of time [29]. This
+                             model is particularly useful for our time series-like data, allowing the network to remember
+                             past data points and use them to influence the output, effectively capturing temporal
+                             relationships in the data. The model summary of the LSTM is shown in Figure 9.
+
+
+
+
+                             Figure 9. LSTM model summary.
+
+                             5.2.4. XGBoost
+                                  The eXtreme Gradient Boosting (XGBoost) is based on gradient-boosted decision trees
+                             to ensure speed and performance [30]. Equation (6) is a Taylor series expansion, which
+                             approximates a function f ( x ) around point a:
+
+                                                                                            1 ′′
+                                                    f ( x ) ≈ f ( a) + f ′ ( a)( x − a) +     f ( a)( x − a)2          (6)
+                                                                                            2
+Electronics 2024, 13, 4157                                                                                                        12 of 24
+
+
+
+                                  This equation is used in the XGBoost to approximate the loss function, which measures
+                             the difference between the predicted and actual values.
+
+                             5.3. Model Evaluation Metrics
+                                 It is important to ensure that the employed method is performing in a proper way [31].
+                             To measure the efficiency and performance of the model, metrics including confusion
+                             matrix, accuracy, recall, precision, and F1 metrics are used.
+
+                             5.4. Modeling and Hyper-Parameter Tuning
+                                  To enhance the predictive capabilities of the model for course success prediction, a
+                             fine-tuning approach was implemented to the best performing models by adjusting the
+                             number of layers and filters. The maximum number of epochs was limited to 30. The
+                             hyper-parameter tuning applied for custom developed neural network models 1 and 2 are
+                             summarized in Tables 1 and 2, respectively.
+
+                             Table 1. Hyper parameters and corresponding accuracy for first custom model.
+
+                                 Number of       Max Number of             Number of                                     Validation
+                                                                                                Train Accuracy
+                                  Layers             Filters                Epochs                                       Accuracy
+                                      2                   32                    10                    85%                   74%
+                                      2                   32                    20                    87%                   77%
+                                      2                   32                    30                    88%                   76%
+                                      3                   64                    10                    92%                   84%
+                                      3                   64                    20                    95%                   90%
+                                      3                   64                    30                    96%                   89%
+                                      4                  128                    10                    93%                   85%
+                                      4                  128                    20                    96%                   91%
+                                      4                  128                    30                    97%                   93%
+
+
+                             Table 2. Hyper parameters and corresponding accuracy for second custom model.
+
+                                 Number of       Max Number of             Number of                                     Validation
+                                                                                                Train Accuracy
+                                  Layers             Filters                Epochs                                       Accuracy
+                                      2                   32                    10                    81%                   81%
+                                      2                   32                    20                    82%                   81%
+                                      2                   32                    30                    83%                   82%
+                                      3                   64                    10                    84%                   82%
+                                      3                   64                    20                    87%                   83%
+                                      3                   64                    30                    89%                   85%
+                                      4                  128                    10                    89%                   85%
+                                      4                  128                    20                    94%                   88%
+                                      4                  128                    30                    96%                   93%
+
+
+                             5.5. SHAP Method
+                                  SHAP (SHapley Additive exPlanation) is a technique based on Shapley values [5] that
+                             aims to explain the outcomes generated by predictive machine learning models. Its goal is
+                             to provide an explanation for a single prediction by determining the contribution of each
+                             feature to that prediction. Formally, Shapley values are calculated as follows:
+
+                                                                |S|!(| F | − |S| − 1)! h                           i
+                                              ϕi =     ∑                   | F |!
+                                                                                         f S∪{i} xS∪{i} − f S ( xS )                  (7)
+                                                     S ⊆ F {i }
+
+                             where F is the set of all features, f S∪{i} is the model trained with the subset features, and
+                             f S ( xS ) is the model trained without the feature. Essentially, the formula calculates the
+                             difference in predictions by comparing the outcomes of training a model with and without
+                             a specific feature, considering every possible combination of features [32].
+Electronics 2024, 13, 4157                                                                                           13 of 24
+
+
+
+                                  In this study, SHAP is the main method used to understand and explain the developed
+                             machine learning model for predicting failures in a VLE. Implementation is conducted
+                             using the Python module SHAP (v0.44.1), which provides both global and local inter-
+                             pretability. The global level provides insights for all students, while the local level focuses
+                             on specific students, treating them as unique cases, to explain the particular reasons be-
+                             hind an individual’s decision to fail. Consequently, while the importance of different
+                             engagement indicators can be comprehended at the global level, the reasons underlying a
+                             particular student’s decision to fail can be explained at the local level.
+                                  The SHAP method was applied to the models with the highest predictive performance
+                             to interpret the model predictions. This step aimed to accomplish the following:
+                             •      Uncover the contribution of each feature to the prediction outcome, providing insights
+                                    into the models’ decision-making processes.
+                             •      Highlight the factors influencing students’ performance, facilitating a deeper under-
+                                    standing of the underlying patterns and trends.
+                             •      Offer actionable insights for educational stakeholders by identifying key predictors of
+                                    student success and risk factors for failure.
+                                 This interpretative approach not only enhances trust in the predictive models but also
+                             supports educational interventions by illuminating the pathways through which student
+                             engagement and performance can be improved.
+
+                             6. Results
+                                  In this section, the prediction results of the machine learning models are presented.
+                             The first sub-section presents the results for grade classification task The second sub-section
+                             presents the results for at-risk prediction. The third sub-section includes the application
+                             of the SHAP method for the identification of important parameters contributing toward
+                             successful predictions in the first two sub-sections.
+
+                             6.1. Grade Classification Results
+                                  The results of machine learning models for grade classification are presented in
+                             this sub-section. Table 3 presents the overall accuracy of models employed for grade
+                             classification.
+
+                             Table 3. Accuracy of trained models for grade classification.
+
+                                                   Model                                         Accuracy
+                                     First Custom Neural Network Model                              94%
+                                            Random Forest Classifier                                84%
+                                          Gradient Boosting Classifier                              65%
+                                    k-Nearest Neighbors (k-NN) Classifier                           79%
+                                       Multi-layer Perceptron Classifier                            85%
+
+
+                                   Next, each model’s performance was assessed using other metrics such as precision, re-
+                             call, and F1-score where the results of these metrics are included in Tables 4–6, respectively.
+
+                             Table 4. Precision of trained models for grade classification.
+
+                                                First Custom                                     k-Nearest
+                                                                                    Gradient                  Multi-Layer
+                                                   Neural          Random                        Neighbors
+                                 Class\Model                                        Boosting                  Perceptron
+                                                  Network           Forest                        (k-NN)
+                                                                                    Classifier                 Classifier
+                                                   Model                                         Classifier
+                                     Fail           0.89             0.89              0.41         0.62         0.55
+                                  Withdraw          0.85             0.88              0.48         0.62         0.54
+                                     Pass           0.97             0.90              0.79         0.95         0.89
+                                  Distinction       0.99             1.0               1.0          0.88         0.99
+Electronics 2024, 13, 4157                                                                                          14 of 24
+
+
+
+                             Table 5. Recall of trained models for grade classification.
+
+                                                First Custom                                     k-Nearest
+                                                                                    Gradient                  Multi-Layer
+                                                   Neural          Random                        Neighbors
+                              Class\Model                                           Boosting                  Perceptron
+                                                  Network           Forest                        (k-NN)
+                                                                                    Classifier                 Classifier
+                                                   Model                                         Classifier
+                                  Fail              0.95              0.69             0.66         0.93         0.81
+                               Withdraw             0.92              0.66             0.66         0.86         0.81
+                                  Pass              0.93              0.91             0.59         0.72         0.66
+                               Distinction          0.99              0.99             0.99         0.91         0.99
+
+
+                             Table 6. F1 score of trained models for grade classification.
+
+                                                First Custom                                     k-Nearest
+                                                                                    Gradient                  Multi-Layer
+                                                   Neural          Random                        Neighbors
+                              Class\Model                                           Boosting                  Perceptron
+                                                  Network           Forest                        (k-NN)
+                                                                                    Classifier                 Classifier
+                                                   Model                                         Classifier
+                                  Fail              0.92              0.78             0.51         0.74         0.66
+                               Withdraw             0.88              0.75             0.56         0.72         0.65
+                                  Pass              0.95              0.91             0.67         0.82         0.76
+                               Distinction          0.99              0.99             0.99         0.90         0.99
+
+
+                                   The results in Tables 4–6 reveal that the first custom NN model and random forest
+                              showed an overall superior performance over other classifiers in predicting the grades
+                              for all the classes. Considering the F-1 score across all classes, the custom NN model
+                              outperformed the rest of the models. However, for the ‘distinction’ category, the random
+                              forest and gradient boosting classifier showed a similar performance to the NN model.
+                             The confusion matrix for the custom NN model is shown in Figure 10 while confusion
+                              matrices for the rest of the ML models are shown in Figure 11. The confusion matrices
+                              reveal that almost all the machine learning models were confused between ‘withdraw’ and
+                             ‘pass’ classes and ended up making a large number of misclassifications for these classes.
+
+
+
+
+                             Figure 10. Confusion matrix result for (first) custom NN.
+        Electronics 2024, 13, 4157                                                                                                          15 of 24
+
+
+
+
+Electronics 2024, 13, x FOR PEER REVIEW                                                                                          16 of 25
+
+
+
+
+                                             Figure 11. Confusion matrix result of employed ML models.
+                                     Figure 11. Confusion matrix result of employed ML models.
+                                             6.2. Results for Prediction of At-Risk Students
+                                     Table 7. Accuracy of trained models for at-risk classification.
+                                                  To perform the prediction of at-risk students, eight ML models were utilized, including
+                                             both machine learning and   Model
+                                                                             deep learning models. For the prediction of Accuracy
+                                                                                                                               ‘at-risk’, the data
+                                             were categorized    into two
+                                                               Random       categories:
+                                                                        Forest          pass and fail. The pass category is
+                                                                                Classifier                                   86%considered safe
+                                             while the fail category
+                                                             Gradientrepresents   at-risk. Both fail and withdrawn categories
+                                                                       Boosting Classifier                                   81% are combined
+                                             as the fail category for at-risk prediction.
+                                                             k-Nearest Neighbors (k-NN)    The  employed     models were  trained
+                                                                                                                             82% and tested for
+                                             each of Multi-layer
+                                                      the categories, and  the results were
+                                                                  Perceptron (Neural Network)computed     in terms of accuracy,
+                                                                                                                             85%precision, recall,
+                                             and the F1 score. Table 7 presents the accuracy of the trained models on the test data. The
+                                                              Second Custom NN Model                                         93%
+                                             precision, recall, and F-1 score are presented in Tables 8–10, respectively.
+                                                       Convolutional Neural Network (CNN)                                    86%
+                                                          Long Short-Term Memory (LSTM)                                      81%
+                                             Table 7. Accuracy of trained models for at-risk classification.
+                                                                       XGBoost                                               86%
+                                                                  Model                                            Accuracy
+                                     Table 8. Precision ofRandom
+                                                          trained models for at-risk classification.
+                                                                  Forest Classifier                                  86%
+                                                     Gradient Boosting Classifier                                    81%
+                       Random Forest Gradient Boosting                                  Second Cus-
+ Class\Model                                         k-Nearest Neighbors
+                                                                  k-NN (k-NN) MLP                         CNN        82%
+                                                                                                                   LSTM       XGBoost
+                         Classifier            ClassifierPerceptron (Neural Network)
+                                             Multi-layer                                 tom Model                   85%
+      Pass                 0.85                    0.72
+                                                      Second Custom0.7
+                                                                     NN Model 0.74           0.88          0.78     0.63
+                                                                                                                     93%        0.80
+      Fail                 0.86               Convolutional
+                                                   0.83       Neural Network
+                                                                   0.84          (CNN)
+                                                                              0.88           0.95          0.87      86%
+                                                                                                                    0.84        0.87
+                                                 Long Short-Term Memory (LSTM)                                       81%
+                                                              XGBoost                                                86%
+                                 Table 9. Recall of trained models for at-risk classification.
+
+                       Random Forest         Gradient    Boosting
+                                                  It is obvious  that the   second  custom Second
+                                                                                              modelCus-
+                                                                                                     showed  the best performance     with an ac-
+ Class\Model                                                           k-NN       MLP                     CNN      LSTM       XGBoost
+                         Classifier               Classifier                                tom  Model is to achieve higher efficiency toward
+                                             curacy of 93%. Since the purpose of at-risk prediction
+      Pass                 0.47                       0.35the ‘fail’ class,
+                                             predicting                 0.43in this0.57
+                                                                                    context, it0.82        0.56 that
+                                                                                                 can be observed     0.44
+                                                                                                                        all the 0.53
+                                                                                                                               models showed
+      Fail                 0.97                       0.96performance0.94
+                                             a superior                   for the 0.94          0.97
+                                                                                   ‘fail’ class in         0.95to the0.92
+                                                                                                   comparison                    0.96 Almost all
+                                                                                                                       ‘pass’ class.
+
+                                     Table 10. F1 score of trained models for at-risk classification.
+
+                       Random Forest          Gradient Boosting                            Second Cus-
+ Class\Model                                                           k-NN       MLP                     CNN      LSTM       XGBoost
+                         Classifier               Classifier                                tom Model
+      Pass                 0.61                     0.47                0.54       0.65        0.85        0.65      0.52       0.64
+Electronics 2024, 13, 4157                                                                                                  16 of 24
+
+
+
+                                  models achieved an F1 score around or higher than 0.9. Considering the at-risk prediction
+                                  performance of the models, precision is the true representation. It can be observed that
+                                  only the custom NN model achieved a 90% score for precision and outperformed other
+                                  models with a large margin.
+
+                                  Table 8. Precision of trained models for at-risk classification.
+
+                    Random       Gradient                                       Second
+ Class\Model         Forest      Boosting         k-NN            MLP           Custom            CNN       LSTM      XGBoost
+                    Classifier   Classifier                                     Model
+      Pass              0.85       0.72            0.7             0.74           0.88               0.78   0.63          0.80
+      Fail              0.86       0.83            0.84            0.88           0.95               0.87   0.84          0.87
+
+
+                                  Table 9. Recall of trained models for at-risk classification.
+
+                    Random       Gradient                                       Second
+ Class\Model         Forest      Boosting         k-NN            MLP           Custom            CNN       LSTM      XGBoost
+                    Classifier   Classifier                                     Model
+      Pass              0.47       0.35            0.43            0.57           0.82               0.56   0.44          0.53
+      Fail              0.97       0.96            0.94            0.94           0.97               0.95   0.92          0.96
+
+
+                                  Table 10. F1 score of trained models for at-risk classification.
+
+                    Random       Gradient                                       Second
+ Class\Model         Forest      Boosting         k-NN            MLP           Custom            CNN       LSTM      XGBoost
+                    Classifier   Classifier                                     Model
+      Pass              0.61       0.47            0.54            0.65           0.85               0.65   0.52          0.64
+      Fail              0.91       0.89            0.89            0.91           0.96               0.91   0.88          0.91
+
+
+                                      The confusion matrices for the second custom NN model and the LSTM model are
+                                  shown in Figure 12.
+
+
+
+
+                                  Figure 12. Confusion matrix result of second custom NN model (left) and LSTM (right).
+
+                                       The confusion matrices for the rest of the models are shown in Figure 13.
+Electronics 2024, 13, 4157                                                                      17 of 24
+
+
+
+
+                             Figure 13. Confusion matrix result of employed ML and DL models.
+Electronics 2024, 13, 4157                                                                                               18 of 24
+
+
+
+                             6.3. SHAP Method Application
+                                  Explainable AI is employed utilizing SHapley Additive exPlanations (SHAP) to inter-
+                             pret the predictive model’s output. The application and results of the SHAP method are
+                             discussed in the following sections individually for grade classification as well as at-risk
+                             classification.
+
+                             6.3.1. Grade Classification
+                                   For grade classification, the SHAP summary plot provides a meaningful visualization
+                             of the feature importance that is determined by the model, as shown in Figure 14. The
+                             illustration reveals that ‘Total Clicks’ in the virtual learning environment (VLE) was the
+                             most influential feature, with higher interaction levels strongly associated with increased
+                             probabilities of classifying a student as likely to succeed. Conversely, ‘date unregistra-
+                             tion’ was a significant negative predictor, where an unregistration event could suggest a
+                             decreased likelihood of course completion, thereby predicting failure.
+
+
+
+
+                             Figure 14. SHAP summary plot for grade classification [Class 2: Distinction; Class 1: Fail; Class 0:
+                             Pass; Class 3: Withdrawn].
+
+                                   The number of previous attempts was particularly impactful for one of the classes,
+                             indicating that students who repeatedly attempt courses may be more easily classified into
+                             this specific category.
+                                   Module-specific features (‘Code_Module_FFF’, ‘Code_Module_BBB’, ‘Code_Module_DDD’)
+                             and temporal features (‘Code_Presentation_2013J’, ‘Code_Presentation_2014J’) suggest that cer-
+                             tain modules and the years in which they were taken could influence student outcomes,
+                             reflecting, perhaps, the varying difficulty of modules or the different dynamics of student
+                             cohorts over time.
+Electronics 2024, 13, 4157                                                                                         19 of 24
+
+
+
+                                  Demographic features, including ‘Region_London Region’ and socio-economic in-
+                             dicators like ‘IMD_Band_20–30%’ and ‘IMD_Band_30–40%’, also surfaced as important
+                             factors. The level of education prior to the course, such as ‘Highest_Education_A Level or
+                             Equivalent’ and ‘Highest_Education_Lower than A Level’, was indicative of the model’s
+                             consideration of a student’s background in its predictions.
+
+                             Feature Importance
+                                   Figure 15 illustrates the permutation feature importance derived from the grade classi-
+                             fication model ranking the influence of various features on the model’s output. The “Total
+                             Clicks” feature has the highest importance score, suggesting that the student engaging with
+                             the material receives the highest scores. Following in significance is the ‘id_assessment’
+                             feature; each assignment has a different average score, which is why assignment ID is
+                             important. And when a student enrolls in courses with assignments that people normally
+                             do not receive good scores on, it increases the student’s chances to fail.
+
+
+
+
+                             Figure 15. Permutation feature importance.
+Electronics 2024, 13, 4157                                                                                        20 of 24
+
+
+
+                                  The waterfall chart shown in Figure 16 provides representations of SHAP values for
+                             an instance within the dataset, illustrating the contribution of each feature to the model’s
+                             prediction. As shown, the ‘id_assessment’ feature significantly decreases the model’s
+                             output, while ‘total_clicks’ also decreases it but to a lesser extent.
+
+
+
+
+                             Figure 16. SHAP values for the first instance.
+
+                                  The waterfall chart shown in Figure 17 provides representations of SHAP values for a
+                             second instance. Different sets of features influence the model’s prediction: ‘total_clicks’
+                             greatly decreases the prediction value, whereas ‘code_module_FFF’, ‘region_East Midlands
+                             Region’, and ‘imd_band_90–100%’ have minor negative contributions.
+
+
+
+
+                             Figure 17. SHAP values for the second instance.
+Electronics 2024, 13, 4157                                                                                             21 of 24
+
+
+
+                             6.3.2. Prediction of At-Risk Category
+                                  Employing the SHAP method for at-risk prediction results, the ‘Total Clicks’ feature
+                             once again stands out as having a significant positive impact on the model’s output,
+                             indicating that student engagement with the online learning platform is a strong predictor
+                             of academic success, as shown in Figure 18. The feature ‘date_registration’ also appears to
+                             be important, suggesting that the date when students register can influence their success,
+                             potentially capturing early commitment to their studies.
+
+
+
+
+                             Figure 18. SHAP summary plot for at-risk classification [Class 1: Pass, Class 0: Fail].
+
+                                  Regional features such as ‘Region_Scotland’ and ‘Region_South West Region’ show
+                             varying impacts on the model’s output for different classes, which could reflect regional
+                             differences in educational outcomes or support services available to students.
+                                  The ‘ID Assessment’ and ‘Score’ features are, as expected, strong predictors, directly
+                             tied to student performance on assessments. Socio-economic factors, represented by
+                             ‘IMD_Band_50–60%’ and ‘IMD_Band_40–50%’, also play a role, particularly in predicting
+Electronics 2024, 13, 4157                                                                                          22 of 24
+
+
+
+                             Class 0, which may correlate with more challenging socio-economic circumstances affecting
+                             student performance.
+                                  Academic workload, captured by ‘Studied_Credits’, and course characteristics, such
+                             as ‘Code_Presentation_2014B’, ‘Module_Presentation_Length’, and ‘Code_Module_EEE’,
+                             are informative features that the model uses to discern patterns in student success.
+                                  Finally, the level of education prior to the course, ‘Highest_Education_Lower than A
+                             Level’ influences the model’s predictions, potentially reflecting the impact of a student’s
+                             educational background on their ability to succeed in higher education.
+
+                             7. Discussions
+                                   The aim of this study is to unveil the factors affecting students’ performance within
+                             an online learning environment. Initially, the data exploration section provides useful
+                             insights of the data and explains the relation between the virtual learning environment
+                             and the student specifics. Several indicators, including demographic data, prior education,
+                             financial limitations, were identified as key factors linked with the student outcome.
+                                   The dataset details and pre-processing steps show the complexities and noise within
+                             the data. The pre-processing is extremely important to refine the data and to improve the
+                             class representation. Separate pre-processing is performed for the grade classification task
+                             and for the at-risk prediction task. Task-specific data consolidation is performed, which
+                             ensures the enhanced performance of machine learning algorithms in the next stages.
+                                   A number of machine learning classifiers were employed for the classification of grades
+                             for students. A custom shallow architecture of a multi-layer perceptron outperformed the
+                             rest of the algorithms, achieving 94% accuracy. For the at-risk prediction of student, again,
+                             the custom developed neural network model the achieved highest accuracy of 94%. Hence,
+                             a customized neural network model proved to be the best choice among others, even in
+                             comparison with deep learning models such as the CNN and LSTM. Considering the recall
+                             and F1 score, other models such as random forest showed a similar performance to the
+                             custom ANN model; however, the ANN outperformed when it was about precision. The
+                             differential performance across models underscores the importance of model selection for
+                             specific datasets at hand.
+                                   The SHAP method identified key factors significantly influencing student performance,
+                             specifically total clicks in the virtual learning environment and timely registration emerged
+                             as critical indicators related to students’ performance. The monitoring of these indicators
+                             and timely intervention will significantly enhance the success probability for students
+                             in an online learning environment. These findings suggest that educational institutions
+                             can greatly benefit from devising strategies aimed at increasing student engagement and
+                             providing additional support for those registering closer to course commencement.
+                                   While the primary dataset used in this study is from a pre-pandemic period, it is impor-
+                             tant to acknowledge the broader context of how the COVID-19 pandemic may have altered
+                             students’ habits, motivations, and learning behaviors. Several studies highlighted the
+                             shifts in student engagement and learning modalities as a result of the pandemic [23,33,34],
+                             indicating that students may now engage differently with online learning platforms com-
+                             pared to the pre-pandemic period. As this study uses pre-pandemic data, any conclusions
+                             drawn may not fully capture these post-pandemic changes. Therefore, future research
+                             could investigate whether the identified key factors remain as critical in post-pandemic
+                             learning environments.
+                                   Looking ahead, there exists a rich landscape for future research to further refine and
+                             enhance the predictive capabilities of models in educational settings. Longitudinal studies
+                             could provide deeper insights into the persistence of identified predictive factors over
+                             time, while the integration of qualitative data could enrich the understanding of student
+                             experiences and motivations.
+Electronics 2024, 13, 4157                                                                                                      23 of 24
+
+
+
+                                  8. Conclusions
+                                        This study illuminated the potential of predictive analytics within online learning
+                                  environments targeted for enhancing student success. By testing a variety of predictive
+                                  models, key factors that influence academic success were identified. This study provides
+                                  valuable insights into the parameters identified as the most relevant for predicting student
+                                  performance, highlighting their implications for educational practices and interventions.
+                                  These results can be utilized to inform targeted intervention strategies and enhance curricu-
+                                  lar design by providing educators with data-driven insights into the factors most influential
+                                  on student success, enabling more personalized and effective support for at-risk students
+                                  of failure.
+                                        These findings underscore the importance of personalized interventions and targeted
+                                  support strategies to foster student engagement and address potential challenges early
+                                  on, ultimately aiming to prevent failure. The findings of this study also have practical
+                                  implications for policymakers who can use these insights to guide decisions regarding
+                                  resource allocation in online learning platforms, particularly by prioritizing initiatives that
+                                  increase student engagement and timely course registration.
+                                        This research offers valuable insights into predicting student performance and iden-
+                                  tifying at-risk students. However, it is worth noting that the habits and motivations of
+                                  students may have shifted due to the pandemic, which could alter the conclusions drawn
+                                  from this study. Future work should consider how post-pandemic changes in student
+                                  behavior might impact the effectiveness of AI-driven interventions.
+
+                                  Author Contributions: B.U., D.M. and N.H. were involved in the full process of producing this paper,
+                                  including the conceptualization, methodology, modeling, validation, visualization, and preparation
+                                  of the manuscript. All authors have read and agreed to the published version of the manuscript.
+                                  Funding: This study was financed by the European Union—NextGenerationEU, through the National
+                                  Recovery and Resilience Plan of the Republic of Bulgaria, project № BG-RRP-2.004-0005.
+                                  Institutional Review Board Statement: The study was exempted by the Institute Board of the Faculty
+                                  of Mechanical and Computer Engineering. All subjects gave their informed consent for inclusion
+                                  before participating in the study. No study ethics approval is required for this type.
+                                  Informed Consent Statement: Informed consent was obtained from all subjects involved in the
+                                  study.
+                                  Data Availability Statement: The data used in this research are available at https://analyse.kmi.
+                                  open.ac.uk/open_dataset (accessed on 12 May 2024).
+                                  Conflicts of Interest: The authors declare no conflicts of interest.
+
+References
+1.    Tseng, S.F.; Tsao, Y.W.; Yu, L.C.; Chan, C.L.; Lai, K.R. Who will pass? Analyzing learner behaviors in MOOCs. Res. Pract. Technol.
+      Enhanc. Learn. 2016, 11, 8. [CrossRef] [PubMed]
+2.    Gardner, J.; Brooks, C. Student success prediction in MOOCs. User Model. User-Adapt. Interact. 2018, 28, 127–203. [CrossRef]
+3.    Khosravi, H.; Shum, S.B.; Chen, G.; Conati, C.; Tsai, Y.S.; Kay, J.; Knight, S.; Martinez-Maldonado, R.; Sadiq, S.; Gašević, D.
+      Explainable artificial intelligence. Artif. Intell. Comput. Educ. 2022, 3, 100074. [CrossRef]
+4.    Shabaninejad, S.; Khosravi, H.; Abdi, S.; Indulska, M.; Sadiq, S. Incorporating explainable learning analytics to assist educators
+      with identifying students in need of attention. In Proceedings of the Ninth ACM Conference on Learning@Scale, Roosevelt Island,
+      NY, USA, 1–3 June 2022; pp. 384–388.
+5.    De Laet, T.; Mothilal, R.K.; Broos, T.; Pinxten, M. Predicting First-year engineering student success: From traditional statistics
+      to machine learning. In Proceedings of the 46th SEFI Annual Conference 2018, Copenhagen, Denmark, 17–21 September 2018;
+      Volume 46, pp. 322–329.
+6.    Tinto, V. Dropout from Higher Education: A Theoretical Synthesis of Recent Research. Rev. Educ. Res. 1975, 45, 89–125. [CrossRef]
+7.    Dagar, Y.A. Constructivism: A Paradigm for Teaching and Learning. Arts Soc. Sci. J. 2016, 7, 1–4. [CrossRef]
+8.    Hassija, V.; Chamola, V.; Mahapatra, A.; Singal, A.; Goel, D.; Huang, K.; Scardapane, S.; Spinelli, I.; Mahmud, M.; Hussain, A.
+      Interpreting black-box models: A review on explainable artificial intelligence. Cogn. Comput. 2024, 16, 45–74. [CrossRef]
+9.    Atakishiyev, S.; Salameh, M.; Yao, H.; Goebel, R. Explainable artificial intelligence for autonomous driving: A comprehensive
+      overview and field guide for future research directions. IEEE Access 2024, 12, 101603–101625. [CrossRef]
+Electronics 2024, 13, 4157                                                                                                      24 of 24
+
+
+
+10.   Bekler, M.; Yilmaz, M.; Ilgın, H.E. Assessing Feature Importance in Eye-Tracking Data within Virtual Reality Using Explainable
+      Artificial Intelligence Techniques. Appl. Sci. 2024, 14, 6042. [CrossRef]
+11.   Romano, D.; Novielli, P.; Diacono, D.; Cilli, R.; Pantaleo, E.; Amoroso, N.; Tangaro, S. Insights from Explainable Artificial
+      Intelligence of Pollution and Socioeconomic Influences for Respiratory Cancer Mortality in Italy. J. Pers. Med. 2024, 14, 430.
+      [CrossRef]
+12.   Yagin, F.H.; Colak, C.; Algarni, A.; Gormez, Y.; Guldogan, E.; Ardigò, L.P. Hybrid Explainable Artificial Intelligence Models for
+      Targeted Metabolomics Analysis of Diabetic Retinopathy. Diagnostics 2024, 14, 1364. [CrossRef]
+13.   Carvalho, D.D.; Goethel, M.F.; Silva, A.J.; Vilas-Boas, J.P.; Pyne, D.B.; Fernandes, R.J. Swimming Performance Interpreted through
+      Explainable Artificial Intelligence (XAI)—Practical Tests and Training Variables Modelling. Appl. Sci. 2024, 14, 5218. [CrossRef]
+14.   Hussain, S.; Khan, M.Q. Student-performulator: Predicting students’ academic performance at secondary and Intermediate level
+      using machine learning. Ann. Data Sci. 2023, 10, 637–655. [CrossRef] [PubMed]
+15.   Pallathadka, H.; Wenda, A.; Ramirez-Asís, E.; Asís-López, M.; Flores-Albornoz, J.; Phasinam, K. Classification and prediction of
+      student performance data using various machine learning algorithms. Mater. Today Proc. 2023, 80, 3782–3785. [CrossRef]
+16.   Chen, Y.; Zhai, L. A comparative study on student performance prediction using machine learning. Educ. Inf. Technol. 2023, 28,
+      12039–12057. [CrossRef]
+17.   Hooda, M.; Rana, C.; Dahiya, O.; Shet, J.P.; Singh, B.K. Integrating LA and EDM for improving students Success in higher
+      Education using FCN algorithm. Math. Probl. Eng. 2022, 2022, 7690103. [CrossRef]
+18.   Shapley, L.S. 17. A Value for n-Person Games. In Contributions to the Theory of Games (AM-28); Kuhn, H.W., Tucker, A.W., Eds.;
+      Princeton University Press: Princeton, NJ, USA, 1953; Volume II, pp. 307–318. [CrossRef]
+19.   Schunk, D.H. Social cognitive theory. In APA Educational Psychology Handbook, Vol 1: Theories, Constructs, and Critical Issues;
+      American Psychological Association: Washington, DC, USA, 2012; Volume 1, pp. 101–123.
+20.   Adams, N.E. Bloom’s Taxonomy of Cognitive Learning Objectives. J. Med. Libr. Assoc. JMLA 2015, 103, 152–153. [CrossRef]
+      [PubMed]
+21.   Kuzilek, J.; Hlosta, M.; Zdrahal, Z. Open University Learning Analytics dataset. Sci. Data 2017, 4, 170171. [CrossRef]
+22.   Butucha, K.G. Emerging Trends in Student Engagement in the 21St Century Contemporary World. Baraton Interdiscip. Res. J. 2016,
+      6, 39–43.
+23.   Tartavulea, C.V.; Albu, C.N.; Albu, N.; Dieaconescu, R.I.; Petre, S. Online Teaching Practices and the Effectiveness of the
+      Educa-tional Process in the Wake of the COVID-19 Pandemic. Amfiteatru Econ. 2020, 22, 920.
+24.   Breiman, L. Random forests. Mach. Learn. 2001, 45, 5–32. [CrossRef]
+25.   Friedman, J.H. Greedy function approximation: A gradient boosting machine. Ann. Stat. 2001, 29, 1189–1232. [CrossRef]
+26.   Keller, J.M.; Gray, M.R.; Givens, J.A. A fuzzy k-nearest neighbor algorithm. IEEE Trans. Syst. Man Cybern. 1985, SMC-15, 580–585.
+      [CrossRef]
+27.   Shanmuganathan, S. Artificial Neural Network Modelling: An Introduction; Springer International Publishing: Berlin/Heidelberg,
+      Germany, 2016; pp. 1–14.
+28.   O’Shea, K. An introduction to convolutional neural networks. arXiv 2015, arXiv:1511.08458.
+29.   Hochreiter, S. Long Short-term Memory. In Neural Comput; MIT-Press: Cambridge, UK, 1997.
+30.   Chen, T.; Guestrin, C. Xgboost: A scalable tree boosting system. In Proceedings of the 22nd acm sigkdd international conference
+      on knowledge discovery and data mining, San Francisco, CA, USA, 13–17 August 2016; pp. 785–794.
+31.   Cohen, S. The evolution of machine learning: Past, present, and future. In Artificial Intelligence and Deep Learning in Pathology;
+      Elsevier: Berlin/Heidelberg, Germany, 2021; pp. 1–12.
+32.   Lundberg, S. A unified approach to interpreting model predictions. arXiv 2017, arXiv:1705.07874.
+33.   Lim, K.K.; Lee, C.S. Investigating Learner’s Online Learning Behavioural Changes during the COVID-19 Pandemic. Proc. Assoc.
+      Inf. Sci. Technol. 2021, 58, 777–779. [CrossRef]
+34.   Jereb, E.; Jerebic, J.; Urh, M. Studying Habits in Higher Education Before and After the Outbreak of the COVID-19 Pandemic.
+      Athens J. Educ. 2023, 10, 67–84. [CrossRef]
+
+Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual
+author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to
+people or property resulting from any ideas, methods, instructions or products referred to in the content.
+

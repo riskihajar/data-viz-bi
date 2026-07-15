@@ -14,37 +14,37 @@ Pemeriksaan kualitas data kemudian dilakukan sebelum model dilatih. Missing valu
 
 ## B. Cross-Validation Performance
 
-Tabel I menunjukkan rata-rata hasil 5-fold GroupKFold. Random Forest menghasilkan recall `AtRisk` tertinggi sebesar 0,7126 dan F1-score 0,7536. XGBoost menghasilkan accuracy dan ROC-AUC tertinggi, masing-masing sebesar 0,7582 dan 0,8440. Berdasarkan kriteria pemilihan yang memprioritaskan recall, Random Forest dipilih sebagai model final.
+Tabel I menunjukkan rata-rata hasil 5-fold GroupKFold. Random Forest menghasilkan recall `AtRisk` tertinggi sebesar 0,7107. XGBoost menghasilkan accuracy, F1-score, dan ROC-AUC tertinggi, masing-masing sebesar 0,7584, 0,7522, dan 0,8440. Berdasarkan kriteria pemilihan yang memprioritaskan recall, Random Forest dipilih sebagai model final.
 
 **Table I. Hasil 5-Fold GroupKFold pada Train-Validation**
 
 | Metrik | Logistic Regression | Random Forest | XGBoost |
 |---|---:|---:|---:|
-| Accuracy | 0,7484 ± 0,0033 | 0,7538 ± 0,0033 | **0,7582 ± 0,0041** |
-| Precision AtRisk | 0,8081 ± 0,0063 | 0,7999 ± 0,0148 | **0,8217 ± 0,0093** |
-| Recall AtRisk | 0,6871 ± 0,0038 | **0,7126 ± 0,0040** | 0,6931 ± 0,0033 |
-| F1 AtRisk | 0,7427 ± 0,0043 | **0,7536 ± 0,0050** | 0,7519 ± 0,0028 |
-| ROC-AUC | 0,8324 ± 0,0028 | 0,8362 ± 0,0026 | **0,8440 ± 0,0020** |
+| Accuracy | 0,7496 ± 0,0039 | 0,7524 ± 0,0013 | **0,7584 ± 0,0024** |
+| Precision AtRisk | 0,8090 ± 0,0059 | 0,7989 ± 0,0136 | **0,8215 ± 0,0096** |
+| Recall AtRisk | 0,6889 ± 0,0064 | **0,7107 ± 0,0085** | 0,6938 ± 0,0029 |
+| F1 AtRisk | 0,7442 ± 0,0059 | 0,7521 ± 0,0030 | **0,7522 ± 0,0039** |
+| ROC-AUC | 0,8330 ± 0,0027 | 0,8362 ± 0,0023 | **0,8440 ± 0,0019** |
 
 ## C. Hold-Out Test Performance
 
-Tabel II memperlihatkan performa pada hold-out test. Random Forest mencapai accuracy 0,7592, precision `AtRisk` 0,8032, recall 0,7172, F1-score 0,7578, dan ROC-AUC 0,8396. XGBoost menghasilkan accuracy 0,7633 dan ROC-AUC 0,8440, sedangkan recall `AtRisk` berada pada 0,7054. Logistic Regression menghasilkan recall terendah sebesar 0,6869.
+Tabel II memperlihatkan performa pada hold-out test. Random Forest mencapai accuracy 0,7594, precision `AtRisk` 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. XGBoost menghasilkan accuracy 0,7611 dan ROC-AUC 0,8443, sedangkan recall `AtRisk` berada pada 0,7045. Logistic Regression menghasilkan recall 0,6904.
 
 **Table II. Performa Model pada Hold-Out Test**
 
 | Metrik | Logistic Regression | Random Forest | XGBoost |
 |---|---:|---:|---:|
-| Accuracy | 0,7476 | 0,7592 | **0,7633** |
-| Precision AtRisk | 0,8040 | 0,8032 | **0,8186** |
-| Recall AtRisk | 0,6869 | **0,7172** | 0,7054 |
-| F1 AtRisk | 0,7408 | **0,7578** | **0,7578** |
-| ROC-AUC | 0,8298 | 0,8396 | **0,8440** |
+| Accuracy | 0,7487 | 0,7594 | **0,7611** |
+| Precision AtRisk | 0,8034 | 0,8007 | **0,8154** |
+| Recall AtRisk | 0,6904 | **0,7213** | 0,7045 |
+| F1 AtRisk | 0,7426 | **0,7589** | 0,7559 |
+| ROC-AUC | 0,8311 | 0,8396 | **0,8443** |
 
 Classification report Random Forest menunjukkan precision 0,80, recall 0,72, dan F1-score 0,76 pada 3.398 kasus `AtRisk`. Pada 3.073 kasus `Successful`, precision mencapai 0,72, recall 0,81, dan F1-score 0,76. Weighted average F1-score mencapai 0,76. Perbandingan metrik antar model menempatkan Random Forest sebagai pilihan yang paling relevan untuk konteks early warning karena recall `AtRisk` menjadi ukuran yang paling dekat dengan kebutuhan menemukan mahasiswa berisiko sejak awal.
 
 ![Fig. 3. Perbandingan metrik AtRisk pada hold-out test.](figures/fig-2a-metrics-comparison.png)
 
-Setelah model dipilih, pola kesalahan Random Forest diperiksa untuk memahami risiko operasionalnya. Model tersebut berhasil mengenali 2.437 kasus `AtRisk`, tetapi masih melewatkan 961 kasus yang seharusnya masuk kelompok berisiko. Temuan ini menunjukkan bahwa sistem sudah cukup kuat untuk menyaring sebagian besar mahasiswa berisiko, namun tetap membutuhkan lapisan prioritas dan verifikasi agar kasus yang belum terdeteksi dapat diminimalkan.
+Setelah model dipilih, pola kesalahan Random Forest diperiksa untuk memahami risiko operasionalnya. Model tersebut berhasil mengenali 2.451 kasus `AtRisk` dan melewatkan 947 kasus yang masuk kelompok berisiko. Hasil ini menggambarkan cakupan deteksi model sebelum keluaran prediksi diterjemahkan menjadi prioritas intervensi.
 
 ![Fig. 4. Confusion matrix Random Forest pada hold-out test.](figures/fig-2b-confusion-matrix.png)
 
@@ -56,24 +56,39 @@ Kontribusi fitur Random Forest memperlihatkan bahwa sinyal perilaku awal menjadi
 
 ![Fig. 6. Lima belas fitur dengan feature importance tertinggi pada Random Forest.](figures/fig-3-feature-importance.png)
 
-## D. Knowledge-Based Risk Layer
+## D. Benchmark with OULAD Studies
 
-Threshold kuartil bawah data train-validation adalah skor assessment 0, jumlah assessment 0, total klik VLE 47, dan hari aktif VLE 4. Nilai nol pada indikator assessment menunjukkan bahwa sebagian mahasiswa belum mengumpulkan assessment sampai akhir minggu keempat. Knowledge layer menghasilkan 1.795 `High Risk`, 1.994 `Medium Risk`, dan 2.682 `Low Risk` pada hold-out test.
+Tabel III membandingkan hasil penelitian dengan lima studi yang memakai OULAD. Shou et al. mengevaluasi MTAPSP harian pada 20% durasi course dengan target `Pass` serta `Distinction` terhadap `Fail` serta `Withdrawn` [5]. Jawad et al. menggunakan data sampai 260 hari dan SMOTE [6]. Balabied dan Eid menggunakan split 80:20 pada klasifikasi biner [7]. Ujkani et al. dan Alnasyan et al. menggabungkan `Fail` serta `Withdrawn` sebagai kelompok at-risk [8], [9]. Perbedaan horizon, desain split, balancing, dan arsitektur model menjadi konteks pembacaan angka.
 
-Tabel III membandingkan Random Forest dengan sistem gabungan. Knowledge layer meningkatkan recall dari 0,7172 menjadi 0,7849. Precision berubah dari 0,8032 menjadi 0,7039, sedangkan accuracy berubah dari 0,7592 menjadi 0,7136. Perubahan tersebut menunjukkan perluasan cakupan deteksi disertai peningkatan jumlah alarm yang memerlukan verifikasi stakeholder.
+**Table III. Benchmark Hasil pada Penelitian Berbasis OULAD**
 
-**Table III. Perbandingan Model dan Knowledge-Based Risk Layer**
+| Penelitian | Skenario | Model | Accuracy | Precision | Recall | F1 | ROC-AUC |
+|---|---|---|---:|---:|---:|---:|---:|
+| Shou et al. [5] | 20% durasi course, target biner | MTAPSP (daily) | 0,9179 | - | - | 0,9180 | - |
+| Jawad et al. [6] | 260 hari + SMOTE | Random Forest | 0,8920 | - | - | - | 0,9600 |
+| Balabied dan Eid [7] | Klasifikasi biner | Random Forest | 0,9000 | 0,9000 | 0,9000 | 0,9000 | - |
+| Ujkani et al. [8] | `Fail` + `Withdrawn` sebagai at-risk | Custom Neural Network | 0,9300 | 0,9500 | 0,9700 | 0,9600 | - |
+| Alnasyan et al. [9] | `Pass` + `Distinction` vs `Fail` + `Withdrawn` | KANFormer | 0,9459 | 0,9495 | 0,9482 | 0,9481 | 0,9835 |
+| Penelitian ini | Cut-off hari ke-28, group split | Random Forest | 0,7594 | 0,8007 | 0,7213 | 0,7589 | 0,8396 |
+
+## E. Knowledge-Based Risk Layer
+
+Threshold kuartil bawah data train-validation adalah skor assessment 0, jumlah assessment 0, total klik VLE 47, dan hari aktif VLE 4. Nilai nol pada indikator assessment menunjukkan bahwa sebagian mahasiswa belum mengumpulkan assessment sampai akhir minggu keempat. Knowledge layer menghasilkan 1.816 `High Risk`, 1.979 `Medium Risk`, dan 2.676 `Low Risk` pada hold-out test.
+
+Tabel IV membandingkan Random Forest dengan sistem gabungan. Knowledge layer meningkatkan recall dari 0,7213 menjadi 0,7866. Precision berubah dari 0,8007 menjadi 0,7043, sedangkan accuracy berubah dari 0,7594 menjadi 0,7146. Perubahan tersebut menunjukkan perluasan cakupan deteksi disertai peningkatan jumlah alarm yang memerlukan verifikasi stakeholder.
+
+**Table IV. Perbandingan Model dan Knowledge-Based Risk Layer**
 
 | Metrik | Random Forest | RF + Knowledge Layer |
 |---|---:|---:|
-| Accuracy | **0,7592** | 0,7136 |
-| Precision AtRisk | **0,8032** | 0,7039 |
-| Recall AtRisk | 0,7172 | **0,7849** |
-| F1 AtRisk | **0,7578** | 0,7422 |
+| Accuracy | **0,7594** | 0,7146 |
+| Precision AtRisk | **0,8007** | 0,7043 |
+| Recall AtRisk | 0,7213 | **0,7866** |
+| F1 AtRisk | **0,7589** | 0,7432 |
 
-## E. Business Intelligence Output
+## F. Business Intelligence Output
 
-Dashboard mengidentifikasi 3.789 student-module-presentation dalam antrean `High Risk` atau `Medium Risk`. Sinyal paling dominan adalah skor assessment rendah dengan 2.341 kasus. Module GGG presentation 2014J memiliki proporsi prioritas tertinggi pada hold-out test, yaitu 100% kasus `High Risk` atau `Medium Risk`. Indikator tersebut berfungsi sebagai sinyal untuk peninjauan konteks modul dan kapasitas intervensi.
+Dashboard mengidentifikasi 3.795 student-module-presentation dalam antrean `High Risk` atau `Medium Risk`. Sinyal paling dominan adalah skor assessment rendah dengan 2.341 kasus. Module GGG presentation 2014J memiliki proporsi prioritas tertinggi pada hold-out test, yaitu 100% kasus `High Risk` atau `Medium Risk`. Indikator tersebut berfungsi sebagai sinyal untuk peninjauan konteks modul dan kapasitas intervensi.
 
 Daftar prioritas menyajikan identitas anonim mahasiswa, module-presentation, probabilitas `AtRisk`, level risiko, jumlah sinyal, alasan, dan rekomendasi. Struktur tersebut menghubungkan hasil model dengan tindakan seperti monitoring akses VLE, pendampingan assessment, serta konseling akademik.
 

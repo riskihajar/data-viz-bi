@@ -1,0 +1,998 @@
+Social Network Analysis and Mining (2025) 15:25
+https://doi.org/10.1007/s13278-025-01446-7
+
+    ORIGINAL ARTICLE
+
+
+
+Kanformer: an attention‑enhanced deep learning model for predicting
+student performance in virtual learning environments
+Bayan Alnasyan1,2 · Mohammed Basheri1 · Madini Alassafi1 · Khozama Alnasyan2
+
+Received: 15 November 2024 / Revised: 17 February 2025 / Accepted: 21 February 2025 / Published online: 23 March 2025
+© The Author(s) 2025
+
+
+Abstract
+With the rapid growth of digital education, massive open online courses (MOOCs) have gained widespread popularity. How-
+ever, high failure rates and low completion rates remain challenges, highlighting the need for accurate student performance
+prediction to identify at-risk students and implement timely interventions. Many existing models assume simplistic or linear
+dependencies, failing to capture the complex relationships and cross-dimensional interactions between different student
+features. Therefore, KANFormer model is developed, a novel deep learning (DL) architecture that integrates multi-head self
+attention (MHSA) mechanisms with Kolmogorov–Arnold networks (KAN) to effectively captures complex patterns within
+large-scale student datasets, enabling more accurate predictions of student performance. KANFormer processes student demo-
+graphic, academic, and engagement features from the open university learning analytics dataset (OULAD) while applying a
+feature elimination process to enhance dataset quality, reduce redundancy, and mitigate multicollinearity, ensuring optimal
+predictive performance. The model is evaluated on both binary and multi-class classification tasks, distinguishing successful
+students (“Distinction” & “Pass”) from unsuccessful ones (“Fail” & “Withdrawn”), while also predicting individual per-
+formance categories. Ablation experiments analyze the impact of MHSA and KAN on model performance. Experimental
+results on the OULA dataset, comprising over 29,000 samples, demonstrate that KANFormer outperforms traditional and
+state-of-the-art models, achieving superior accuracy, precision, and F1-score in student performance prediction. To enhance
+interpretability, SHAP (SHapley Additive exPlanations) values are utilized to quantify each feature’s contribution to predic-
+tions. SHAP analysis shows that academic assessments (exam scores, TMAs, CMAs) are the most influential predictors of
+student success, while engagement indicators play a secondary role. Furthermore, the model’s generalization ability is vali-
+dated on additional datasets, including ASSISTments2012, xAPI, and the Mathematics and Portuguese Language Courses
+dataset, proving its scalability and robustness across different educational contexts. By accurately identifying at-risk students,
+KANFormer offers a scalable, interpretable, and highly effective solution for improving student retention and success in
+online education, providing actionable insights for personalized learning interventions.
+
+Keywords Deep learning · Multi-head attention · Kolmogorov–Arnold networks · Student performance · Student outcome ·
+Student success · Prediction
+
+
+
+* Bayan Alnasyan                                                           1 Introduction
+  balnasyan@stu.kau.edu.sa
+     Mohammed Basheri                                                      The rise of online education platforms, particularly Massive
+     mbasheri@kau.edu.sa                                                   Open Online Courses (MOOCs), has significantly expanded
+     Madini Alassafi                                                       access to learning. However, these platforms continue to
+     malasafi@kau.edu.sa                                                   struggle with high dropout rates and low completion rates
+     Khozama Alnasyan                                                      (Annan and Asiedu 2024). A significant proportion of stu-
+     421202240@qu.edu.sa                                                   dents fail or withdraw due to the lack of personalized support
+                                                                           and timely intervention mechanisms, making it imperative
+1
+     Computing and Information Technology Department, King                 to develop accurate student performance prediction models
+     Abdulaziz University, 21589 Jeddah, Saudi Arabia
+                                                                           (Capuano et al. 2021; Yang and Bai 2022). Such models can
+2
+     Depatment of Information Technology, College of Computer,             enable educators and institutions to identify at-risk students
+     Qassim University, 51452 Buraydah, Saudi Arabia
+
+
+                                                                                                                         Vol.:(0123456789)
+25 Page 2 of 21                                                                         Social Network Analysis and Mining (2025) 15:25
+
+
+early and implement targeted interventions aimed at improv-        interaction-driven performance patterns, which vary signifi-
+ing student retention and academic success. While research         cantly across disciplines. For example, STEM courses often
+in educational data mining has explored various machine            emphasize CMA, objective assessments, while humanities
+learning (ML) and deep learning (DL) approaches for stu-           courses rely more on essay-based tutor-marked evaluations,
+dent performance prediction, existing methodologies still          leading to different student success factors across fields.
+present several critical limitations that reduce their practical      Despite advancements in ML and DL approaches, exist-
+applicability.                                                     ing models still face two key challenges: (1) the inability to
+   Traditional ML models, including Linear Regression,             effectively capture and model complex, multi-dimensional
+Logistic Regression, and Support Vector Machines, have             relationships within aggregated student data, and (2) the lack
+been widely used to predict student success based on               of interpretability, which limits their real-world applicability
+engagement metrics, assessments, and demographic features.         in educational decision-making. This lack of transparency
+However, these models typically assume linear relationships        makes it difficult for educators to develop effective interven-
+among features, making them inadequate for capturing the           tion strategies, as they cannot easily identify the key factors
+complex, multi-dimensional dependencies that character-            influencing student outcomes. To address these issues, a
+ize student learning behaviors (Alnasyan et al. 2024). For         more adaptive, interpretable, and high-performance predic-
+example, a student who frequently watches lecture videos           tive model is required.
+while not actively participate in discussions may still suc-          Despite these advancements, existing models fail to
+ceed, whereas another student who frequently engages in            address the unique challenges of student performance pre-
+quizzes while lacks conceptual understanding may struggle          diction in structured datasets. Traditional ML models are
+(Kuhlmann et al. 2024). These models fail to consider the          limited by their inability to model complex, non-linear
+interplay between passive engagement (e.g., watching vid-          interactions, while tree-based models require extensive tun-
+eos) and active engagement (e.g., completing quizzes and           ing and still struggle with high-dimensional feature spaces.
+assignments), which can vary significantly based on the sub-       Meanwhile, DL approaches, particularly Transformers, have
+ject matter and individual learning profiles (Chen and Zhai        demonstrated strong predictive capabilities in sequential
+2023). To address some of these limitations, tree-based mod-       data analysis but remain ineffective in structured student
+els such as Decision Trees and Gradient Boosting Machines          datasets where feature dependencies do not follow a tempo-
+have been adopted. While these models handle non-linearity         ral sequence. Although some hybrid ML-DL models attempt
+more effectively by capturing interactions between features,       to mitigate these issues, they often lack interpretability, mak-
+they still face challenges when modeling deep feature rela-        ing it difficult for educators to understand the key drivers
+tionships and require extensive hyperparameter tuning to           of student success. Furthermore, most existing models fail
+optimize their performance in high-dimensional datasets.           to dynamically capture cross-feature interactions between
+   In recent years, DL models, particularly Transformer-           engagement behaviors, assessments, and demographics,
+based architectures, have demonstrated strong predictive           leading to suboptimal prediction accuracy and limiting their
+capabilities in modeling sequential dependencies within            applicability in real-world educational settings.
+time-series engagement data, such as clickstream logs and             To bridge these gaps, a more adaptive, interpretable, and
+daily student interactions (Capuano et al. 2021; Zhang et al.      high-performance model is required-one that can effectively
+2023). However, the application of these models to struc-          capture non-sequential feature dependencies, model high-
+tured student datasets, where features are aggregated rather       dimensional relationships, and provide clear interpretabil-
+than sequential, remains a challenge. Standard Transformer         ity for educational decision-making. This study introduces
+architectures are designed to capture temporal dependencies,       KANFormer, an attention-enhanced deep learning model
+making them less effective at learning complex cross-feature       that integrates multi-head self-attention (MHSA), Feature-
+relationships within student performance data. Although            wise attention, and Kolmogorov-Arnold networks (KAN)
+some transformer-based models incorporate multi-layer per-         to enhance student performance prediction. Unlike stand-
+ceptrons (MLP) and artificial neural networks (ANNs) into          ard Transformers, which model sequential dependencies in
+their architecture to enhance non-linearity, they still struggle   time-series data, MHSA enables the model to learn rela-
+to dynamically capture interactions between different feature      tionships across different feature groups, regardless of order
+categories, such as engagement levels, assessment perfor-          or temporal positioning. Traditional Transformers process
+mance, and demographic factors. For instance, a student who        input features independently and struggle to model complex
+excels in tutor-marked assessments (TMA) while underper-           cross-feature interactions in structured student data, where
+forms in computer-marked assessments (CMA) may face                engagement, assessments, and demographics do not follow a
+difficulties in objective assessment formats, impacting            strict sequence. MHSA overcomes this limitation by dynam-
+overall course performance. Traditional Transformer mod-           ically assigning importance to student behaviors, capturing
+els process these features independently, failing to capture       engagement-assessment dependencies more effectively.
+Social Network Analysis and Mining (2025) 15:25                                                                Page 3 of 21 25
+
+For instance, a student who performs well in quizzes while       2017). These models demonstrated moderate success in pre-
+struggling in assignments may face different academic chal-      dicting student outcomes using structured features, such as
+lenges than one who excels in coursework but underper-           assessment scores and demographics. However, LR and lin-
+forms in timed exams. Traditional Transformers may treat         ear SVM assume linear relationships between features and
+these attributes separately, whereas MHSA allows KAN-            target outcomes, limiting their ability to capture complex,
+Former to attend to multiple feature relationships simultane-    non-linear dependencies and feature interactions, making
+ously, improving its ability to identify nuanced performance     them inadequate for modeling dynamic student engagement
+patterns.                                                        behaviors (Alnasyan et al. 2024; Aljaloud et al. 2022; Yang
+   The Feature-Wise Attention layer improves interpretabil-      and Bai 2022).
+ity by dynamically reweighting feature contributions, ensur-        In contrast, tree-based models (e.g., Decision Trees, Ran-
+ing that direct academic assessments (e.g., assignments,         dom Forests, Gradient Boosting) and KNN can effectively
+exams) have a greater influence than indirect engagement         model non-linearity by modeling cross-feature dependen-
+metrics (e.g., forum activity), while still recognizing their    cies in aggregated student data. However, these models still
+complementary role. Meanwhile, KAN efficiently captures          face limitations, tree-based models struggle with deep fea-
+high-dimensional, non-linear dependencies, enabling more         ture relationships without extensive ensemble techniques,
+precise and interpretable predictions of student success         whereas KNN’s performance deteriorates in high-dimen-
+without requiring explicitly designed feature interactions.      sional spaces due to the curse of dimensionality. Addition-
+By integrating these mechanisms, KANFormer bridges the           ally, both approaches often require extensive hyperparameter
+gap between traditional ML models, which lack predictive         tuning to optimize performance.
+power, and complex deep learning models, which lack inter-          With advances in DL, models such as deep feedforward
+pretability. This novel approach offers a scalable, interpret-   neural networks (DFFNNs) (Adnan et al. 2021) and convo-
+able, and highly effective solution for improving student        lutional neural networks (CNNs) (Poudyal et al. 2022) have
+retention and success in online learning environments.           demonstrated improved predictive accuracy in predicting
+   This study makes three key contributions:                     student performance. More recent studies have explored long
+                                                                 short-term memory (LSTM) networks and Transformer-
+• Introduces KANFormer, a novel attention-enhanced deep          based architectures to model sequential engagement data,
+  learning model for predicting student performance, han-        effectively capturing learning patterns over time (Liu et al.
+  dling both binary and multi-class outcomes to identify         2022; Yang and Bai 2022; Zhang et al. 2023).
+  at-risk students.                                                 Despite their improved accuracy, several recent studies
+• Evaluates KANFormer on a large-scale dataset                   attempted to address these challenges while still exhibiting
+  (OULAD), demonstrating improvements over state-of-             critical limitations. For example, the DFFNN model (Adnan
+  the-art models in integrating learning behaviors, assess-      et al. 2021) applied random forests (RF) and deep neural
+  ments, and demographics.                                       networks (DNNs) to predict student performance, primarily
+• Provides interpretability analysis using SHAP values,          relying on engagement logs and assessment scores. How-
+  explaining how different student behaviors influence           ever, these models failed to capture complex interactions
+  predictions through multiple performance metrics such          between student behaviors, assessments, and demographic
+  as accuracy, precision, recall, and AUC.                       attributes, which are crucial for understanding student suc-
+                                                                 cess. Similarly, Transformer-based architectures prioritize
+Outline of the paper Section 2 reviews related research.         sequential dependencies, making them effective for time-
+Section 3 describes the dataset used in experiments. Sec-        series engagement data (e.g., clickstream logs). For exam-
+tion 4 details the KANFormer model. Section 5 presents           ple, Shou et al. (2024) applied LSTMs to engagement logs,
+experimental results, while Sect. 6 introduces SHAP-based        achieving strong early predictions while struggling with gen-
+explainability. Finally, Sect. 7 concludes the paper and sug-    eralizability across student profiles. Kusumawardani et al.
+gests future research directions.                                (2023) focused on daily log activities, excluding assessment
+                                                                 and demographic data, reducing predictive performance.
+                                                                    While these models improved upon traditional
+2 Related works                                                 approaches, they remained constrained by limited feature
+                                                                 sets, weak cross-feature modeling, and a lack of interpret-
+Early research on student performance prediction mainly          ability. Although Transformer-based models have demon-
+relied on traditional ML models, including decision trees        strated strong performance in sequential learning tasks,
+(DT) (Wang et al. 2022), K-nearest neighbors (KNN)               they are less suited for structured student datasets, where
+(Maghari 2018), logistic regression (LR) (Zhang et al.           features are aggregated rather than strictly sequential.
+2017), and support vector machines (SVM) (Al-Shehri et al.       These models often lack explicit mechanisms to model
+25 Page 4 of 21                                                                                 Social Network Analysis and Mining (2025) 15:25
+
+cross-feature interactions within multi-modal student data,               Finally, KAN enhances predictive accuracy by learning
+limiting their ability to generalize effectively across dif-           complex dependencies without requiring manually defined
+ferent student profiles and learning environments (Yang                feature interactions. This results in a robust model that gen-
+and Bai 2022). Without specialized adaptations such as                 eralizes well across differnt datasets, making KANFormer
+Feature-Wise Attention, these models struggle to effec-                a scalable and effective solution for long-term student per-
+tively learn discipline-specific success factors. Addition-            formance assessment and retention analysis (Table 1). In
+ally, DL models frequently function as black-box systems,              summary, KANFormer bridges the gap between prediction
+limiting interpretability and restricting educators from               accuracy and explainability, providing educators with a
+deriving meaningful insights to support personalized inter-            powerful tool for early intervention and improved student
+ventions. Without explainability enhancements, such as                 outcomes in online learning environments.
+SHapley Additive exPlanations (SHAP), understanding the
+contribution of engagement metrics, assessment patterns,
+and demographic factors to student performance remains                 3 Dataset
+challenging, reducing the practical applicability of these
+models in real-world educational settings.                             The open university learning analytics dataset (OULAD) is a
+   While existing ML and DL models have shown promise                  widely used open-access dataset in educational data mining,
+in student performance prediction, they often struggle with            containing student demographic data, academic performance
+capturing complex, multi-dimensional feature interactions              records, and engagement metrics (Kuzilek et al. 2017). It
+and providing interpretability, limiting their practical use           includes 32,593 students across 22 courses from 2013 and
+in education. To address these challenges, this study intro-           2014, covering STEM and social science disciplines. Struc-
+duces KANFormer, a deep learning model that integrates                 tured into seven relational tables, it enables comprehensive
+multi-head self-attention (MHSA), feature-wise attention,              analysis of student interactions within virtual learning envi-
+and Kolmogorov–Arnold networks (KAN). KANFormer                        ronments (VLEs).
+improves upon previous approaches by dynamically mod-                     The dataset is categorized into four key feature groups:
+eling engagement-assessment dependencies, prioritizing
+key predictors, and efficiently capturing high-dimensional             • Demographic features, includes education level, prior
+relationships.                                                             attempts, and studied credits.
+   Unlike traditional ML and DL models that assume sim-                • Course information, captures module length and presen-
+plistic or sequential dependencies, KANFormer leverages                    tation schedules.
+MHSA to identify hidden patterns, such as how different                • Student activity features, tracks engagement with 20 VLE
+combinations of quiz scores, discussion participation, and               activity types (e.g., forums, quizzes, and course materi-
+assignments influence student success. Additionally, fea-                als).
+ture-wise attention enhances interpretability by ensuring              • Academic characteristics, includes final exam scores,
+that direct academic assessments play a more prominent                   computer-marked (CMA) and tutor-marked assessments
+role in predictions than indirect engagement metrics, mak-               (TMA), and assessment interactions.
+ing it easier for educators to identify at-risk students and
+key success drivers.                                                   The dataset’s key features, descriptions, and data types
+                                                                       are summarized in Table 2, which categorizes essential
+
+Table 1  Comparison of existing models with KANFormer
+Author (Year)             Feature integration           Handling non-linear data     Interpretability              Early prediction accuracy
+
+Adnan et al. (2021)       Uses fixed feature sets     Limited feature interaction    Lacks explainability (uses    Improves prediction as
+                           (clickstreams, assessment   modeling                       Random Forest)                course progresses
+                           scores)
+Kusumawardani et al.      Only uses log activities,   No explicit feature interac-   No interpretability for       Predicts daily but lacks
+ (2023)                    ignoring assessments/       tion modeling                  feature interactions          accuracy for final results
+                           demographics
+Shou et al. (2024)        Uses LSTMs but limited      Captures some relation-        Uses attention but doesn’t    Strong in early-stage pre-
+                           cross-feature interactions  ships but lacks generaliz-     explain feature interac-       diction but may overfit
+                                                       ability                        tions
+KANFormer (Ours)          Uses MHSA + KAN to          KAN models complex             Feature-Wise Attention        Combines early and final-
+                           learn cross-dimensional     feature dependencies           enhances interpretability     stage prediction using
+                           dependencies                dynamically                                                  multi-level attention
+Social Network Analysis and Mining (2025) 15:25                                                                                  Page 5 of 21 25
+
+Table 2  Key features of the dataset
+Feature category           Description                                                                                                 Data type
+
+Demographic features      Includes highest education level, prior attempts, studied credits, and final outcomes, capturing essential   Categorical
+                            student attributes
+Course information        Covers module length and presentation times (e.g., February “B” and October “J”), which influence            Categorical
+                            course structure and deadlines
+Student activity features Tracks engagement with the virtual learning environment (VLE), including forums, quizzes, and course         Numerical
+                            materials
+Academic characteristics Includes final exam scores, computer-marked (CMA) and tutor-marked assessments (TMA), along with              Numerical
+                            interactions between assessment types
+
+
+
+elements used in the analysis. The demographic, aca-                       4 Methodology
+demic, and engagement features were selected based on
+their relevance for predicting student performance.                        This section outlines the dataset preprocessing and KAN-
+                                                                           Former model architecture (Fig. 1).
+   Student performance is classified into Distinction (D),
+Pass (P), Fail (F), and Withdraw (W), supporting both                      4.1 Data preprocessing
+binary and multi-class classification tasks. The dataset
+shows 53% of students were unsuccessful (22% failed,                       Data preprocessing involved data cleaning, merging, feature
+31% withdrew), highlighting the need for targeted inter-                   engineering, encoding, and grouping to prepare the dataset
+ventions to improve retention and success rates.                           for training.
+
+                                                                           • Cleaning & merging Erroneous samples with inconsist-
+                                                                               ent date fields were removed, and missing values were
+
+
+
+
+Fig. 1  The proposed attention-enhanced deep learning model (KANFormer) framework
+25 Page 6 of 21                                                                          Social Network Analysis and Mining (2025) 15:25
+
+  imputed using mean imputation for numerical or mode             enhance the robustness and interpretability of the dataset,
+  imputation for categorical. Multiple CSV files (assess-         allowing for more reliable and meaningful student perfor-
+  ments, student interactions, and demographic data) were         mance predictions.
+  merged to provide a comprehensive student performance
+  view.
+• Feature engineering Several new features were created
+  to enhance predictive power:                                    5 Model structure
+
+    • Engagement ratio measures total activity interactions       The proposed attention-enhanced deep learning model
+       relative to overall clicks.                                (KANFormer) enhances student performance prediction by
+    • Completion rate tracks student progress by compar-          capturing feature interactions across engagement, assess-
+       ing active days to course length.                          ment, and demographic factors. Unlike traditional models
+    • Interaction metrics captures relationships between          that process features independently, KANFormer integrates
+       TMA and CMA scores.                                        multi-head self-attention (MHSA), a feature-wise attention
+    • Peer comparison metrics calculates average TMA,             layer (FWAL), and Kolmogorov–Arnold networks (KAN)
+       CMA, and Exam scores within each cohort for com-           to learn non-linear dependencies effectively.
+       parative analysis.                                            The model’s input comprises features categorized into
+                                                                  five key groups: course information, academic features,
+• Encoding & grouping Categorical variables (e.g., course         engagement features, activity features, and demographic
+   module, education level) were one-hot encoded, and             features. Each feature vector is denoted as:
+   features were grouped into static (demographics, course
+                                                                  X = [F1 , F2 , F3 , … , Fn ]                                      (1)
+   info) and dynamic (academic performance, engagement,
+   learning activities) to enable better pattern recognition in   where F1 , F2 , F3 , … , Fn are the individual features. These are
+   the model.                                                     normalized before processing. Static features (such as demo-
+                                                                  graphic attributes) are passed directly into the model, while
+4.2 Feature selection & reduction                                dynamic features (such as engagement and academic per-
+                                                                  formance) undergo attention-based transformation through
+To refine the dataset, features with a Pearson correlation        MHSA.
+coefficient above 0.80 were removed (see Appendix A) to
+reduce multicollinearity and redundancy. A threshold of 0.80
+was selected based on statistical best practices, as highly       5.1 Multi‑head self‑attention (MHSA)
+correlated features (≥ 0.80) tend to carry redundant informa-
+tion, which can lead to overfitting and reduced model inter-      The multi-head self-attention (MHSA) mechanism evalu-
+pretability. Retaining highly correlated features may cause       ates the importance of different feature groups by dynami-
+the model to assign excessive weight to duplicate informa-        cally weighting their contributions. For example, a student
+tion rather than identifying distinct and meaningful patterns     who spends more time reviewing video lectures may have a
+in the data. By removing such features, the model can focus       different success trajectory compared to one who primarily
+on unique predictors, improving both generalizability and         engages in quizzes. MHSA ensures that the model assigns
+performance. Following the feature elimination process, the       different attention weights to engagement types based on
+dataset was organized into static (long-term attributes) and      their impact on academic success.
+dynamic (engagement-based features) groups to facilitate a           Mathematically, MHSA transforms input features into
+structured learning process. A two-step correlation analysis      Query (Q), Key (K), and Value (V) matrices, where the
+was conducted to further refine feature selection. First, a       attention scores are computed using the scaled dot-product
+between-group correlation analysis (Appendix 7) was per-          attention mechanism:
+formed to eliminate redundant relationships across different                                     �      �
+feature categories. Second, a within-group correlation analy-                                      QK ⊤
+sis (Appendix 8) was applied to identify and remove strongly
+                                                                  Attention(Q, K, V) = softmax √          V               (2)
+                                                                                                     dk
+correlated attributes within each category, ensuring a more
+balanced feature representation. Finally, padding and mask-       where: - Q = XWQ , K = XWK , and V = XWV are the query,
+ing techniques were implemented to ensure data compat-            key, and value matrices, - dk is the dimensionality of the key
+ibility with the attention-based model, standardizing input       vectors, used for scaling.
+sequences while preventing artificial padding values from           To further enhance performance, Multi-Head Attention
+influencing the learning process. These steps collectively        (MHA) extends this mechanism across multiple attention
+Social Network Analysis and Mining (2025) 15:25                                                                           Page 7 of 21 25
+
+heads, each capturing different aspects of the feature                                      Q
+                                                                                                       ( P            )
+                                                                                            ∑           ∑
+relationships:                                                   f (x1 , x2 , ..., xn ) =         𝜑q          𝜓pq (xp )              (6)
+                                                                                            q=1         p=1
+MHSA(X) = Concat(head1 , … , headh )WO                    (3)
+                                                                 where: - 𝜑q and 𝜓pq are learnable functions modeled via
+where WO is the output projection matrix, and each head          neural networks, - Q and P control the decomposition
+applies Eq. 2 independently.                                     complexity.
+   This process allows the model to prioritize meaning-             Unlike traditional neural networks that process each fea-
+ful interactions, recognizing that quizzes and assignments       ture independently, KAN explicitly models feature depend-
+contribute differently to student success depending on           encies, enabling more hidden predictions. For instance, it
+course difficulty.                                               can recognize that students with high quiz scores and low
+                                                                 discussion participation tend to excel in exams, whereas
+                                                                 those who rely heavily on discussions may struggle with
+5.2 Feature‑wise attention layer (FWAL)                         standardized tests.
+                                                                    By incorporating KAN into KANFormer, the model:
+FWAL improves interpretability by adaptively reweight-
+ing feature contributions. Instead of treating all features      • Eliminates the need for predefined feature interactions,
+equally, FWAL dynamically prioritizes critical academic          • Learns high-dimensional dependencies automatically,
+assessments while still considering complementary                • Generalizes well across different datasets, making it
+engagement indicators. The attention scores are computed             applicable for long-term performance assessment and
+as:                                                                  student retention analysis.
+𝛼 = softmax(WF + b)                                       (4)
+                                                                 5.4 Summary of KANFormer advantages
+where:
+                                                                 By integrating MHSA for dynamic feature weighting,
+• W ∈ ℝd×d is a learnable weight matrix,                         FWAL for interpretability, and KAN for non-linear mod-
+• b ∈ ℝd is the bias vector,                                     eling, KANFormer provides a scalable and robust solution
+• 𝛼 is the attention score vector, determining the impor-        for student performance prediction. The overall architecture
+   tance of each feature.                                        is illustrated in Fig. 2.
+
+The final feature representation is computed as:
+Ffinal = 𝛼 ⊙ F                                            (5)    6 Experimental
+where ⊙ denotes element-wise multiplication.                     This section outlines the class imbalance handling, cross-
+   This mechanism ensures that critical academic assess-         validation, hyperparameter tuning, evaluation metrics, and
+ments (e.g., exam scores, assignments) are given higher          computational environment used in the experiments.
+importance compared to indirect engagement metrics (e.g.,
+forum activity), while still considering their complementary     6.1 Handling class imbalance
+role. This enhances model interpretability, enabling educa-
+tors to identify at-risk students and key success factors more   The final result distribution of the 32,593 students has
+effectively.                                                     shown a significant class imbalance, with instances of
+                                                                 “Distinction” (3024), “Pass” (12,361), “Fail” (7052), and
+                                                                 “Withdrawn” (10,156). The imbalance problem affects the
+5.3 Kolmogorov–Arnold network (KAN)                             performance of predictive models. The imbalance prob-
+                                                                 lem affects the performance of predictive models, which
+The KAN enhances predictive accuracy by capturing high-          can be fixed by using techniques at the data (preprocess-
+dimensional, non-linear dependencies in student data.            ing) or algorithm (algorithm-level) level (Chawla et al.
+Unlike conventional neural networks, which require manu-         2002; Werner de Vargas et al. 2023; Flores et al. 2022).
+ally defined feature interactions, KAN automatically learns      To address this, SMOTE (synthetic minority over-sam-
+complex relationships, improving model robustness.               pling technique) was applied to up-sample the minority
+   KAN is based on the Kolmogorov-Arnold representation          classes (“Distinction” and “Fail”) by generating synthetic
+theorem, which states that any multivariate function can be      examples through K-nearest neighbor interpolation (Skow-
+expressed as:                                                    ron and Wojna 2004; Wang et al. 2023). Despite all the
+25 Page 8 of 21                                                                            Social Network Analysis and Mining (2025) 15:25
+
+
+
+
+Fig. 2  The proposed attention-enhanced deep learning (KANFormer) architecture
+
+
+
+Table 3  Hyper-parameter settings                                      ensures robust generalization, reduces overfitting, and is
+                                                                       particularly crucial when handling imbalanced datasets
+Parameters name                       Hyper-parameter settings
+                                                                       with SMOTE to prevent synthetic data bias (Zhang and Liu
+Learning rate                         0.0001                           2023). Additionally, MinMax scaling was applied within
+Multi-head attention blocks           2                                each fold, normalizing features between 0 and 1. The scaler
+Attention heads                       2                                was first fitted on the training set and then applied to the
+Kolmogorov–Arnold network             Hidden layer with 32 neurons     validation set to prevent data leakage, ensuring balanced and
+                                      Grid size: 5                     consistent feature distributions during training.
+                                      Spline order: 3
+Dropout rate                          50%
+Batch size                            64                               6.3 Hyperparameter tuning and model
+Loss function                         Cross-entropy                         configuration
+Optimizer                             AdamW
+Training epochs                       50                               This study employs Optuna for Bayesian optimization using
+                                                                       the tree-structured parzen estimator (TPE), which iteratively
+                                                                       refines hyperparameter selection to enhance model perfor-
+                                                                       mance (Akiba et al. 2019). Key parameters tuned include
+benefits of SMOTE, it has limitations, including the poten-            attention heads, embedding dimensions, dropout rate, learn-
+tial to lead to overfitting, ignore within-class imbalance,            ing rate, batch size, and spline order.
+and increase noise (Wang et al. 2023; Werner de Vargas                    To improve efficiency, early stopping halts training after
+et al. 2023).                                                          10 epochs of no validation improvement, and a Learning
+                                                                       Rate Scheduler (ReduceLROnPlateau) dynamically adjusts
+                                                                       the learning rate for faster convergence while avoiding local
+6.2 Cross‑validation                                                  minima. The final KANFormer model settings are summa-
+                                                                       rized in Table 3.
+A 5-fold cross-validation approach was used to evaluate
+model performance by splitting the dataset into five equal             6.4 Evaluation indicators
+subsets, where each subset served as the test set once while
+the remaining four were used for training. This method                 The performance of the KANFormer model is evaluated
+                                                                       using accuracy, precision, recall, F1-score, ROC AUC,
+                                                                       and a confusion matrix. These metrics assess the model’s
+Table 4  Confusion matrix                                              effectiveness, particularly in handling class imbalance.
+                                Predicted positive       Predicted        Accuracy measures the proportion of correctly classi-
+                                                         negative      fied instances:
+
+Actual positive                 TP                       FN                              TP + TN
+                                                                       Accuracy =                                                     (7)
+Actual negative                 FP                       TN                         TP + TN + FP + FN
+Social Network Analysis and Mining (2025) 15:25                                                                                                                                                       Page 9 of 21 25
+
+                                                                                                                                                      Precision indicates how many of the predicted positive cases
+
+                                                                                                            Weighted avg.
+                                                                                                                                                      are actually correct:
+                                                                                                                            0.9920
+                                                                                                                            0.9920                                    TP
+                                                                                                                            0.9920                    Precision =                                                 (8)
+                                                                                                                                                                    TP + FP
+                                                                                                                                                      Recall measures the proportion of actual positives correctly
+                                                                                                            Macro avg.
+                                                                                                                            0.9920                    identified:
+                                                                                                                            0.9919
+                                                                                                                            0.9919                                 TP
+                                                                                                                                                      Recall =                                                    (9)
+                                                                                                                                                                 TP + FN
+                                                                                                                            0.9901     0.9939
+                                                                                                            W
+                                                                                                                            0.9940
+                                                                                                                            0.9921
+                                                                                                                                       0.9898
+                                                                                                                                       0.9918         F1-score provides a balanced measure of precision and
+                                                                                                                            0.9921                    recall:
+                                                                                                                            0.9901 - 0.9936
+                                                                                                                            0.0252
+                                                                                                DP/W                        ± 0.0012                                2 × Precision × Recall
+                                                                                                            D/P             0.9992                    F1-Score =                                                 (10)
+                                                                                                                                                                      Precision + Recall
+                                                                                                                                                      The ROC AUC (receiver operating characteristic - area
+
+                                                                                                            Weighted avg.
+                                                                                                                                                      under curve) evaluates the model’s ability to distinguish
+                                                                                                                            0.9346                    between positive and negative classes. It plots the true posi-
+                                                                                                                            0.9334
+                                                                                                                            0.9334                    tive rate (TPR) against the false positive rate (FPR) at vari-
+                                                                                                                                                      ous classification thresholds, where:
+
+
+                                                                                                            Macro avg.
+                                                                                                                                                                TP              FP
+                                                                                                                            0.9347                    TPR =           , FPR =
+                                                                                                                            0.9333                            TP + FN         FP + TN
+                                                                                                                            0.9334
+                                                                                                                                                      An AUC score of 0.5 indicates random guessing, while 1.0
+                                                                                                                            0.9122     0.9573         represents perfect classification.
+                                                                                                                            0.9600     0.9066            The confusion matrix (Table 4) provides a breakdown of
+                                                                                                                            0.9355     0.9313
+                                                                                                                                                      the model predictions for actual positive and negative cases.
+                                                                                                            F
+                                                                                                                            0.9361
+                                                                                                                            0.9316 - 0.9431
+                                                                                                                            0.1624
+                                                                                                DP/F        D/P
+                                                                                                                            ± 0.0047                  6.5 Experimental environment
+                                                                                                                            0.9809
+
+
+
+
+            Table 5  KANFormer results for three different configurations (DP/FW, DP/F, DP/W)
+                                                                                                                                                      The experiments were conducted on Google Colab, using
+
+
+                                                                                                            Weighted avg.
+                                                                                                                                                      NVIDIA T4 GPUs to accelerate model training and effi-
+                                                                                                                            0.9495                    ciently handle large datasets. The Python 3.10 programming
+                                                                                                                            0.9482                    language was used, with TensorFlow 2.15.0 and Keras for
+                                                                                                                            0.9481
+                                                                                                                                                      model development and training. Additionally, Scikit-learn
+                                                                                                                                                      1.3.2 was employed for data preprocessing, including feature
+
+                                                                                                            Macro avg.
+                                                                                                                                                      scaling, cross-validation, and performance evaluation. This
+                                                                                                                            0.9494
+                                                                                                                            0.9482                    cloud-based setup ensured efficient execution of DL tasks
+                                                                                                                            0.9481                    while optimizing computational resources.
+                                                                                                                            0.9215     0.9711
+                                                                                                                            0.9729     0.9166         6.6 Experimental results and analysis
+                                                                                                            F/W             0.9431     0.9465
+                                                                                                                            0.9459
+                                                                                                                            0.9438 - 0.9487           The KANFormer model is evaluated for its effectiveness in
+                                                                                                DP/FW
+                                                                                                                            0.1453
+                                                                                                                            ± 0.0021                  predicting student performance across binary and multi-class
+                                                                                                            D/P             0.9835                    classification tasks. In the binary classification scenario, the
+                                                                                                                                                      model predicts whether a student belongs to the success-
+                                                                                                                            Precision                 ful category (“Distinction” and “Pass”) or the unsuccessful
+                                                                                                                            Recall
+                                                                                                                            F1-score
+                                                                                                                                                      category (“Fail” and “Withdrawn”). Additionally, separate
+                                                                                                                            Average accuracy          evaluations are conducted to assess the model’s ability to
+                                                                                                                                                      distinguish (“Distinction” and “Pass”) from “Fail” and
+
+                                                                                                KANFormer
+                                                                                                                            95% confidence interval
+                                                                                                                            Average loss              (“Distinction” and “Pass”) from “Withdrawn” individually.
+                                                                                                                            Standard deviation
+                                                                                                                                                      In the multi-class classification scenario, the model predicts
+                                                                                                                            Average ROC AUC​
+25 Page 10 of 21                                                                         Social Network Analysis and Mining (2025) 15:25
+
+Table 6  Comparison of binary-                                   DP/FW                  DP/F                     DP/W
+class classification prediction
+performance across different                                     Accuracy   F1-score    Accuracy    F1-score     Accuracy      F1-score
+DL models
+                                   Decision tree                 0.9173     0.9173      0.9063      0.9063       0.9898        0.9898
+                                   KNeighbors                    0.9235     0.9234      0.9054      0.9053       0.9836        0.9836
+                                   Logistic regression           0.9361     0.9361      0.8974      0.8972       0.9898        0.9898
+                                   TEnc                          0.9357     0.9321      0.9175      0.8627       0.9814        0.9710
+                                   Kusumawardani et al. (2023)
+                                   MTAPSP                        0.9432     0.9433      0.9271      0.9254       0.9892        0.9892
+                                   Shou et al. (2024)
+                                   KANFormer                     0.9459     0.9454      0.9361      0.9341       0.9921        0.9920
+
+
+
+
+Fig. 3  The confusion matrices for DP/FW, DP/F, and DP/W tasks
+
+
+
+all four outcome categories: “Distinction,” “Pass,” “Fail,”          ROC AUC, highlighting the model’s robustness in identify-
+and “Withdrawn”.                                                     ing students at-risk of withdrawal. The high precision and
+   To understand the contribution of individual components,          accuracy in DP/W classification indicate that KANFormer
+ablation experiments are conducted, analyzing the roles of           effectively captures student learning behavior, assessment
+MHSA and KANs within the model. Finally, to assess gen-              patterns, and demographic trends, enabling more reliable
+eralization and robustness, the KANFormer model is tested            predictions of student withdrawal.
+beyond the OULAD dataset, incorporating three additional                While DP/F (Distinction/Pass vs. Fail) and DP/FW (Dis-
+datasets: ASSISTments2012, xAPI, and the Mathematics                 tinction/Pass vs. Fail/Withdrawn) tasks exhibit slightly lower
+and Portuguese Language Courses dataset. This broader                performance, the model maintains high accuracy and reli-
+evaluation ensures the model’s adaptability across different         ability across all settings. The DP/W task emerges as the
+educational contexts and datasets.                                   most stable and precise classification, as reflected in the
+                                                                     lowest average loss, minimal standard deviation, and high-
+6.6.1 Binary classification prediction performance                  est accuracy and ROC AUC scores. The classification of
+       experiments                                                   pass/fail students proves more challenging due to overlap-
+                                                                     ping engagement patterns and assessment scores, making
+The KANFormer model is evaluated across binary clas-                 the distinction between these groups less clear. Overall,
+sification tasks to assess its effectiveness in distinguishing       these results demonstrate the effectiveness of KANFormer
+student performance categories. These evaluations provide a          in accurately distinguishing student performance categories,
+comprehensive measure of the model’s reliability in predict-         making it a reliable predictive framework for identifying
+ing academic outcomes. As summarized in Table 5, KAN-                at-risk students and supporting early intervention strategies
+Former achieves strong performance across all classification         in online education.
+groups, with particularly high accuracy in distinguishing               The evaluation results demonstrate that KANFormer
+Distinction/Pass (DP) vs. Withdrawn (W). This classification         achieves high accuracy across all classification tasks,
+task achieves near-perfect precision, recall, F1-score, and          with particularly strong performance in distinguishing
+Social Network Analysis and Mining (2025) 15:25                                                                                   Page 11 of 21 25
+
+Table 7  Comparison of multi-                         Decision tree   KNeighbors     Logistic   DFFNN              MTAPSP             KANFormer
+class classification prediction                                                      regression (Adnan et al.      (Shou et al.
+performance across different                                                                    2021)              2024)
+ML and DL models
+                                     Precision
+                                     Distinction      0.85            0.79           0.72         0.66             0.58               0.86
+                                     Pass             0.77            0.72           0.64         0.74             0.79               0.81
+                                     Fail             0.60            0.63           0.65         0.55             0.62               0.69
+                                     Withdrawn        0.70            0.69           0.71         0.76             0.78               0.73
+                                     Macro avg.       0.73            0.71           0.68         0.68             0.69               0.77
+                                     Weighted avg.    0.73            0.71           0.68         0.70             0.73               0.77
+                                     Recall
+                                     Distinction      0.85            0.84           0.77         0.47             0.40               0.89
+                                     Pass             0.76            0.77           0.65         0.90             0.89               0.81
+                                     Fail             0.61            0.50           0.54         0.36             0.51               0.60
+                                     Withdrawn        0.70            0.75           0.78         0.80             0.83               0.76
+                                     Macro avg.       0.73            0.71           0.68         0.63             0.66               0.76
+                                     Weighted avg.    0.73            0.71           0.68         0.71             0.74               0.77
+                                     F1-Score
+                                     Distinction      0.85            0.81           0.75         0.55             0.47               0.87
+                                     Pass             0.76            0.74           0.64         0.81             0.84               0.81
+                                     Fail             0.61            0.56           0.59         0.44             0.56               0.64
+                                     Withdrawn        0.70            0.72           0.74         0.78             0.80               0.75
+                                     Macro avg.       0.73            0.71           0.68         0.64             0.67               0.77
+                                     Weighted avg.    0.73            0.71           0.68         0.70             0.73               0.77
+                                     Accuracy         0.73            0.71           0.68         0.71             0.74               0.77
+
+                                     The bold values in the indicate the best-performing scores for each metric across the different models
+
+
+Distinction/Pass (DP) from Withdrawn (W) students, achiev-                transformer encode model (TEnc) (Kusumawardani et al.
+ing an accuracy of 99.21%. This suggests that withdrawn                   2023). Multi-dimensional time-series analysis-based Stu-
+students exhibit distinct engagement patterns, making them                dent performance prediction model (MTAPSP) (Shou et al.
+easier to identify compared to other student categories. How-             2024), are used for comparative experiments to validate the
+ever, the model exhibits lower accuracy in the DP vs. Fail                advantages of the KANFormer model for binary classifi-
+(DP/F) classification task (93.61%), indicating that differen-            cation prediction, using the student click-stream data, their
+tiating borderline pass and fail students is more challenging             assessment scores, and the data of the student demographic
+due to overlapping behavioral patterns. Further analysis of               characteristics. Each of these model performances is shown
+recall values highlights the model’s effectiveness in early               in Table 6.
+identification of at-risk students, particularly in predicting               The binary classification prediction experiments in
+withdrawal risk, where it achieves over 96% recall. This                  Table 6 show that the KANFormer model performs well in
+suggests that KANFormer can be a valuable tool for early                  all binary classification tasks (DP/FW, DP/F, and DP/W).
+intervention strategies, helping educators detect disengaged              It performs better than the TEnc and MTAPSP models in
+students before they drop out. However, the model’s lower                 terms of accuracy and F1 score, showing that it can handle
+recall in the DP/F task indicates potential difficulties in dis-          different performance levels. Teachers can predict student
+tinguishing students who are on the verge of failing, empha-              performance using the KanFormer model, gain insight into
+sizing the need to incorporate additional engagement-based                the academic level of their students, and develop targeted
+predictors to improve classification performance in border-               instructional programs accordingly. For instance, the KAN-
+line cases.                                                               Former model recommends higher-level courses to students
+   Five benchmark models, decision tree classifier (DT),                  predicted to have “Distinction” results, aiming to deepen
+Kneighbors classifier (KN), logistic regression (LR),                     their learning and enhance their abilities. In addition, it
+25 Page 12 of 21                                                                             Social Network Analysis and Mining (2025) 15:25
+
+provides the necessary support and assistance for students              as passing or distinction. This challenge may arise because
+expected to leave school, addressing any academic diffi-                students on the pass/fail boundary share similar engagement
+culties they may encounter. The application of the KAN-                 behaviors and assessment scores, making their classifica-
+Former model offers an effective tool for predicting student            tion less distinct. For the DP/FW classification, the model
+performance. Provides a powerful means of guidance for                  maintains a well-balanced accuracy, with minimal misclas-
+educators, allowing them to counsel students in a more com-             sification between the distinction/pass and fail/withdraw
+prehensive and individualized manner and promoting the                  groups. The model effectively identifies students at distinc-
+improvement of teaching quality.                                        tion and withdraw of performance, with minor errors occur-
+   The confusion matrices illustrate the KANFormer mod-                 ring within pass and fail categories due to the overlap in
+el’s performance across binary classification tasks: DP/FW,             learning behavior between failing and withdrawn students.
+DP/F, and DP/W, as shown in Fig. 3. Each matrix provides                    Overall, the KANFormer model achieves high true posi-
+insights into the model’s predictive accuracy by displaying             tive and true negative rates across all tasks, reinforcing its
+correctly classified instances along the diagonal. Across all           robustness in predicting student outcomes. The strongest
+tasks, the model exhibits strong predictive capability, par-            performance is observed in DP/W, followed by DP/FW,
+ticularly in the DP/W classification, where it achieves near-           with DP/F presenting the greatest classification challenge.
+perfect classification of distinction and withdrawn students.           These findings suggest that, while the model excels at distin-
+This high performance suggests that withdrawn students                  guishing students with clear success or failure trajectories,
+exhibit distinct engagement patterns, making them easier to             improving its ability to learn nuanced patterns in borderline
+separate from those who successfully complete their courses.            cases, particularly between pass and fail, would improve pre-
+In the DP/F task, distinguishing between distinction/pass               dictive accuracy. The results further indicate that integrating
+and fail categories presents a greater challenge. The model             MHSA and leveraging deep learning techniques to capture
+demonstrates slightly lower performance, as evidenced by                complex nonlinear relationships in student engagement and
+an increase in false positives and false negatives, indicat-            academic performance significantly improve classification
+ing occasional misclassifications low-performing students               performance.
+
+                                                                        6.7 Multi‑classification prediction performance
+
+                                                                        The KANFormer model is evaluated for its effectiveness in
+                                                                        multi-class classification tasks. To assess its performance,
+                                                                        five ML and DL models are employed for comparison: deci-
+                                                                        sion tree classifier (DT), K-nearest neighbors classifier (KN),
+                                                                        logistic regression (LR), deep feedforward neural network
+                                                                        (DFFNN) (Adnan et al. 2021), and the multi-dimensional
+                                                                        time-series analysis-based student performance prediction
+                                                                        model (MTAPSP) (Shou et al. 2024). The comparative
+                                                                        results of these models are presented in Table 7.
+                                                                           The evaluation results indicate that KANFormer per-
+                                                                        forms best in predicting Distinction students, achieving an
+                                                                        F1-score of 87%. This strong performance is likely attrib-
+                                                                        uted to consistent engagement patterns and high assessment
+                                                                        scores, which provide clear indicators of academic success.
+Fig. 4  The confusion matrix for D/P/F/W task                           In contrast, the Fail category had the lowest recall (60%),
+
+
+Table 8  Results of ablation experiments applied for DP/FW task
+Model                         Precision Recall    F1-score Loss       Average accuracy Average     95% confidence       Standard deviation
+                                                                                       ROC         interval for accu-
+                                                                                       AUC​        racy
+
+Standalone KAN                0.9409     0.9391   0.9390     0.1569   0.9391            0.9814     [0.9363, 0.9423]     ± 0.0020
+Standalone Former             0.9388     0.9366   0.9365     0.1667   0.9366            0.9782     [0.9341, 0.9411]     ± 0.0027
+KANFormer without FWAL        0.9334     0.9286   0.9284     0.1761   0.9286            0.9773     [0.9220, 0.9329]     ± 0.0039
+KANFormer                     0.9495     0.9482   0.9481     0.1453   0.9459            0.9835     [0.9438, 0.9487]     ± 0.0021
+Social Network Analysis and Mining (2025) 15:25                                                                     Page 13 of 21 25
+
+suggesting that students at risk of failing exhibit behav-             superiority of KANFormer in all these metrics suggests
+iors that overlap with those in the Pass category, leading             that it can handle data imbalance and is better at inte-
+to higher misclassification rates. Additionally, the model             grating various student features to predict results more
+demonstrates strong predictability for Withdrawn students,             accurately.
+achieving an F1-score of 75%, which suggests that students                These results demonstrate the excellent performance
+who disengage from the course exhibit distinct behavioral              of KANFormer in predicting student performance. Using
+patterns that the model effectively captures. However, the             KANFormer, educators can gain deeper insights into stu-
+challenges in differentiating Fail and Pass students indicate          dent academic performance and provide more personalized
+that assessment-based features alone may not be sufficient             support. For example, educators can guide students who
+for accurate classification. Incorporating additional engage-          are predicted to achieve distinction toward more advanced
+ment metrics, such as forum participation trends and inter-            learning opportunities while identifying students who are
+action levels, could improve the model’s ability to identify           predicted to fail or withdraw, which can aid in their improve-
+borderline students who are at risk of failing. These findings         ment. In general, the KANFormer model offers a powerful
+emphasize the need for a comprehensive predictive approach             tool for predicting student performance, helping to enhance
+that integrates both academic performance indicators and               the quality of education by enabling more individualized
+engagement behaviors to enhance early risk detection in                support for students.
+online learning environments.                                             The confusion matrix in Fig. 4 highlights the ability of
+   Table 7 shows that the KANFormer model outperformed                 the KANFormer model to classify four categories, the diago-
+most of the evaluation metrics. Although the MTAPSP                    nal line being the number of correctly predicted categories.
+model performed relatively well in several categories, espe-           The model performs exceptionally well in identifying dis-
+cially in identifying students in the "Withdrawn" category,            tinction students, likely due to distinctive engagement pat-
+when considering the class imbalance and the importance                terns and strong academic performance. However, it exhibits
+of a balanced performance across metrics, KANFormer                    challenges in differentiating fail and withdrawn students, as
+emerges as the superior model.                                         evidenced by a high misclassification rate between these
+   Specifically, KANFormer demonstrated the highest                    two categories. This overlap suggests that students in these
+accuracy and outperformed all other models in the macro                groups share similar behavioral and academic characteris-
+average and weighted average across the metrics of preci-              tics, making the classification more complex. The moderate
+sion, recall, and F1-score. It excelled, particularly in the           misclassification of pass students indicates some similari-
+Distinction and Fail categories. For the Distinction cat-              ties in features with the distinction category, likely due to
+egory, KANFormer achieved a precision of 0.86, a recall                marginal performance differences.
+of 0.89, and an F1-Score of 0.87, significantly outper-
+forming all other models. Similarly, in the Fail category,             6.8 Ablation experiments
+KANFormer obtained a precision of 0.69, a recall of 0.60,
+and an F1-Score of 0.64, again showing its strong ability              The ablation study evaluates the contribution of MHSA,
+to identify high-achieving and at-risk students correctly.             feature-wise attention layer (FWAL), and KAN to the pre-
+   Compared to other DL models such as DFFNN and                       dictive performance of KANFormer, with results presented
+MTAPSP, KanFormer demonstrated superior results in all                 in Table 8. The findings indicate that removing any of these
+metrics. This indicates that KANFormer captures complex                components leads to performance degradation, reinforc-
+patterns and relationships between learning activities and             ing their critical role in student performance prediction.
+performance categories more effectively. The consistent                MHSA plays a key role in capturing feature dependencies,
+
+
+
+Table 9  Performance metrics of the KANFormer model across multiple educational datasets
+Dataset                  Average precision Average recall Average F1-score Average accuracy Average loss Average    Standard deviation
+                                                                                                         ROC
+                                                                                                         AUC​
+
+ASESTEments2012          0.8345              0.7472      0.7787             0.8766          0.2904       0.9029     ± 0.0029
+xAPI                     0.8450              0.8375      0.8199             0.8375          0.5128       0.9421     ± 0.0193
+Mathematics & Por-       0.8234              0.8008      0.7874             0.8008          0.4245       0.8851     ± 0.0216
+ tuguese
+OULAD                    0.9495              0.9482      0.9481             0.9459          0.1458       0.9835     ± 0.0021
+25 Page 14 of 21                                                                                   Social Network Analysis and Mining (2025) 15:25
+
+
+                                                                      6.9 Performance evaluation across multiple
+                                                                           datasets
+
+                                                                      The study extended the evaluation to three additional data-
+                                                                      sets, ASSISTments2012, xAPI, and the Mathematics and
+                                                                      Portuguese Language Courses dataset, to assess the gener-
+                                                                      alizability and robustness of the KANFormer model across
+                                                                      different educational contexts.
+
+                                                                      • ASSISTments dataset 2012-2013 at https://​s ites.​
+                                                                        google. ​ c om/ ​ s ite/ ​ a ssis​ t ment ​ s data/ ​ d atas ​ e ts/ ​ 2 012- ​ 1 3-​
+                                                                        school-​data-​with-​affect: The ASSISTments platform is
+                                                                        widely used for knowledge-tracing tasks in mathemat-
+                                                                        ics education. ASSIST12, a sub-dataset collected during
+                                                                        2012-2013, offers one of the largest publicly available
+                                                                        datasets with over 2,541,201 interactions, 27,066 stu-
+                                                                        dents, and 45,716 questions. It includes detailed infor-
+Fig. 5  SHAP Plot showing feature importance and the impact of fea-     mation such as student IDs, knowledge concept IDs,
+tures on model predictions
+                                                                        correctness of answers, and precise timestamps for each
+                                                                        question. This granularity allows for an in-depth analysis
+dynamically weighting engagement and assessment features.               of time-dependent factors, such as the intervals between
+The Standalone KAN model (without MHSA) exhibits a                      questions and their impact on knowledge retention.
+lower accuracy of 93.91% and ROC AUC of 0.9814, com-                  • The xAPI-Edu-Data dataset at https://​www.​kaggle.​
+pared to 94.59% and 0.9835 in the full KANFormer model.                 com/​datas​ets/​aljar​ah/​xAPI-​Edu-​Data: The xAPI-Edu-
+This decline suggests that removing MHSA weakens the                    Data dataset, sourced from Alibaba Cloud Tianchi, com-
+model’s ability to capture engagement-assessment relation-              prises 480 student records collected over two semesters.
+ships, reducing its ability to distinguish between high- and            The dataset includes 17 attributes related to student
+low-performing students.                                                performance, such as education level, class, selected
+   Similarly, KAN significantly enhances non-linear feature             courses, frequency of raising hands in class, attendance
+interactions, improving the model’s ability to learn com-               characteristics, and parental information. Student grades
+plex patterns in student data. The Standalone Former model              are classified into three categories: low represented as
+(without KAN) achieves a lower accuracy of 93.66% and                   “L” (< 60), medium represented as “M” (60 ≤ 90), and
+ROC AUC of 0.9782, with a decline in F1-score from 0.9481               high represented as “H” (≥ 90).
+(KANFormer) to 0.9365. This confirms that KAN enhances                • the Mathematics and Portuguese Language Courses
+feature representation by capturing intricate dependencies              dataset at https://​w ww.​k aggle.​c om/​d atas​ets/​m riga​
+between student attributes, thereby improving classification            ankja​swal/​stude​nt-​perfo​r mance-​in-​mathe​matics-​and-​
+performance. Additionally, the removal of FWAL results                  portu​guese/​data: The dataset from these two secondary
+in the most noticeable performance decline, with accuracy               school classes comprises roughly 1,044 students over-
+dropping to 92.86%, F1-score decreasing to 0.9284, and                  all. There are 395 entries in the mathematics course and
+loss increasing from 0.1453 to 0.1761. These findings high-             649 records in the Portuguese language course dataset,
+light the importance of FWAL in prioritizing key predictive             each with 33 features. A wide range of characteristics,
+features, ensuring that essential academic and engagement               including demographic information (e.g., age, sex),
+attributes receive appropriate weight in decision-making.               social factors (e.g., parental education, family size), and
+Without FWAL, the model struggles to distinguish feature                academic performance metrics (e.g., study time, number
+importance, leading to higher classification errors.                    of absences from school), were gathered through school
+                                                                        reports and questionnaires. Although grades for three
+                                                                        periods (G1, G2, and G3) are included in the dataset,
+                                                                        G3 is chosen as the target variable for prediction since
+Social Network Analysis and Mining (2025) 15:25                                                               Page 15 of 21 25
+
+   it thoroughly evaluates student’s academic performance        it easier for educators to design effective interventions. As
+   and represents their cumulative success.                      shown in Fig. 5, red points represent high feature values,
+                                                                 while blue points indicate low values. Positive SHAP values
+These datasets, representing various learning environments       suggest a reduced failure risk, while negative values indicate
+and student behaviors, complement the OULAD data-                underperformance risks.
+set used earlier. The KANFormer model’s evaluation on                SHAP analysis confirms that academic assessments, par-
+multiple datasets aims to validate its performance consist-      ticularly exam scores, TMA, and CMA, have the highest
+ency, adaptability, and effectiveness in predicting student      impact on student performance predictions. Unlike engage-
+outcomes across varied educational settings. The evalua-         ment-based features, which provide supplementary learning
+tion focused on a binary classification task, distinguishing     insights, assessment scores remain the primary drivers of
+between "Distinction/Pass" and "Fail/Withdrawn". All data-       success. Interestingly, students who perform well in quizzes
+sets were preprocessed to ensure fair and consistent evalua-     but engage less in discussions still tend to excel in exams,
+tion, including handling missing values and feature scaling      reinforcing the idea that forum participation is not always
+where necessary. Additionally, class imbalance issues were       an indicator of academic achievement. Furthermore, SHAP
+addressed using the Synthetic Minority Oversampling Tech-        results indicate that STEM modules (CCC, DDD, FFF)
+nique (SMOTE), ensuring balanced class distributions and         exhibit higher failure and dropout rates compared to non-
+more reliable performance metrics. The results, summarized       STEM courses, suggesting that increased academic rigor
+in Table 9, demonstrate the model’s strong predictive perfor-    influences student retention. These findings underscore the
+mance and adaptability across various datasets, showcasing       need for targeted interventions, where educators should
+significant generalization capabilities.                         prioritize assessment-based support while also recognizing
+                                                                 engagement patterns as complementary, rather than primary,
+   On the ASSISTEments2012-2013 dataset, which lacks             success indicators.
+demographic features, the model maintained strong per-
+formance with an accuracy of 87.66% and a ROC AUC of             7.1 Comparing engagement metrics vs. academic
+90.29%, highlighting its resilience when key features are             assessments
+unavailable. The xAPI dataset, despite its small sample size
+of 480 rows, demonstrated the model’s ability to handle          The comparison between engagement metrics and academic
+overfitting challenges, achieving an accuracy of 83.75%          assessments highlights that direct performance indicators
+and a ROC AUC of 94.21%. For the Mathematics and Por-            remain the strongest predictors of student success, as con-
+tuguese Language Courses dataset, which represents tra-          firmed by SHAP analysis. SHAP results demonstrate that
+ditional classroom-based education that shows significant        exams, tutor-marked assignments (TMA), and computer-
+differences in feature distributions, the model achieved an      marked assignments (CMA) have the highest predictive
+accuracy of 80.08% and a ROC AUC of 88.51%. While this           importance, indicating that assessment performance plays
+dataset posed additional challenges, the results underline       a crucial role in determining student outcomes. In contrast,
+the model’s capacity to adapt to distinct academic contexts.     engagement-based factors such as forum participation and
+These evaluations reflect the model’s robust generalization      lecture viewing time receive lower SHAP values, suggest-
+across datasets with varying features, sample sizes, and         ing that while engagement contributes to learning, it does
+domains, supporting its applicability to different educational   not independently determine success as effectively as direct
+contexts and its potential to predict student performance        assessments.
+effectively in real-world scenarios.                                 While engagement provides useful learning insights,
+                                                                 its impact on academic performance is context-dependent.
+                                                                 SHAP results indicate that while students who actively par-
+                                                                 ticipate in forums and lectures may enhance their learning
+7 Evaluation & explainable AI                                   experience, this does not consistently translate to higher
+                                                                 grades. Additionally, the role of engagement varies by
+To improve interpretability, we use SHAP (SHapley Addi-          subject. In STEM courses, where performance is assessed
+tive Explanations) values to quantify each feature’s contri-     through exams and problem-solving, assessment scores
+bution to predictions. SHAP allows to identify which stu-        remain the most reliable indicators of success. Conversely,
+dent attributes directly impact learning outcomes, making
+25 Page 16 of 21                                                                       Social Network Analysis and Mining (2025) 15:25
+
+
+in discussion-heavy humanities courses, engagement may            interactions. Thirdly, it incorporates a feature-wise attention
+play a more significant role in shaping learning outcomes.        layer that dynamically adjusts the importance of different
+                                                                  features, addressing the limitations of traditional models that
+7.2 Implications for educational interventions                   treat all inputs equally. These advancements contribute to a
+                                                                  more interpretable, efficient, and robust predictive frame-
+The insights from SHAP analysis emphasize the need for            work for identifying at-risk students in VLEs.
+data-driven intervention strategies in higher education. Since        Empirical evaluations demonstrate that KANFormer
+assessment scores are the strongest predictors of student suc-    outperforms other models in binary and multi-class clas-
+cess, early intervention should focus on students struggling      sification tasks. The model consistently achieves higher pre-
+in exams and TMAs. Based on these findings, institutions          cision, recall, F1-score, and overall accuracy, highlighting
+can implement:                                                    its ability to differentiate between students at varying risk
+                                                                  levels. Additionally, KANFormer exhibits strong stability
+• Real-time performance tracking in learning management           and generalizability, as evidenced by its low loss values and
+  systems (LMS): by integrating FWAL outputs into LMS             narrow confidence intervals across multiple datasets. These
+  dashboards, educators can receive automated alerts when         findings indicate that the proposed model can serve as a
+  students exhibit declining assessment performance.              reliable predictive tool for identifying at-risk students, ena-
+• Adaptive coursework and personalized learning paths:            bling educational institutions to implement targeted support
+  students struggling in STEM modules (e.g., DDD, FFF)            strategies.
+  can be assigned adaptive exercises based on their pre-              Despite its effectiveness, this study relies on retrospec-
+  dicted performance trends.                                      tive analysis, which, while valuable for identifying at-risk
+• Proactive engagement monitoring: while engagement               students in future courses, limits real-time intervention
+  features have lower predictive power, early identifica-         opportunities during an active learning period. Most exist-
+  tion of disengaged students can help universities offer         ing predictive models operate at fixed time intervals (e.g.,
+  personalized support before assessment failure occurs.          monthly, weekly or daily updates), which may fail to capture
+                                                                  short-term behavioral fluctuations that signal an imminent
+The combination of KANFormer and SHAP explainability              risk of disengagement or failure. Addressing this limitation
+provides a powerful framework for student performance pre-        requires the development of real-time student performance
+diction, offering both high predictive accuracy and interpret-    tracking mechanisms capable of dynamically analyzing
+ability. By leveraging these insights, institutions can enhance   online interactions and adjusting predictions accordingly.
+student retention through adaptive, data-driven interven-             Future research should focus on extending KANFormer’s
+tions, ensuring at-risk students receive timely support.          capabilities in three key areas. Firstly, real-time performance
+                                                                  tracking should be explored to enable continuous monitoring
+                                                                  of student engagement, allowing for immediate intervention
+8 Conclusion and future work                                     when risk patterns emerge. Secondly, personalized adap-
+                                                                  tive learning models should be developed, leveraging KAN-
+This study presents KANFormer, a novel deep learning              Former’s predictive power to recommend adapted learning
+model for student performance prediction, which intro-            pathways that respond to individual student needs. Finally,
+duces three key innovations over existing baseline models.        integrating KANFormer into learning management systems
+Firstly, it employs feature grouping, padding, and masking        (LMS) would facilitate automated alerts and recommenda-
+techniques to optimize computational efficiency and focus         tions, enhancing educator’s ability to provide timely support.
+on relevant data. Secondly, it integrates a hybrid architec-      Advancing in these directions will enable more proactive,
+ture combining attention-enhanced mechanisms with Kol-            data-driven educational interventions, ultimately improving
+mogorov–Arnold networks (KANs), significantly enhanc-             student retention and overall academic success.
+ing predictive performance by capturing complex feature
+Social Network Analysis and Mining (2025) 15:25                                                                                  Page 17 of 21 25
+
+
+Correlation matrix
+
+See Figs. 6, 7, and 8.
+
+
+
+
+Fig. 6  Correlation matrix of all features (red cells indicate positive correlations between two features, and blue cells indicate negative correla-
+tions between two features)
+25 Page 18 of 21                     Social Network Analysis and Mining (2025) 15:25
+
+
+
+
+Fig. 7  Between groups correlation
+Social Network Analysis and Mining (2025) 15:25   Page 19 of 21 25
+
+
+
+
+Fig. 8  Within group correlation
+25 Page 20 of 21                                                                                        Social Network Analysis and Mining (2025) 15:25
+
+Author contributions Conceptualization, B.A., M.B., M.A. and K.A.;                  lstm. IEEE Access 10:85255–85265. https://​doi.​org/​10.​1109/​
+methodology, B.A. and M.B.; validation, M.A. and K.A.; formal Anal-                 ACCESS.​2022.​31967​84
+ysis, B.A., M.B., M.A. and K.A.; resources, B.A., M.B. and M.A.; writ-         Alnasyan B, Basheri M, Alassafi M (2024) The power of deep learn-
+ing-original draft preparation, B.A.; writing-review & editing, M.B.,               ing techniques for predicting student performance in virtual
+M.A. and K.A.; proof reading B.A., M.B., M.A. and K.A.; supervision,                learning environments: A systematic literature review. Com-
+M.B. and M.A.; funding acquisition, B.A. All authors have read and                  puters and Education: Artificial Intelligence p 100231
+agreed to the published version of the manuscript.                             Annan NK, Asiedu CJ (2024) The impacts of massive open online
+                                                                                    courses (moocs) on teaching and learning in the digital world. a
+Funding No funds, grants, or other support was received.                            case of wisconsin international university college, ghana. WIS-
+                                                                                    CONSIN JOURNAL OF ARTS AND SCIENCES p 39
+Data availability No datasets were generated or analysed during the            Capuano N, Caballé S, Conesa J et al (2021) Attention-based hierar-
+current study.                                                                      chical recurrent neural networks for mooc forum posts analysis.
+                                                                                    J Ambient Intell Humaniz Comput 12:9977–9989
+Declarations                                                                   Chawla NV, Bowyer KW, Hall LO et al (2002) Smote: synthetic
+                                                                                    minority over-sampling technique. J Artif Intell Res 16:321–357
+Conflict of interest The authors declare no Conflict of interest.              Chen Y, Zhai L (2023) A comparative study on student perfor-
+                                                                                    mance prediction using machine learning. Educ Inf Technol
+Ethical approval Not applicable.                                                    28(9):12039–12057
+                                                                               Flores V, Heras S, Julian V (2022) Comparison of predictive models
+Informed Consent Not applicable.                                                    with balanced classes using the smote method for the forecast
+                                                                                    of student dropout in higher education. Electronics 11(3):457
+Statement Regarding Research Involving Human Participants and/or               Kuhlmann SL, Plumley R, Evans Z et al (2024) Students’ active
+Animals Not applicable.                                                             cognitive engagement with instructional videos predicts stem
+                                                                                    learning. Comput Educ 216:105050
+Consent to Participate Not applicable.                                         Kusumawardani S, Alfarozi S, Pradana C, et al (2023) Predicting stu-
+                                                                                    dent performance based on their interaction activities in a learning
+Consent to Publish Not applicable.                                                  management system using machine learning method. Education
+                                                                                    Technology in the New Normal: Now and Beyond pp 236–244
+Open Access This article is licensed under a Creative Commons                  Kuzilek Jakub, Hlosta Martin, Zdrahal Zdenek (2017) Open Univ
+Attribution-NonCommercial-NoDerivatives 4.0 International License,                  Learn Anal Dataset. Sci Data. https://​doi.​org/​10.​1038/​sdata.​2017.​
+which permits any non-commercial use, sharing, distribution and repro-              171
+duction in any medium or format, as long as you give appropriate credit        Liu C, Wang H, Yuan Z (2022) A method for predicting the academic
+to the original author(s) and the source, provide a link to the Creative            performances of college students based on education system data.
+Commons licence, and indicate if you modified the licensed material.                Mathematics. https://​doi.​org/​10.​3390/​math1​02037​37
+You do not have permission under this licence to share adapted material        Maghari A (2018) Prediction of student’s performance using modified
+derived from this article or parts of it. The images or other third party           knn classifiers. In: Alfere, SS, & Maghari, AY (2018). Prediction
+material in this article are included in the article’s Creative Commons             of Student’s Performance Using Modified KNN Classifiers. In
+licence, unless indicated otherwise in a credit line to the material. If            The First International Conference on Engineering and Future
+material is not included in the article’s Creative Commons licence and              Technology (ICEFT 2018), pp 143–150
+your intended use is not permitted by statutory regulation or exceeds          Poudyal S, Mohammadi-Aragh MJ, Ball JE (2022) Prediction of stu-
+the permitted use, you will need to obtain permission directly from the             dent academic performance using a hybrid 2d cnn model. Elec-
+copyright holder. To view a copy of this licence, visit http://​creat​iveco​        tronics. https://​doi.​org/​10.​3390/​elect​ronic​s1107​1005
+mmons.​org/​licen​ses/​by-​nc-​nd/4.​0/.                                       Shou Z, Xie M, Mo J et al (2024) Predicting student performance
+                                                                                    in online learning: a multidimensional time-series data analysis
+                                                                                    approach. Appl Sci 14(6):2522
+                                                                               Skowron A, Wojna A (2004) K nearest neighbor classification with
+                                                                                    local induction of the simple value difference metric. Rough Sets
+References                                                                          and Current Trends in Computing: 4th International Conference,
+                                                                                    RSCTC 2004, Uppsala, Sweden, June 1-5, 2004 Proceedings 4
+                                                                                    pp 229–234
+Adnan M, Habib A, Ashraf J et al (2021) Predicting at-risk students at
+                                                                               Werner de Vargas V, Schneider Aranda JA, dos Santos Costa R et al
+     different percentages of course length for early intervention using
+                                                                                    (2023) Imbalanced data preprocessing techniques for machine
+     machine learning models. IEEE Access 9:7519–7539. https://​doi.​
+                                                                                    learning: a systematic mapping study. Knowl Inf Syst 65(1):31–57
+     org/​10.​1109/​ACCESS.​2021.​30494​46
+                                                                               Wang AX, Chukova SS, Nguyen BP (2023) Synthetic minority over-
+Akiba T, Sano S, Yanase T, et al (2019) Optuna: A next-generation
+                                                                                    sampling using edited displacement-based k-nearest neighbors.
+     hyperparameter optimization framework. Proceedings of the 25th
+                                                                                    Appl Soft Comput 148:110895
+     ACM SIGKDD International Conference on Knowledge Discov-
+                                                                               Wang C, Wei X, Yang A et al (2022) Construction and analysis of
+     ery & Data Mining pp 2623–2631
+                                                                                    discrete system dynamic modeling of physical education teaching
+Al-Shehri H, Al-Qarni A, Al-Saati L, et al (2017) Student performance
+                                                                                    mode based on decision tree algorithm. Comput Intell Neurosci
+     prediction using support vector machine and k-nearest neighbor.
+                                                                                    2022(1):2745146
+     In: 2017 IEEE 30th canadian conference on electrical and com-
+                                                                               Yang L, Bai Z (2022) Study on score prediction model with high effi-
+     puter engineering (CCECE), IEEE, pp 1–4
+                                                                                    ciency based on deep learning. Electronics. https://​doi.​org/​10.​
+Aljaloud AS, Uliyan DM, Alkhalil A et al (2022) A deep learning
+                                                                                    3390/​elect​ronic​s1123​3995
+     model to predict student learning outcomes in lms using cnn and
+Social Network Analysis and Mining (2025) 15:25                                                                             Page 21 of 21 25
+
+Zhang W, Huang X, Wang S, et al (2017) Student performance pre-              convolutional neural networks. IEEE Trans Big Data 9:118–132.
+    diction via online learning behavior analytics. In: 2017 Interna-        https://​doi.​org/​10.​1109/​TBDATA.​2021.​31252​04
+    tional Symposium on Educational Technology (ISET), IEEE, pp
+    153–157                                                             Publisher's Note Springer Nature remains neutral with regard to
+Zhang X, Liu CA (2023) Model averaging prediction by k-fold cross-      jurisdictional claims in published maps and institutional affiliations.
+    validation. J Econometr 235(1):280–301
+Zhang Y, An R, Liu S et al (2023) Predicting and understanding stu-
+    dent learning performance using multi-source sparse attention
+
