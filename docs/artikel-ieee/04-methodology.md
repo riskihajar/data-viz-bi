@@ -2,13 +2,13 @@
 
 ## A. Research Design
 
-Penelitian menggunakan desain supervised binary classification untuk mendeteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Alur penelitian meliputi pengambilan dan audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan data berbasis mahasiswa, pelatihan dan evaluasi model, pembentukan knowledge-based risk layer, serta penyajian indikator melalui dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42` untuk mendukung reproduktibilitas.
+Penelitian menggunakan supervised binary classification untuk mendeteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Alurnya mencakup audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan berbasis mahasiswa, evaluasi model, knowledge-based risk layer, dan dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42`.
 
 ## B. Dataset and Unit of Analysis
 
-Dataset yang digunakan adalah Open University Learning Analytics Dataset (OULAD) [4]. Arsip data diperoleh melalui UCI Machine Learning Repository dan berisi tabel `studentInfo`, `studentRegistration`, `assessments`, `studentAssessment`, `studentVle`, `courses`, dan `vle`. Tabel `studentInfo` memuat 32.593 baris, sedangkan `studentVle` memuat 10.655.280 catatan aktivitas.
+Open University Learning Analytics Dataset (OULAD) [4] diperoleh melalui UCI Machine Learning Repository. Tabel yang digunakan meliputi `studentInfo`, `studentRegistration`, `assessments`, `studentAssessment`, `studentVle`, `courses`, dan `vle`. `studentInfo` memuat 32.593 baris dan `studentVle` memuat 10.655.280 catatan aktivitas.
 
-Unit analisis adalah satu mahasiswa pada satu kombinasi `code_module` dan `code_presentation`. Satu baris hasil preprocessing merepresentasikan satu student-module-presentation. Struktur ini mengikuti unit label pada `studentInfo` dan menjaga konsistensi penggabungan data registrasi, assessment, serta aktivitas VLE.
+Satu baris hasil preprocessing merepresentasikan seorang mahasiswa pada satu kombinasi `code_module` dan `code_presentation`. Unit student-module-presentation ini mengikuti struktur label `studentInfo` dan penggabungan data registrasi, assessment, serta VLE.
 
 ## C. Target Label and Temporal Cut-off
 
@@ -44,7 +44,7 @@ Sinyal risiko diberikan ketika nilai indikator berada pada atau di bawah thresho
 
 Setiap baris menghasilkan probabilitas `AtRisk`, jumlah sinyal, alasan risiko, dan rekomendasi intervensi. Aktivitas VLE rendah diarahkan pada pengingat dan monitoring akses. Assessment rendah atau belum dikerjakan diarahkan pada pendampingan akademik. Kombinasi minimal tiga sinyal diarahkan pada konseling atau tindak lanjut dosen wali.
 
-Evaluasi sistem gabungan memetakan `High Risk` dan `Medium Risk` sebagai `AtRisk`. Perbandingan dengan model terpilih digunakan untuk mengukur perubahan cakupan deteksi, precision, dan beban verifikasi.
+Evaluasi sistem gabungan memetakan `High Risk` dan `Medium Risk` sebagai `AtRisk`, lalu mengukur perubahan cakupan deteksi, precision, dan beban verifikasi.
 
 ## H. Visual Analytics and Business Intelligence
 

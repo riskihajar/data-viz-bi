@@ -37,9 +37,7 @@ AUTHORS = [
     ("Robert Marco", "robert.marco@amikom.ac.id"),
 ]
 
-FULL_WIDTH_FIGURES = {
-    "fig-4-dashboard-dvbi.png",
-}
+FULL_WIDTH_FIGURES = set()
 
 FIGURE_WIDTHS = {
     "fig-1a-target-distribution.png": 3.25,
@@ -47,8 +45,9 @@ FIGURE_WIDTHS = {
     "fig-2a-metrics-comparison.png": 3.25,
     "fig-2b-confusion-matrix.png": 3.25,
     "fig-2c-roc-curve.png": 3.25,
+    "fig-2-model-evaluation.png": 6.8,
     "fig-3-feature-importance.png": 3.25,
-    "fig-4-dashboard-dvbi.png": 6.0,
+    "fig-4-dashboard-dvbi.png": 3.25,
 }
 
 
@@ -143,7 +142,7 @@ def add_body_paragraph(doc, text: str, italic=False):
     p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     p.paragraph_format.first_line_indent = Inches(0.18)
     p.paragraph_format.space_before = Pt(0)
-    p.paragraph_format.space_after = Pt(3)
+    p.paragraph_format.space_after = Pt(1)
     p.paragraph_format.line_spacing = 1.0
     add_inline_markdown(p, text, size=10, italic=italic)
     return p
@@ -152,8 +151,8 @@ def add_body_paragraph(doc, text: str, italic=False):
 def add_main_heading(doc, text: str):
     p = doc.add_paragraph(style="Heading 1")
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.space_before = Pt(8)
-    p.paragraph_format.space_after = Pt(4)
+    p.paragraph_format.space_before = Pt(6)
+    p.paragraph_format.space_after = Pt(3)
     run = p.add_run(text.upper())
     set_run_font(run, size=10, bold=False)
     p.paragraph_format.keep_with_next = True
@@ -162,8 +161,8 @@ def add_main_heading(doc, text: str):
 def add_subheading(doc, text: str):
     p = doc.add_paragraph(style="Heading 2")
     p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    p.paragraph_format.space_before = Pt(5)
-    p.paragraph_format.space_after = Pt(2)
+    p.paragraph_format.space_before = Pt(4)
+    p.paragraph_format.space_after = Pt(1)
     run = p.add_run(text)
     set_run_font(run, size=10, italic=True)
     p.paragraph_format.keep_with_next = True
@@ -367,10 +366,10 @@ def build_docx():
     section = doc.sections[0]
     section.page_width = Inches(8.5)
     section.page_height = Inches(11)
-    section.top_margin = Inches(0.65)
-    section.bottom_margin = Inches(0.65)
-    section.left_margin = Inches(0.65)
-    section.right_margin = Inches(0.65)
+    section.top_margin = Inches(0.75)
+    section.bottom_margin = Inches(1.0)
+    section.left_margin = Inches(0.625)
+    section.right_margin = Inches(0.625)
     section.header_distance = Inches(0.3)
     section.footer_distance = Inches(0.3)
     set_columns(section, 1)
@@ -380,7 +379,7 @@ def build_docx():
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(12)
     run = p.add_run(title)
-    set_run_font(run, size=20)
+    set_run_font(run, size=24)
 
     author_table = doc.add_table(rows=2, cols=3)
     author_table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -409,10 +408,10 @@ def build_docx():
         cell.text = ""
 
     body_section = doc.add_section(WD_SECTION.CONTINUOUS)
-    body_section.top_margin = Inches(0.65)
-    body_section.bottom_margin = Inches(0.65)
-    body_section.left_margin = Inches(0.65)
-    body_section.right_margin = Inches(0.65)
+    body_section.top_margin = Inches(0.75)
+    body_section.bottom_margin = Inches(1.0)
+    body_section.left_margin = Inches(0.625)
+    body_section.right_margin = Inches(0.625)
     set_columns(body_section, 2)
 
     abstract_lines = (ARTICLE_DIR / "01-abstract-keywords.md").read_text(encoding="utf-8").splitlines()
