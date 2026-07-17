@@ -1,11 +1,11 @@
-# Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada OULAD
+# Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada OULAD
 ## Data Visualization and Business Intelligence
 
 ---
 
 ## Slide 1 — Judul
 
-- **Judul:** Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
+- **Judul:** Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
 - **Kelompok 5:**
   - Muhammad Rizky Hajar (24.55.2714)
   - Alwie Muflich (24.55.2667)
@@ -30,7 +30,7 @@
 ## Slide 3 — Rumusan Masalah & Tujuan
 
 **Rumusan Masalah:**
-1. Bagaimana membangun model klasifikasi risiko gagal atau mengundurkan diri dari mata kuliah menggunakan supervised learning?
+1. Bagaimana membangun model klasifikasi risiko ketidakberhasilan mahasiswa dalam mata kuliah menggunakan supervised learning?
 2. Bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi?
 3. Bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks BI?
 

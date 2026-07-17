@@ -1,7 +1,7 @@
 # Artikel IEEE Lengkap
 
 
-# Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
+# Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
 
 Muhammad Rizky Hajar, Alwie Muflich, Heri Santosa, Andi Sunyoto, Robert Marco
 
@@ -12,7 +12,7 @@ Email: riskihajar@students.amikom.ac.id, alwiemuflich@students.amikom.ac.id, her
 
 # Abstract
 
-Hasil akhir mata kuliah memberi informasi penting bagi monitoring akademik dan perencanaan intervensi dini. Penelitian ini mengembangkan early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat menggunakan Open University Learning Analytics Dataset (OULAD). Setiap baris merepresentasikan satu mahasiswa pada satu module-presentation. Target dirumuskan sebagai klasifikasi biner, yaitu `AtRisk` untuk hasil akhir mata kuliah `Withdrawn` dan `Fail`, serta `Successful` untuk `Pass` dan `Distinction`. Fitur prediktor dibentuk dari data demografis, registrasi awal, assessment, dan aktivitas Virtual Learning Environment yang tersedia sampai hari ke-28. Evaluasi membandingkan Logistic Regression, Random Forest, dan XGBoost melalui hold-out test berbasis kelompok mahasiswa dan 5-fold GroupKFold. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation tertinggi sebesar 0,7107. Pada hold-out test, model tersebut menghasilkan accuracy 0,7594, precision 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. Knowledge-based risk layer menggabungkan prediksi model dengan empat indikator perilaku awal untuk menghasilkan level `High Risk`, `Medium Risk`, dan `Low Risk` beserta alasan dan rekomendasi intervensi. Sistem gabungan meningkatkan recall menjadi 0,7866 dengan precision 0,7043. Hasil analitik disajikan melalui dashboard statis yang memuat indikator risiko, prioritas module-presentation, sinyal dominan, dan daftar mahasiswa untuk mendukung monitoring akademik. Pendekatan ini menyediakan integrasi prediksi, interpretasi berbasis aturan, dan visual decision support untuk intervensi dini pada tingkat mata kuliah.
+Hasil akhir mata kuliah memberi informasi penting bagi monitoring akademik dan perencanaan intervensi dini. Penelitian ini mengembangkan early warning risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat menggunakan Open University Learning Analytics Dataset (OULAD). Setiap baris merepresentasikan satu mahasiswa pada satu module-presentation. Target dirumuskan sebagai klasifikasi biner, yaitu `AtRisk` untuk hasil akhir mata kuliah `Withdrawn` dan `Fail`, serta `Successful` untuk `Pass` dan `Distinction`. Fitur prediktor dibentuk dari data demografis, registrasi awal, assessment, dan aktivitas Virtual Learning Environment yang tersedia sampai hari ke-28. Evaluasi membandingkan Logistic Regression, Random Forest, dan XGBoost melalui hold-out test berbasis kelompok mahasiswa dan 5-fold GroupKFold. Random Forest dipilih berdasarkan recall `AtRisk` cross-validation tertinggi sebesar 0,7107. Pada hold-out test, model tersebut menghasilkan accuracy 0,7594, precision 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. Knowledge-based risk layer menggabungkan prediksi model dengan empat indikator perilaku awal untuk menghasilkan level `High Risk`, `Medium Risk`, dan `Low Risk` beserta alasan dan rekomendasi intervensi. Sistem gabungan meningkatkan recall menjadi 0,7866 dengan precision 0,7043. Hasil analitik disajikan melalui dashboard statis yang memuat indikator risiko, prioritas module-presentation, sinyal dominan, dan daftar mahasiswa untuk mendukung monitoring akademik. Pendekatan ini menyediakan integrasi prediksi, interpretasi berbasis aturan, dan visual decision support untuk intervensi dini pada tingkat mata kuliah.
 
 # Keywords
 
@@ -28,7 +28,7 @@ Nilai prediktif suatu model bergantung pada kesesuaian data dengan waktu keputus
 
 Literatur menunjukkan bahwa kemampuan mendeteksi mahasiswa berisiko perlu dihubungkan dengan proses tindak lanjut agar memberi dampak institusional [2]. Model machine learning menghasilkan kelas dan probabilitas, sedangkan pemangku kepentingan memerlukan alasan risiko, prioritas, dan rekomendasi yang dapat dibaca secara operasional. Kebutuhan tersebut membentuk research gap pada integrasi antara evaluasi model, interpretasi berbasis aturan, dan penyajian visual untuk decision support.
 
-Penelitian ini bertujuan mengembangkan klasifikasi biner risiko gagal atau mengundurkan diri dari mata kuliah pada minggu keempat, mengevaluasi tiga algoritma supervised learning, dan mengintegrasikan model terpilih dengan knowledge-based risk layer. Hasil sistem diterjemahkan menjadi dashboard Business Intelligence untuk monitoring risiko dan prioritas intervensi akademik pada tingkat module-presentation.
+Penelitian ini bertujuan mengembangkan klasifikasi biner risiko ketidakberhasilan mahasiswa dalam mata kuliah pada minggu keempat, mengevaluasi tiga algoritma supervised learning, dan mengintegrasikan model terpilih dengan knowledge-based risk layer. Hasil sistem diterjemahkan menjadi dashboard Business Intelligence untuk monitoring risiko dan prioritas intervensi akademik pada tingkat module-presentation.
 
 Kontribusi penelitian terdiri atas empat bagian. Pertama, penelitian membentuk dataset early warning pada unit student-module-presentation dengan cut-off hari ke-28. Kedua, evaluasi menggunakan pemisahan berbasis `id_student` untuk menjaga independensi mahasiswa antara data pelatihan dan pengujian. Ketiga, knowledge-based risk layer menghasilkan level, alasan risiko, dan rekomendasi berdasarkan prediksi model serta perilaku awal. Keempat, dashboard mengubah keluaran analitik menjadi indikator yang mendukung keputusan pimpinan akademik, program studi, tutor, dosen wali, dan tim konseling.
 
@@ -48,7 +48,7 @@ Penelitian ini mengambil posisi pada integrasi tiga komponen. Supervised learnin
 
 ## A. Research Design
 
-Penelitian menggunakan supervised binary classification untuk mendeteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Alurnya mencakup audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan berbasis mahasiswa, evaluasi model, knowledge-based risk layer, dan dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42`.
+Penelitian menggunakan supervised binary classification untuk mendeteksi risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat. Alurnya mencakup audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan berbasis mahasiswa, evaluasi model, knowledge-based risk layer, dan dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42`.
 
 ## B. Dataset and Unit of Analysis
 
@@ -181,7 +181,7 @@ Keterbatasan penelitian mencakup konteks OULAD di Open University Inggris, fitur
 
 # V. Conclusion
 
-Penelitian ini mengembangkan early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat menggunakan OULAD. Dataset dibentuk pada unit student-module-presentation dengan fitur demografis, registrasi awal, assessment, dan aktivitas VLE sampai hari ke-28. Pemisahan berbasis `id_student` menjaga independensi mahasiswa antara train-validation dan hold-out test.
+Penelitian ini mengembangkan early warning risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat menggunakan OULAD. Dataset dibentuk pada unit student-module-presentation dengan fitur demografis, registrasi awal, assessment, dan aktivitas VLE sampai hari ke-28. Pemisahan berbasis `id_student` menjaga independensi mahasiswa antara train-validation dan hold-out test.
 
 Random Forest dipilih berdasarkan recall `AtRisk` cross-validation tertinggi sebesar 0,7107. Pada hold-out test, model menghasilkan accuracy 0,7594, precision 0,8007, recall 0,7213, F1-score 0,7589, dan ROC-AUC 0,8396. Knowledge-based risk layer meningkatkan recall menjadi 0,7866 dengan menggabungkan prediksi model dan empat sinyal perilaku awal. Sistem menghasilkan level risiko, alasan, dan rekomendasi yang dapat diterjemahkan menjadi antrean intervensi.
 

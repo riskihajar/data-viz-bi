@@ -1,4 +1,4 @@
-# Narasi Presentasi — Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah
+# Narasi Presentasi — Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah
 ## Data Visualization and Business Intelligence
 
 ---
@@ -7,7 +7,7 @@
 
 Assalamualaikum warahmatullahi wabarakatuh, selamat pagi/siang Bapak/Ibu dosen dan teman-teman semua.
 
-Pada kesempatan ini kami dari Kelompok 5 akan mempresentasikan penelitian dengan judul "Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset."
+Pada kesempatan ini kami dari Kelompok 5 akan mempresentasikan penelitian dengan judul "Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset."
 
 Presentasi ini disusun untuk mata kuliah Data Visualization and Business Intelligence. Anggota kelompok kami adalah Muhammad Rizky Hajar, Alwie Muflich, dan Heri Santosa, dari S2 PJJ Informatika, Konsentrasi Big Data dan Predictive Analytics, Universitas Amikom Yogyakarta.
 
@@ -29,7 +29,7 @@ Dalam konteks Data Visualization dan Business Intelligence, hasil prediksi harus
 
 Dari latar belakang tersebut, kami merumuskan tiga pertanyaan penelitian.
 
-Pertama, bagaimana membangun model klasifikasi risiko gagal atau mengundurkan diri dari mata kuliah menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks Business Intelligence atau BI.
+Pertama, bagaimana membangun model klasifikasi risiko ketidakberhasilan mahasiswa dalam mata kuliah menggunakan supervised learning. Kedua, bagaimana knowledge-based risk layer dapat memberikan interpretasi tambahan terhadap hasil prediksi. Dan ketiga, bagaimana keluaran model dapat dipetakan menjadi indikator pendukung keputusan dalam konteks Business Intelligence atau BI.
 
 Tujuan penelitian ini ada tiga. Pertama, membangun model binary classification dengan tiga algoritma pembanding. Kedua, merancang knowledge-based risk layer berbasis aturan untuk menjelaskan faktor risiko. Dan ketiga, memetakan keluaran model menjadi indikator monitoring dan peringatan dini yang dapat menjadi bahan pertimbangan pihak akademik.
 

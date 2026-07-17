@@ -2,7 +2,7 @@
 
 ## A. Research Design
 
-Penelitian menggunakan supervised binary classification untuk mendeteksi risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Alurnya mencakup audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan berbasis mahasiswa, evaluasi model, knowledge-based risk layer, dan dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42`.
+Penelitian menggunakan supervised binary classification untuk mendeteksi risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat. Alurnya mencakup audit OULAD, pembentukan fitur dengan cut-off temporal, exploratory data analysis, pemisahan berbasis mahasiswa, evaluasi model, knowledge-based risk layer, dan dashboard Business Intelligence. Seluruh eksperimen menggunakan `random_state=42`.
 
 ## B. Dataset and Unit of Analysis
 

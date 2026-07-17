@@ -4,7 +4,7 @@ Dokumen ini menjaga konsistensi antara notebook eksperimen, artikel IEEE, dashbo
 
 ## Arah Utama
 
-Penelitian menggunakan supervised binary classification untuk early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Dataset utama adalah OULAD dengan target `AtRisk` dan `Successful` pada unit student-module-presentation. `AtRisk` mencakup `Withdrawn` dan `Fail`, sedangkan `Successful` mencakup `Pass` dan `Distinction`.
+Penelitian menggunakan supervised binary classification untuk early warning risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat. Dataset utama adalah OULAD dengan target `AtRisk` dan `Successful` pada unit student-module-presentation. `AtRisk` mencakup `Withdrawn` dan `Fail`, sedangkan `Successful` mencakup `Pass` dan `Distinction`.
 
 Kontribusi penelitian adalah integrasi supervised learning, knowledge-based risk layer, dan visual decision support. Model menghasilkan probabilitas risiko, rule layer memberikan level dan alasan, sedangkan dashboard menerjemahkan hasil menjadi indikator monitoring serta prioritas intervensi.
 

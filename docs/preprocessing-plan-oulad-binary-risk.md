@@ -1,6 +1,6 @@
 # Preprocessing Plan OULAD — Early Warning Binary Risk
 
-Dokumen ini menyinkronkan preprocessing dengan arah riset terkini: early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat.
+Dokumen ini menyinkronkan preprocessing dengan arah riset terkini: early warning risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat.
 
 ## Framing
 Problem dirumuskan sebagai **binary classification**:

@@ -4,7 +4,7 @@
 Project ini berada pada repo **Data Visualization and Business Intelligence (DVBI)** dengan tema utama:
 
 - **Student Performance Analytics**
-- **Early warning risiko gagal atau mengundurkan diri dari mata kuliah**
+- **Early warning risiko ketidakberhasilan mahasiswa dalam mata kuliah**
 - **Visual analytics dan Business Intelligence untuk monitoring akademik**
 
 ## Keputusan Dataset Final

@@ -20,7 +20,7 @@ Naskah ini mengikuti urutan tampilan pada `notebooks/oulad_early_warning_dvbi_co
 
 Assalamualaikum warahmatullahi wabarakatuh. Selamat sore Pak Andi dan teman-teman.
 
-Kami dari Kelompok 5 akan mempresentasikan penelitian berjudul “Early Warning Risiko Gagal atau Mengundurkan Diri dari Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset”.
+Kami dari Kelompok 5 akan mempresentasikan penelitian berjudul “Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset”.
 
 Penelitian ini menyusun early warning system untuk mengenali mahasiswa yang berisiko memperoleh hasil akhir mata kuliah `Withdrawn` atau `Fail` berdasarkan informasi yang tersedia sampai akhir minggu keempat. Data yang digunakan adalah OULAD, yang memuat profil mahasiswa, registrasi, assessment, dan aktivitas pada Virtual Learning Environment atau VLE. Setiap hasil akhir berlaku untuk satu mahasiswa pada satu module-presentation.
 

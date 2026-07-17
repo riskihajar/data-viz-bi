@@ -1,6 +1,6 @@
 # Hasil Eksperimen OULAD Early Warning Binary Risk
 
-Dokumen ini mencatat hasil eksperimen final untuk skenario early warning risiko gagal atau mengundurkan diri dari mata kuliah pada akhir minggu keempat. Angka di sini disinkronkan dengan artikel IEEE dan notebook OULAD terbaru.
+Dokumen ini mencatat hasil eksperimen final untuk skenario early warning risiko ketidakberhasilan mahasiswa dalam mata kuliah pada akhir minggu keempat. Angka di sini disinkronkan dengan artikel IEEE dan notebook OULAD terbaru.
 
 ## Ringkasan Dataset
 - Total baris: **32.593** student-module-presentation
