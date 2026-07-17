@@ -3,7 +3,7 @@
 
 # Early Warning Risiko Ketidakberhasilan Mahasiswa dalam Mata Kuliah pada Minggu Keempat Menggunakan Supervised Learning dan Knowledge-Based Risk Layer pada Open University Learning Analytics Dataset
 
-Muhammad Rizky Hajar, Alwie Muflich, Heri Santosa, Andi Sunyoto, Robert Marco
+Muhammad Rizky Hajar, Heri Santosa, Alwie Muflich, Andi Sunyoto, Robert Marco
 
 Department of Computer Science  
 Universitas Amikom Yogyakarta  

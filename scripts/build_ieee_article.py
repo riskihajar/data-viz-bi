@@ -35,8 +35,8 @@ SECTION_FILES = [
 
 AUTHORS = [
     ("Muhammad Rizky Hajar", "riskihajar@students.amikom.ac.id"),
-    ("Alwie Muflich", "alwiemuflich@students.amikom.ac.id"),
     ("Heri Santosa", "heri.sant@students.amikom.ac.id"),
+    ("Alwie Muflich", "alwiemuflich@students.amikom.ac.id"),
     ("Andi Sunyoto", "andi@amikom.ac.id"),
     ("Robert Marco", "robert.marco@amikom.ac.id"),
 ]

@@ -1,6 +1,6 @@
 # Early Warning of Students at Risk of Unsuccessful Course Outcomes in Week Four Using Supervised Learning and a Knowledge-Based Risk Layer on the Open University Learning Analytics Dataset
 
-Muhammad Rizky Hajar, Alwie Muflich, Heri Santosa, Andi Sunyoto, Robert Marco
+Muhammad Rizky Hajar, Heri Santosa, Alwie Muflich, Andi Sunyoto, Robert Marco
 
 Department of Computer Science
 Universitas Amikom Yogyakarta
