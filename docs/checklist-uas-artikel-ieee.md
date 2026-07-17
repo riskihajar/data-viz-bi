@@ -6,6 +6,8 @@ Artefak yang diaudit:
 
 - `docs/artikel-ieee/Artikel IEEE - Early Warning OULAD.pdf`
 - `docs/artikel-ieee/Artikel IEEE - Early Warning OULAD.docx`
+- `docs/artikel-ieee/IEEE Article - Early Warning OULAD.pdf`
+- `docs/artikel-ieee/IEEE Article - Early Warning OULAD.docx`
 - sumber Markdown pada `docs/artikel-ieee/`
 
 Status menggunakan tiga kategori: `[x]` terpenuhi, `[~]` terpenuhi sebagian atau perlu konfirmasi, dan `[ ]` belum terpenuhi.
@@ -54,9 +56,9 @@ Status menggunakan tiga kategori: `[x]` terpenuhi, `[~]` terpenuhi sebagian atau
 ## E. Bahasa dan Similarity
 
 - [x] Versi Bahasa Indonesia tersedia.
-- [ ] Versi English dijadwalkan setelah isi artikel Bahasa Indonesia dikunci agar revisi substansi tidak dikerjakan dua kali.
+- [x] Versi English tersedia sebagai DOCX dan PDF terpisah dengan struktur, angka, sitasi, dan visual yang diselaraskan dengan versi Bahasa Indonesia.
 - [x] Proofreading akademik versi Bahasa Indonesia telah dilakukan pada struktur, konsistensi istilah, angka, caption, dan alur pembahasan.
-- [ ] Proofreading akademik versi English belum dapat dilakukan sebelum terjemahan selesai.
+- [x] Proofreading awal versi English telah dilakukan pada struktur, konsistensi istilah, angka, caption, dan alur pembahasan.
 - [ ] Similarity versi Bahasa Indonesia < 20% belum memiliki laporan Turnitin.
 - [ ] Similarity versi English < 20% belum memiliki laporan Turnitin.
 - [ ] Parafrasa dan sitasi perlu diperbaiki apabila salah satu hasil Turnitin mencapai 20% atau lebih.
@@ -65,7 +67,7 @@ Status menggunakan tiga kategori: `[x]` terpenuhi, `[~]` terpenuhi sebagian atau
 
 - [x] Artikel Bahasa Indonesia berjumlah 6 halaman pada US Letter.
 - [x] Pemadatan mempertahankan metrik model, confusion matrix, feature importance, benchmark OULAD, knowledge-based risk layer, dan dashboard.
-- [ ] Versi English perlu disusun dalam 5-6 halaman dengan struktur dan isi yang sama.
+- [x] Versi English berjumlah 6 halaman dengan struktur dan isi yang sama.
 - [~] Instruksi meminta satu PDF gabungan Bahasa Indonesia dan English. Interpretasi paling aman adalah 5-6 halaman per versi, sehingga PDF gabungan berjumlah sekitar 10-12 halaman. Konfirmasi kepada dosen diperlukan apabila batas 5-6 halaman dimaksudkan untuk seluruh file gabungan.
 
 Strategi layout yang telah diterapkan:
@@ -96,7 +98,7 @@ Referensi utama yang dapat dipakai saat presentasi:
 
 ## I. Dua File Pengumpulan
 
-- [ ] File 1: satu PDF final gabungan versi Bahasa Indonesia dan English.
+- [ ] File 1: satu PDF final gabungan versi Bahasa Indonesia dan English. Penggabungan ditunda sampai kedua versi disetujui.
 - [ ] Susunan File 1 ditetapkan konsisten, disarankan Bahasa Indonesia terlebih dahulu lalu English.
 - [ ] File 1 diperiksa: bookmark atau pemisah versi jelas, halaman lengkap, figure tajam, dan tidak ada halaman kosong yang tidak disengaja.
 - [ ] File 2: satu PDF gabungan hasil Turnitin versi Bahasa Indonesia dan English.
@@ -112,4 +114,4 @@ Referensi utama yang dapat dipakai saat presentasi:
 
 ## Ringkasan Kesiapan
 
-Artikel Bahasa Indonesia telah memiliki substansi penelitian, struktur ilmiah, author, affiliation, visualisasi, referensi, dan layout IEEE dua kolom sepanjang 6 halaman. Tahap berikutnya dimulai setelah isi Indonesia dikunci: menyusun versi English dengan isi yang sama, memeriksa panjangnya, menggabungkan kedua versi, serta memperoleh dan menggabungkan laporan Turnitin dengan similarity di bawah 20%.
+Artikel Bahasa Indonesia dan English masing-masing telah memiliki substansi penelitian, struktur ilmiah, author, affiliation, visualisasi, referensi, dan layout IEEE dua kolom sepanjang 6 halaman. Keduanya tersedia sebagai output terpisah. Tahap berikutnya adalah review kelompok, pemeriksaan Turnitin di bawah 20% untuk setiap bahasa, lalu penggabungan artikel dan laporan Turnitin sesuai instruksi pengumpulan.

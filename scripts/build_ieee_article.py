@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import re
 from pathlib import Path
 
@@ -16,6 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTICLE_DIR = ROOT / "docs" / "artikel-ieee"
 OUTPUT_DOCX = ARTICLE_DIR / "Artikel IEEE - Early Warning OULAD.docx"
 OUTPUT_MD = ARTICLE_DIR / "artikel-ieee.md"
+ENGLISH_DIR = ARTICLE_DIR / "en"
+ENGLISH_OUTPUT_DOCX = ARTICLE_DIR / "IEEE Article - Early Warning OULAD.docx"
+ENGLISH_OUTPUT_MD = ARTICLE_DIR / "ieee-article-en.md"
 
 SECTION_FILES = [
     "00-title-author.md",
@@ -43,12 +47,16 @@ FIGURE_WIDTHS = {
     "fig-1a-target-distribution.png": 3.25,
     "fig-1b-missing-values.png": 3.25,
     "fig-2a-metrics-comparison.png": 3.25,
+    "fig-2a-metrics-comparison-en.png": 3.25,
     "fig-2b-confusion-matrix.png": 3.25,
+    "fig-2b-confusion-matrix-en.png": 3.25,
     "fig-2c-roc-curve.png": 3.25,
     "fig-2-model-evaluation.png": 6.8,
     "fig-3-feature-importance.png": 3.25,
     "fig-5-oulad-benchmark.png": 3.25,
+    "fig-5-oulad-benchmark-en.png": 3.25,
     "fig-4-dashboard-dvbi.png": 3.25,
+    "fig-4-dashboard-dvbi-en.png": 3.25,
 }
 
 
@@ -355,14 +363,21 @@ def add_markdown_section(doc, path: Path):
     flush()
 
 
-def build_combined_markdown():
-    chunks = [f"# Artikel IEEE Lengkap\n"]
-    for name in SECTION_FILES:
-        chunks.append((ARTICLE_DIR / name).read_text(encoding="utf-8").strip())
-    OUTPUT_MD.write_text("\n\n".join(chunks) + "\n", encoding="utf-8")
+def section_paths(source_dir: Path) -> list[Path]:
+    paths = [source_dir / name for name in SECTION_FILES[:-1]]
+    paths.append(ARTICLE_DIR / SECTION_FILES[-1])
+    return paths
 
 
-def build_docx():
+def build_combined_markdown(source_dir: Path, output_md: Path, language: str):
+    heading = "Complete IEEE Article" if language == "en" else "Artikel IEEE Lengkap"
+    chunks = [f"# {heading}\n"]
+    for path in section_paths(source_dir):
+        chunks.append(path.read_text(encoding="utf-8").strip())
+    output_md.write_text("\n\n".join(chunks) + "\n", encoding="utf-8")
+
+
+def build_docx(source_dir: Path, output_docx: Path, language: str):
     doc = Document()
     section = doc.sections[0]
     section.page_width = Inches(8.5)
@@ -375,7 +390,7 @@ def build_docx():
     section.footer_distance = Inches(0.3)
     set_columns(section, 1)
 
-    title = (ARTICLE_DIR / "00-title-author.md").read_text(encoding="utf-8").splitlines()[0][2:]
+    title = (source_dir / "00-title-author.md").read_text(encoding="utf-8").splitlines()[0][2:]
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(12)
@@ -415,7 +430,7 @@ def build_docx():
     body_section.right_margin = Inches(0.625)
     set_columns(body_section, 2)
 
-    abstract_lines = (ARTICLE_DIR / "01-abstract-keywords.md").read_text(encoding="utf-8").splitlines()
+    abstract_lines = (source_dir / "01-abstract-keywords.md").read_text(encoding="utf-8").splitlines()
     abstract = next(x for x in abstract_lines[1:] if x.strip())
     keyword_idx = abstract_lines.index("# Keywords")
     keywords = next(x for x in abstract_lines[keyword_idx + 1 :] if x.strip())
@@ -432,8 +447,8 @@ def build_docx():
     set_run_font(r, size=9, bold=True, italic=True)
     add_inline_markdown(p, keywords, size=9)
 
-    for name in SECTION_FILES[2:]:
-        add_markdown_section(doc, ARTICLE_DIR / name)
+    for path in section_paths(source_dir)[2:]:
+        add_markdown_section(doc, path)
 
     styles = doc.styles
     normal = styles["Normal"]
@@ -444,13 +459,32 @@ def build_docx():
 
     doc.core_properties.title = title
     doc.core_properties.author = ", ".join(name for name, _ in AUTHORS)
-    doc.core_properties.subject = "Early warning of course failure or withdrawal using OULAD"
+    doc.core_properties.subject = "Early warning of unsuccessful course outcomes using OULAD"
     doc.core_properties.keywords = "academic risk prediction, course withdrawal, course failure, OULAD, early warning"
-    doc.save(OUTPUT_DOCX)
+    doc.core_properties.language = "en-US" if language == "en" else "id-ID"
+    doc.save(output_docx)
+
+
+def build_language(language: str) -> tuple[Path, Path]:
+    if language == "en":
+        source_dir = ENGLISH_DIR
+        output_md = ENGLISH_OUTPUT_MD
+        output_docx = ENGLISH_OUTPUT_DOCX
+    else:
+        source_dir = ARTICLE_DIR
+        output_md = OUTPUT_MD
+        output_docx = OUTPUT_DOCX
+    build_combined_markdown(source_dir, output_md, language)
+    build_docx(source_dir, output_docx, language)
+    print(f"Wrote {output_md}")
+    print(f"Wrote {output_docx}")
+    return output_md, output_docx
 
 
 if __name__ == "__main__":
-    build_combined_markdown()
-    build_docx()
-    print(f"Wrote {OUTPUT_MD}")
-    print(f"Wrote {OUTPUT_DOCX}")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--language", choices=["id", "en", "all"], default="id")
+    args = parser.parse_args()
+    languages = ["id", "en"] if args.language == "all" else [args.language]
+    for selected_language in languages:
+        build_language(selected_language)
