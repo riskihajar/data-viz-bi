@@ -48,24 +48,15 @@ Kontribusi fitur Random Forest didominasi sinyal perilaku awal. Total klik VLE, 
 
 ## E. Benchmark with OULAD Studies
 
-Tabel III menempatkan hasil penelitian dalam konteks lima studi OULAD. Shou et al. memakai target biner yang sama pada 20% durasi course [5]. Jawad et al. menggunakan data sampai 260 hari dan SMOTE [6], Balabied dan Eid menggunakan Random Forest [7], sedangkan Ujkani et al. [8] dan Alnasyan et al. [9] menggabungkan `Fail` serta `Withdrawn` sebagai kelompok at-risk. Perbedaan horizon, split, balancing, dan model menjadikan angka pada tabel sebagai konteks benchmark.
+Fig. 5 menempatkan hasil penelitian dalam konteks lima studi OULAD. Shou et al. memakai target biner yang sama pada 20% durasi course [5]. Jawad et al. menggunakan data sampai 260 hari dan SMOTE [6], Balabied dan Eid menggunakan Random Forest [7], sedangkan Ujkani et al. [8] dan Alnasyan et al. [9] menggabungkan `Fail` serta `Withdrawn` sebagai kelompok at-risk. Grafik menyajikan nilai yang dilaporkan setiap studi sebagai benchmark kontekstual karena horizon, split, balancing, dan model yang digunakan berbeda.
 
-**Table III. Benchmark Penelitian Berbasis OULAD**
-
-| Penelitian | Skenario dan Model | Accuracy | F1 |
-|---|---|---:|---:|
-| Shou et al. [5] | 20% course, MTAPSP daily | 0,9179 | 0,9180 |
-| Jawad et al. [6] | 260 hari + SMOTE, RF | 0,8920 | - |
-| Balabied dan Eid [7] | Binary, RF | 0,9000 | 0,9000 |
-| Ujkani et al. [8] | At-risk binary, custom NN | 0,9300 | 0,9600 |
-| Alnasyan et al. [9] | At-risk binary, KANFormer | 0,9459 | 0,9481 |
-| Penelitian ini | Hari ke-28, group split, RF | 0,7594 | 0,7589 |
+![Fig. 5. Benchmark accuracy dan F1-score penelitian berbasis OULAD. Perbandingan bersifat kontekstual karena perbedaan horizon, data split, balancing, dan model.](figures/fig-5-oulad-benchmark.png)
 
 ## F. Knowledge-Based Risk Layer and BI Output
 
 Threshold kuartil bawah train-validation adalah skor assessment 0, jumlah assessment 0, total klik VLE 47, dan hari aktif VLE 4. Knowledge layer menghasilkan 1.816 `High Risk`, 1.979 `Medium Risk`, dan 2.676 `Low Risk`. Ketika `High Risk` serta `Medium Risk` dipetakan sebagai alarm `AtRisk`, recall meningkat dari 0,7213 menjadi 0,7866; precision berubah dari 0,8007 menjadi 0,7043. Perubahan tersebut memperluas cakupan alarm dan menambah kebutuhan verifikasi stakeholder.
 
-**Table IV. Perbandingan Model dan Knowledge-Based Risk Layer**
+**Table III. Perbandingan Model dan Knowledge-Based Risk Layer**
 
 | Metrik | Random Forest | RF + Knowledge Layer |
 |---|---:|---:|
@@ -74,6 +65,6 @@ Threshold kuartil bawah train-validation adalah skor assessment 0, jumlah assess
 | Recall AtRisk | 0,7213 | **0,7866** |
 | F1 AtRisk | **0,7589** | 0,7432 |
 
-Dashboard pada Fig. 5 mengidentifikasi 3.795 student-module-presentation dalam antrean `High Risk` atau `Medium Risk`. Sinyal terbanyak adalah skor assessment rendah dengan 2.341 kasus. Daftar prioritas memuat identitas anonim, module-presentation, probabilitas `AtRisk`, level, jumlah sinyal, alasan, dan rekomendasi. Struktur ini menghubungkan evaluasi teknis dengan monitoring module-presentation dan tindak lanjut tingkat mahasiswa.
+Dashboard pada Fig. 6 mengidentifikasi 3.795 student-module-presentation dalam antrean `High Risk` atau `Medium Risk`. Sinyal terbanyak adalah skor assessment rendah dengan 2.341 kasus. Daftar prioritas memuat identitas anonim, module-presentation, probabilitas `AtRisk`, level, jumlah sinyal, alasan, dan rekomendasi. Struktur ini menghubungkan evaluasi teknis dengan monitoring module-presentation dan tindak lanjut tingkat mahasiswa.
 
-![Fig. 5. Dashboard early warning OULAD pada akhir minggu keempat.](figures/fig-4-dashboard-dvbi.png)
+![Fig. 6. Dashboard early warning OULAD pada akhir minggu keempat.](figures/fig-4-dashboard-dvbi.png)

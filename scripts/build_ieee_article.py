@@ -47,6 +47,7 @@ FIGURE_WIDTHS = {
     "fig-2c-roc-curve.png": 3.25,
     "fig-2-model-evaluation.png": 6.8,
     "fig-3-feature-importance.png": 3.25,
+    "fig-5-oulad-benchmark.png": 3.25,
     "fig-4-dashboard-dvbi.png": 3.25,
 }
 
