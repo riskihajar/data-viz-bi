@@ -47,16 +47,12 @@ FIGURE_WIDTHS = {
     "fig-1a-target-distribution.png": 3.25,
     "fig-1b-missing-values.png": 3.25,
     "fig-2a-metrics-comparison.png": 3.25,
-    "fig-2a-metrics-comparison-en.png": 3.25,
     "fig-2b-confusion-matrix.png": 3.25,
-    "fig-2b-confusion-matrix-en.png": 3.25,
     "fig-2c-roc-curve.png": 3.25,
     "fig-2-model-evaluation.png": 6.8,
     "fig-3-feature-importance.png": 3.25,
     "fig-5-oulad-benchmark.png": 3.25,
-    "fig-5-oulad-benchmark-en.png": 3.25,
     "fig-4-dashboard-dvbi.png": 3.25,
-    "fig-4-dashboard-dvbi-en.png": 3.25,
 }
 
 

@@ -134,9 +134,9 @@ On the hold-out test, Random Forest achieves an accuracy of 0.7594, `AtRisk` pre
 
 Fig. 1 compares the metrics of the three models, Fig. 2 shows the Random Forest confusion matrix, and Fig. 3 presents the ROC curves. The three ROC curves are close. Random Forest is selected because the early warning objective prioritizes `AtRisk` detection coverage.
 
-![Fig. 1. Model metric comparison on the hold-out test.](../figures/fig-2a-metrics-comparison-en.png)
+![Fig. 1. Model metric comparison on the hold-out test.](../figures/fig-2a-metrics-comparison.png)
 
-![Fig. 2. Random Forest confusion matrix on the hold-out test.](../figures/fig-2b-confusion-matrix-en.png)
+![Fig. 2. Random Forest confusion matrix on the hold-out test.](../figures/fig-2b-confusion-matrix.png)
 
 ![Fig. 3. Model ROC curves on the hold-out test.](../figures/fig-2c-roc-curve.png)
 
@@ -150,7 +150,7 @@ Early behavioral signals dominate the Random Forest feature contributions. Total
 
 Fig. 5 positions the results in the context of five OULAD studies. Shou et al. used the same binary target at 20% of course duration [5]. Jawad et al. used data through day 260 and SMOTE [6], Balabied and Eid used Random Forest [7], and Ujkani et al. [8] and Alnasyan et al. [9] combined `Fail` and `Withdrawn` as the at-risk group. The figure presents the reported values as a contextual benchmark because the studies differ in horizon, data split, balancing, and model.
 
-![Fig. 5. Accuracy and F1-score benchmark for OULAD-based studies. The comparison is contextual because the studies use different horizons, data splits, balancing methods, and models.](../figures/fig-5-oulad-benchmark-en.png)
+![Fig. 5. Accuracy and F1-score benchmark for OULAD-based studies. The comparison is contextual because the studies use different horizons, data splits, balancing methods, and models.](../figures/fig-5-oulad-benchmark.png)
 
 ## F. Knowledge-Based Risk Layer and BI Output
 
@@ -167,7 +167,7 @@ The lower-quartile thresholds from the train-validation set are an assessment sc
 
 The dashboard in Fig. 6 identifies 3,795 student-module-presentations in the `High Risk` or `Medium Risk` queue. The most frequent signal is low assessment score, with 2,341 cases. The priority list contains anonymous identities, module-presentations, `AtRisk` probabilities, levels, signal counts, reasons, and recommendations. This structure connects technical evaluation with module-presentation monitoring and student-level follow-up.
 
-![Fig. 6. OULAD early warning dashboard at the end of week four.](../figures/fig-4-dashboard-dvbi-en.png)
+![Fig. 6. OULAD early warning dashboard at the end of week four.](../figures/fig-4-dashboard-dvbi.png)
 
 ## G. Discussion and Limitations
 
